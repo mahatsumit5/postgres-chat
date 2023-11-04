@@ -11,14 +11,15 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
+  id       String    @id @default(uuid())
+  email    String    @unique
   fName    String
   lName    String
-  isActive Boolean @default(true)
-  Chat     Chat[]
-  group    Group   @relation(fields: [groupId], references: [id])
-  groupId  String
+  isActive Boolean   @default(true)
+  inbox    Chat[] @relation("inbox")
+  outbox   Chat[] @relation("outbox")
+  group    Group ?    @relation(fields: [groupId], references: [id])
+  groupId  String?
 }
 
 model Group {
@@ -28,16 +29,19 @@ model Group {
 }
 
 model Chat {
-  id       String    @id @default(uuid())
-  from     User      @relation(fields: [fromId], references: [id])
-  fromId   String
-  messages Message[]
+  id        String   @id @default(uuid())
+  content   String
+  from      User     @relation("inbox", fields: [fromId], references: [id])
+  fromId    String 
+  to        User     @relation("outbox", fields: [toId], references: [id])
+  toId      String
+  messasge Message[]
+  createdAt DateTime @default(now())
+   @@index([fromId,toId])
+   
 }
-
 model Message {
   id           String   @id @default(uuid())
-  content      String
-  createdAt    DateTime @default(now())
-  chatRelation Chat     @relation(fields: [chatId], references: [id])
-  chatId       String
+  chat         Chat     @relation("chat",fields: [chatId],references: [id])
+  chatId String
 }
