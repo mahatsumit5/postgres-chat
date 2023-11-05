@@ -1,11 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-export async function sendMessage({ content, fromId, toId }) {
+export async function sendMessage({ content, email }) {
   return await prisma.message.create({
     data: {
       content: content,
-      fromId: fromId,
-      toId: toId,
+      fromUser: email,
     },
   });
 }
@@ -18,5 +17,5 @@ export async function getMessage({ fromId, toId }) {
   });
 }
 export async function clearMessage() {
-  await prisma.message.deleteMany();
+  await prisma.user.deleteMany();
 }

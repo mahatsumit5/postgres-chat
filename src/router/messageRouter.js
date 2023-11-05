@@ -2,12 +2,12 @@ import { Router } from "express";
 import { getMessage, sendMessage } from "../queries/messageModel.js";
 const router = Router();
 
-router.post("/:fromId", async (req, res) => {
+router.post("/:email", async (req, res) => {
   try {
-    const { fromId } = req.params;
-    const { content, toId } = req.body;
+    const { email } = req.params;
+    const { content } = req.body;
     console.log(req.params, req.body);
-    const result = await sendMessage({ content, fromId, toId });
+    const result = await sendMessage({ content, email });
     result.id
       ? res.json({
           status: true,
