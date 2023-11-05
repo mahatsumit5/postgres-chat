@@ -12,10 +12,14 @@ export async function getUser() {
 }
 
 export async function getUserByEmail({ email }) {
-  console.log(email);
-  return await prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { email: email },
+    include: {
+      chatRoom: true,
+      inbox: true,
+    },
   });
+  return user;
 }
 
 export async function getAllUsers() {

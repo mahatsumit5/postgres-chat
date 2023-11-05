@@ -4,7 +4,6 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -16,15 +15,14 @@ model User {
   fName    String
   lName    String
   isActive Boolean    @default(true)
-  chatRoom ChatRoom[]
-  messages Message[]
+  chatRoom ChatRoom[] 
+  inbox Message[]
 }
 
 model ChatRoom {
   id       String    @id @default(uuid())
   messages Message[]
-  fromId   String
-  user     User[]
+  user     User[] 
 }
 
 model Message {
@@ -32,8 +30,10 @@ model Message {
   content    String
   createdAt  DateTime  @default(now())
   isSeen     Boolean   @default(false)
-  chat       ChatRoom? @relation(fields: [chatRoomId], references: [id])
+  chat       ChatRoom @relation(fields: [chatRoomId], references: [id])
   chatRoomId String
-  from       User      @relation(fields: [fromUser], references: [email])
-  fromUser   String
+
+  author     User[]
+  
+ 
 }

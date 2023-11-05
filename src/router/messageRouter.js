@@ -1,17 +1,28 @@
 import { Router } from "express";
-import { getMessage, sendMessage } from "../queries/messageModel.js";
+import {
+  createChatRoom,
+  getChatRoom,
+  getMessage,
+  sendMessage,
+} from "../queries/messageModel.js";
 const router = Router();
 
-router.post("/:email", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const { email } = req.params;
-    const { content } = req.body;
-    console.log(req.params, req.body);
-    const result = await sendMessage({ content, email });
-    result.id
+    const room = await getChatRoom(req.body);
+    const { uid1, uid2, content } = req.body;
+    const obj = {
+      uid1,
+      uid2,
+      content,
+      roomid: !room?.id ? await createChatRoom(req.body) : room.id,
+    };
+    const result = await sendMessage(obj);
+    result?.id
       ? res.json({
           status: true,
           message: "Message sent.",
+          result,
         })
       : res.json({
           status: false,
