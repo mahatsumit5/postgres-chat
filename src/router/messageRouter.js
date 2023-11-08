@@ -10,10 +10,10 @@ const router = Router();
 router.post("/", async (req, res) => {
   try {
     const room = await getChatRoom(req.body);
-    const { uid1, uid2, content } = req.body;
+    const { from, to, content } = req.body;
     const obj = {
-      uid1,
-      uid2,
+      from,
+      to,
       content,
       roomid: !room?.id ? await createChatRoom(req.body) : room.id,
     };
@@ -35,9 +35,10 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/:fromId/:toId", (req, res) => {
+router.get("/:roomId", async (req, res) => {
   try {
-    const message = getMessage(req.params);
+    console.log(req.params);
+    const message = await getMessage(req.params);
     res.json({
       status: true,
       message,

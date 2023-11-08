@@ -1,41 +1,46 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-export async function sendMessage({ content, uid1, uid2, roomid }) {
+export async function sendMessage({ content, from, to, roomid }) {
   return await prisma.message.create({
     data: {
       content: content,
       chat: {
         connect: { id: roomid },
       },
-      author: {
-        connect: [{ id: uid2 }, { id: uid1 }],
+      to: {
+        connect: { id: to },
       },
     },
   });
 }
-// sendMessage();
-export async function getMessage({ fromId, toId }) {
-  return await prisma.user.findUnique({
+
+export async function getMessage({ roomId }) {
+  return await prisma.chatRoom.findFirst({
     where: {
-      fromId: fromId,
+      id: roomId,
+    },
+
+    include: {
+      messages: true,
     },
   });
 }
-export async function clearMessage() {
-  await prisma.user.deleteMany();
-}
 
-export async function createChatRoom({ uid1, uid2 }) {
-  console.log(uid1, uid2, "create function");
+export async function clearMessage() {
+  await prisma.chatRoom.deleteMany();
+}
+// clearMessage();
+export async function createChatRoom({ from, to }) {
+  console.log(from, to, "create function");
 
   const room = await prisma.chatRoom.create({
     data: {
       user: {
         connect: [
           {
-            id: uid1,
+            id: from,
           },
-          { id: uid2 },
+          { id: to },
         ],
       },
     },
@@ -44,13 +49,13 @@ export async function createChatRoom({ uid1, uid2 }) {
 }
 
 // get chat room if it exists between two users
-export async function getChatRoom({ uid1, uid2 }) {
+export async function getChatRoom({ from, to }) {
   const room = await prisma.chatRoom.findFirst({
     where: {
       user: {
         some: {
           id: {
-            in: [uid1, uid2],
+            in: [from, to],
           },
         },
       },

@@ -32,8 +32,6 @@ model Message {
   isSeen     Boolean   @default(false)
   chat       ChatRoom @relation(fields: [chatRoomId], references: [id])
   chatRoomId String
-
-  author     User[]
-  
- 
+  to     User @relation(fields: [toId],references: [id])
+  toId String 
 }
