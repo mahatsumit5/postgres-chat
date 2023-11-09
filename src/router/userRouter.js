@@ -10,6 +10,13 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const { fName, lName, email } = req.body;
+    if (!fName || !lName || !email) {
+      return res.json({
+        status: "false",
+        message: "Please provide all the required fields.",
+      });
+    }
+
     const result = await createUser({ fName, lName, email });
     result.id
       ? res.json({
@@ -18,9 +25,11 @@ router.post("/", async (req, res) => {
         })
       : res.json({
           status: false,
+          message: "Unable to create user",
         });
   } catch (error) {
     res.json({
+      status: false,
       error: error.message,
     });
   }
@@ -32,7 +41,7 @@ router.get("/get-user/:email", async (req, res) => {
     user.id
       ? res.json({
           status: true,
-          message: "GET request to the homepage",
+          message: "user information",
           user,
         })
       : res.json({
