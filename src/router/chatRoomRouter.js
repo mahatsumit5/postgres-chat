@@ -1,8 +1,12 @@
 import { Router } from "express";
-import { createChatRoom, getChatRoom } from "../queries/messageModel.js";
+import {
+  createChatRoom,
+  getChatRoom,
+  getChatRoomById,
+} from "../queries/chatModel.js";
 const router = Router();
 
-router.get("/:from/:to", async (req, res) => {
+router.get("/:from", async (req, res) => {
   try {
     const room = await getChatRoom(req.params);
     room.id
@@ -13,11 +17,30 @@ router.get("/:from/:to", async (req, res) => {
         })
       : res.json({
           status: false,
-
           data: null,
         });
   } catch (error) {
-    req.json({
+    res.json({
+      status: false,
+      error: error.message,
+    });
+  }
+});
+router.get("/chat/:id", async (req, res) => {
+  try {
+    const room = await getChatRoomById(req.params);
+    room.id
+      ? res.json({
+          status: true,
+          message: "success",
+          data: room,
+        })
+      : res.json({
+          status: false,
+          data: null,
+        });
+  } catch (error) {
+    res.json({
       status: false,
       error: error.message,
     });

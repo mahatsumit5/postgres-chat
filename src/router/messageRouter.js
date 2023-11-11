@@ -1,10 +1,6 @@
 import { Router } from "express";
-import {
-  createChatRoom,
-  getChatRoom,
-  getMessage,
-  sendMessage,
-} from "../queries/messageModel.js";
+import { getMessage, sendMessage } from "../queries/messageModel.js";
+import { createChatRoom, getChatRoom } from "../queries/chatModel.js";
 const router = Router();
 
 router.post("/", async (req, res) => {
