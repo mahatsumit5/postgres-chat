@@ -19,6 +19,7 @@ router.post("/", async (req, res) => {
           status: true,
           message: "Message sent.",
           result,
+          roomId: obj.roomid,
         })
       : res.json({
           status: false,

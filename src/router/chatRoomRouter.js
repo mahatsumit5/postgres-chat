@@ -8,6 +8,7 @@ const router = Router();
 
 router.get("/:from", async (req, res) => {
   try {
+    console.log(req.params);
     const room = await getChatRoom(req.params);
     room.id
       ? res.json({
@@ -49,6 +50,7 @@ router.get("/chat/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    console.log(req.body);
     const room = await createChatRoom(req.body);
     room.id
       ? res.json({
@@ -58,6 +60,7 @@ router.post("/", async (req, res) => {
         })
       : res.json({
           status: false,
+          message: "unsucessfull",
           data: null,
         });
   } catch (error) {
