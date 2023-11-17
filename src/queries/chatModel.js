@@ -18,14 +18,14 @@ export async function createChatRoom({ from, to }) {
 }
 
 // get chat room if it exists between two users
-export async function getChatRoom({ from }) {
+export async function getChatRoom({ from, to }) {
   try {
     const room = await prisma.chatRoom.findFirst({
       where: {
         user: {
           some: {
             id: {
-              in: [from],
+              in: [from, to],
             },
           },
         },
@@ -52,4 +52,22 @@ export async function getChatRoomById({ id }) {
   });
 
   return room;
+}
+
+export async function getMultipleRoom({ userId }) {
+  const rooms = await prisma.chatRoom.findMany({
+    where: {
+      user: {
+        some: {
+          id: userId,
+        },
+      },
+    },
+    include: {
+      user: true,
+      messages: true,
+    },
+  });
+  console.log(rooms);
+  return rooms;
 }

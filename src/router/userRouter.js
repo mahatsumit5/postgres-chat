@@ -54,9 +54,11 @@ router.get("/get-user/:email", async (req, res) => {
     });
   }
 });
-router.get("/", async (req, res) => {
+router.get("/:email", async (req, res) => {
   try {
-    const users = await getAllUsers();
+    const { email } = req.params;
+    const users = await getAllUsers(email);
+
     users.length
       ? res.json({
           status: true,

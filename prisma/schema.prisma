@@ -28,7 +28,9 @@ model ChatRoom {
   // one to many relation between chatroom and messages
   messages Message[]
   // many to many relation between user and chatroom 
-  user     User[] 
+  user     User[]  
+
+
 }
 
 model Message {

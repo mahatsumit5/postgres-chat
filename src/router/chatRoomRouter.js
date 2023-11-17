@@ -3,18 +3,19 @@ import {
   createChatRoom,
   getChatRoom,
   getChatRoomById,
+  getMultipleRoom,
 } from "../queries/chatModel.js";
 const router = Router();
 
-router.get("/:from", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
     console.log(req.params);
-    const room = await getChatRoom(req.params);
-    room.id
+    const rooms = await getMultipleRoom(req.params);
+    rooms.length
       ? res.json({
           status: true,
           message: "success",
-          data: room,
+          data: rooms,
         })
       : res.json({
           status: false,
@@ -50,7 +51,13 @@ router.get("/chat/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body);
+    const roomExist = await getChatRoom(req.body);
+    if (roomExist.id) {
+      return res.json({
+        status: false,
+        message: "This Room  already exist in the database",
+      });
+    }
     const room = await createChatRoom(req.body);
     room.id
       ? res.json({
@@ -64,7 +71,7 @@ router.post("/", async (req, res) => {
           data: null,
         });
   } catch (error) {
-    req.json({
+    res.json({
       status: false,
       error: error.message,
     });
