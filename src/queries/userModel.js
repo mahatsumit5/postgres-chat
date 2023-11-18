@@ -37,7 +37,6 @@ export async function getAllUsers(email) {
 
   return users;
 }
-getAllUsers();
 
 export async function deleteUser(id) {
   return await prisma.user.delete({

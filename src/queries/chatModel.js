@@ -23,7 +23,7 @@ export async function getChatRoom({ from, to }) {
     const room = await prisma.chatRoom.findFirst({
       where: {
         user: {
-          some: {
+          every: {
             id: {
               in: [from, to],
             },
