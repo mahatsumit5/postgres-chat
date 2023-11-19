@@ -4,23 +4,27 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String     @id @default(uuid())
-  email    String     @unique
-  fName    String
-  lName    String
-  isActive Boolean    @default(true)
+  id         String     @id @default(uuid())
+  email      String     @unique
+  fName      String
+  lName      String
+  isActive   Boolean    @default(true)
+  password   String
+  profile    String?
+  refreshJWT String     @default("")
   // many to many relation betwwen user and chatrrom
-  chatRoom ChatRoom[] 
+  chatRoom   ChatRoom[]
 
   // one to many relation between user and messages
-  inbox Message[]
-
+  inbox   Message[]
+  session Session[]
 }
 
 model ChatRoom {
@@ -28,20 +32,25 @@ model ChatRoom {
   // one to many relation between chatroom and messages
   messages Message[]
   // many to many relation between user and chatroom 
-  user     User[]  
-
-
+  user     User[]
 }
 
 model Message {
-  id         String    @id @default(uuid())
+  id         String   @id @default(uuid())
   content    String
-  createdAt  DateTime  @default(now())
-  isSeen     Boolean   @default(false)
+  createdAt  DateTime @default(now())
+  isSeen     Boolean  @default(false)
   // many to one relation between message and chatroom
   chat       ChatRoom @relation(fields: [chatRoomId], references: [id])
   chatRoomId String
   // many to one realtion between message and user
-  to     User @relation(fields: [toId],references: [id])
-  toId String 
+  to         User     @relation(fields: [toId], references: [id])
+  toId       String
+}
+
+model Session {
+  sessionID  String   @id @default(uuid())
+  associate  User     @relation(fields: [userId], references: [id])
+  userId     String
+  timeStamps DateTime @default(now())
 }

@@ -5,22 +5,26 @@ import {
   getAllUsers,
   getUserByEmail,
 } from "../queries/userModel.js";
+import { comparePassword, hashPass } from "../utils/bcrypt.js";
+import { loginValidation, newUserValidation } from "../utils/joiValidation.js";
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/", newUserValidation, async (req, res) => {
   try {
-    const { fName, lName, email } = req.body;
-    if (!fName || !lName || !email) {
+    const { fName, lName, email, password } = req.body;
+    if ((!fName || !lName || !email, !password)) {
       return res.json({
         status: "false",
         message: "Please provide all the required fields.",
       });
     }
+    req.body.password = hashPass(password);
 
-    const result = await createUser({ fName, lName, email });
+    const result = await createUser(req.body);
     result.id
       ? res.json({
           status: true,
+          message: "Account created sucessfully",
           result,
         })
       : res.json({
@@ -35,21 +39,31 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/get-user/:email", async (req, res) => {
+router.post("/login-user", loginValidation, async (req, res) => {
   try {
-    const user = await getUserByEmail(req.params);
-    user.id
-      ? res.json({
-          status: true,
-          message: "user information",
-          user,
-        })
-      : res.json({
-          status: false,
-          message: "No such User found",
-        });
+    const { email, password } = req.body;
+    const user = await getUserByEmail({ email });
+    if (user?.id) {
+      const isPasswordMatched = comparePassword(password, user.password);
+      isPasswordMatched
+        ? res.json({
+            status: "success",
+            messgae: "password matched",
+            user,
+          })
+        : res.json({
+            status: "error",
+            message: "Incorrect password",
+          });
+      return;
+    }
+    res.json({
+      status: "error",
+      message: "No such User found",
+    });
   } catch (error) {
     res.json({
+      status: "error",
       error: error.message,
     });
   }

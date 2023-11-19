@@ -12,6 +12,7 @@ app.use(express.json());
 import userRouter from "./src/router/userRouter.js";
 import messageRouter from "./src/router/messageRouter.js";
 import chatRoomRouter from "./src/router/chatRoomRouter.js";
+
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/chat-room", chatRoomRouter);
@@ -23,11 +24,11 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log("user connected", socket.id);
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected", socket.id);
+  socket.on("send_message", (data) => {
+    console.log(data);
+    socket.broadcast.emit("receive_message", data);
   });
+  socket.on("disconnect", () => {});
 });
 app.get("/", (req, res) => {
   res.json({
@@ -35,7 +36,13 @@ app.get("/", (req, res) => {
     data: "Welcome to the chat application API",
   });
 });
-
+app.use((error, req, res) => {
+  const code = error.statusCode || 500;
+  res.status(code).json({
+    status: "error",
+    message: error.message,
+  });
+});
 httpServer.listen(PORT, (req, res) => {
   console.log(`Server is running on port ${PORT}`);
 });

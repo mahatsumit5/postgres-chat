@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "npx prisma generate index.js",
+    "start": "node index.js npx prisma generate",
     "dev": "nodemon index.js ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,10 +14,12 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.5.2",
+    "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "socket.io": "^4.7.2",
-    "prisma": "^5.6.0"
+    "joi": "^17.11.0",
+    "prisma": "^5.6.0",
+    "socket.io": "^4.7.2"
   }
 }
