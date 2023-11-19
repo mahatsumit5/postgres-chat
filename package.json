@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js npx prisma generate",
+    "start": " npx prisma generate & node index.js",
     "dev": "nodemon index.js ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
