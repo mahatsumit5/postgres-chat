@@ -22,9 +22,13 @@ const io = new Server(httpServer, {
   },
 });
 
-// io.on("connection", (socket) => {
-//   console.log(socket.id);
-// });
+io.on("connection", (socket) => {
+  console.log("user connected", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected", socket.id);
+  });
+});
 app.get("/", (req, res) => {
   res.json({
     status: true,
@@ -32,6 +36,6 @@ app.get("/", (req, res) => {
   });
 });
 
-app.listen(PORT, (req, res) => {
+httpServer.listen(PORT, (req, res) => {
   console.log(`Server is running on port ${PORT}`);
 });
