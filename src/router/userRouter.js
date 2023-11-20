@@ -88,6 +88,23 @@ router.get("/:email", async (req, res) => {
     });
   }
 });
+
+router.get("/reset-password/:email", async (req, res, next) => {
+  try {
+    const user = await getUserByEmail(req.params);
+    user?.id
+      ? res.json({
+          status: "success",
+          data: user,
+        })
+      : res.json({
+          status: "error",
+          message: "No user found with such email",
+        });
+  } catch (error) {
+    next(error);
+  }
+});
 router.delete("/:id", async (req, res) => {
   try {
     const { id } = req.params;
