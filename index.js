@@ -12,23 +12,26 @@ app.use(express.json());
 import userRouter from "./src/router/userRouter.js";
 import messageRouter from "./src/router/messageRouter.js";
 import chatRoomRouter from "./src/router/chatRoomRouter.js";
-import { getAllSession } from "./src/queries/sessionModel.js";
-import { generateToken } from "./src/utils/tokenGenerator.js";
-import { changePassword } from "./src/queries/userModel.js";
 
+import path from "path";
+
+const __dirname = path.resolve();
+
+// convert public to static
+app.use(express.static(path.join(__dirname + "/public")));
+// api
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/chat-room", chatRoomRouter);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://vite-chat-app-lake.vercel.app/"],
   },
 });
 
 io.on("connection", (socket) => {
   socket.on("send_message", (data) => {
-    console.log(data);
     socket.broadcast.emit("receive_message", data);
   });
   socket.on("disconnect", () => {});
@@ -46,6 +49,7 @@ app.use((error, req, res) => {
     message: error.message,
   });
 });
+
 httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

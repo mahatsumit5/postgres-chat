@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "chat-application-405908",
+  "private_key_id": "34d253c429953ebf862c65e02ef6157bf415d8fd",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCiE502Sq0DEZSc\nTvZYFlIH/SYSLFJfPa4TiK3kICX2zLWd+/p5MACEMFEH/rkXeTJTS29oTrc+XD//\n4i946E/p2CFIIsY7o4tEsjTxsweOd5a5zZdNvbHBl4uzj2HmPWczF8HobN4rXzky\npUEwYHXHeNuwWcFz71TOokbgzNzFbBmzOvRDMJQVEGMaMHw8HFKCaMRgjoXlRSIM\nuIfaxE20ofzbDnaGN84bXsdZDWkvDW37K20ShRucV3Re9HtbopT1RDfjSPwtPStx\nUDv7CJjgiBW7WbLg1x/XF75m0r3sIeYiUhY/lrzw1aarlPIylRcMYNY6Vili1y7X\nKZhWLo4DAgMBAAECggEANQUTldIh/PIAWo3eOny6wxBGJwXGwI9N5ef9crYtlSns\nc80daA2S7atcpq/mXs5v7x2rSUUO3uCQsyWMABKHKelhIdb2YEYk5gkiFrtJSorG\njOu7hlv6zWjE862BCi+mFem8rksG9stEy9ORmsDDZsibnXoPNdziMmKVqy55Pj+U\ndnqiKQkxt3JVru9xtKP4uvQZVSZWzAyrtUnc+4w+PrJ2nNSpGEHvQlF5iGJ6doet\nKbJYK/85FSU5wvxsKd9J9yxRS0n+CypA0hSex9unIzCCZgstzEWPSKt8bSoETzjP\nJg+3nsDbo3qgRRAKLoSqC0RV7yj9575LgGajJS14MQKBgQDNMldIG5J1obhr3Gko\nYguVEEcf5JBNyOh1lX+hqhohpepAuhDkTBZSVOIGcrYaucNKyX0ZcdW0BOIy1CVw\nYSZx4NaUrgh9ogPCK6y9XtQx0DPfWPfouihvb9sM5dsjnoBTsAbKPonl6nBd15dd\nGozQXc1IS/e3Ic8FHgmOuzwE6wKBgQDKNEODm4kFvL5SPUaMuaA9pMxqzpqSyPYj\n9VWygVKQhEFKMpmabnF+NVBGjjGKFCk4X2iLvuD+e9vppJ9ote1Tis546ADMPbl9\nL3WPTDtK4p+iw8zv1MB8e0/6CWXrLQHe4aTqtFMPNvGqB8Y7zjEhiOYA7XZZ4srR\n48zTvgW1SQKBgFCd+pSl4IC+rMoTqmznOE20O31YOymUSWAJAD/vqJyXptUPRRus\nmQh3uOV3o/wUB5oWV0Pr6V30nToDB0KDqKsM/sEjLsrNIFTk+9TasNtxRS/2sE+K\n89/0Pkdu9w2jdB9tBP3oXB0sYkE8NoepqrEiaUiCMCyO59rG1lJxVT9JAoGAceRy\nSsTmrxaa1NOy0z0TJuWWRmrM4fTTv3lGpd711HTKGbLalgOzZXU+HB+ng7DLbvc+\necgwDudQ/Q8+wsoGPVIn7i4vlNsHiZ2bx/UWSJ3RcOp8mnHpYbRLXfjBMXAOZ64N\nKC4dwqoeALmUTMddIRhtBQS77vExcHuxOWsE6BECgYAY3FsNOs5yePs5N7CL0yuB\nR27afhMUvlnebLTaZj6aBCAYGZxzHH3qCH/u5M+4MuuD7UNunwDRSnw/nT5wuOk3\nwc1Bn5IQ+jb1j3WXwVoprjwxZ/kbWwp5/rXgHDEfNu3Q3TLwIkvqN8cNdMpl/YHa\nA+SGjnTpEMTUh91pSo3dzQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "sumit-mahat@chat-application-405908.iam.gserviceaccount.com",
+  "client_id": "116125309127304522216",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sumit-mahat%40chat-application-405908.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
