@@ -46,3 +46,20 @@ export const loginValidation = (req, res, next) => {
     next(error);
   }
 };
+export const changePasswordValidation = (req, res, next) => {
+  try {
+    const schema = Joi.object({
+      email: email,
+      newPassword: password,
+    });
+    const { error } = schema.validate(req.body);
+    error
+      ? res.json({
+          status: "error",
+          message: error.message,
+        })
+      : next();
+  } catch (error) {
+    next(error);
+  }
+};

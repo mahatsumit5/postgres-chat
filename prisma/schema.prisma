@@ -53,4 +53,5 @@ model Session {
   associate  User     @relation(fields: [userId], references: [id])
   userId     String
   timeStamps DateTime @default(now())
+  token      String
 }

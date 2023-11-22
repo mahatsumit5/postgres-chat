@@ -12,6 +12,9 @@ app.use(express.json());
 import userRouter from "./src/router/userRouter.js";
 import messageRouter from "./src/router/messageRouter.js";
 import chatRoomRouter from "./src/router/chatRoomRouter.js";
+import { getAllSession } from "./src/queries/sessionModel.js";
+import { generateToken } from "./src/utils/tokenGenerator.js";
+import { changePassword } from "./src/queries/userModel.js";
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/message", messageRouter);
@@ -43,6 +46,6 @@ app.use((error, req, res) => {
     message: error.message,
   });
 });
-httpServer.listen(PORT, (req, res) => {
+httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

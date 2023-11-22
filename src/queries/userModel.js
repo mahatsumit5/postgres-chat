@@ -11,6 +11,27 @@ export async function getUser() {
   return await prisma.user.findMany();
 }
 
+export async function changePassword({ email, newPassword }) {
+  return await prisma.user.update({
+    where: {
+      email: email,
+    },
+    data: {
+      password: newPassword,
+    },
+  });
+}
+export async function uploadProfileImage(email, path) {
+  return await prisma.user.update({
+    where: {
+      email: email,
+    },
+    data: {
+      profile: path,
+    },
+  });
+}
+
 export async function getUserByEmail({ email }) {
   const user = await prisma.user.findUnique({
     where: { email: email },

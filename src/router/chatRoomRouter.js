@@ -9,7 +9,6 @@ const router = Router();
 
 router.get("/:userId", async (req, res) => {
   try {
-    console.log(req.params);
     const rooms = await getMultipleRoom(req.params);
     rooms.length
       ? res.json({

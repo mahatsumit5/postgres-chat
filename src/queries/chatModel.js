@@ -68,6 +68,6 @@ export async function getMultipleRoom({ userId }) {
       messages: true,
     },
   });
-  console.log(rooms);
+
   return rooms;
 }
