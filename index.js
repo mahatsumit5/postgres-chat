@@ -16,9 +16,9 @@ import chatRoomRouter from "./src/router/chatRoomRouter.js";
 import path from "path";
 
 const __dirname = path.resolve();
-
+console.log(__dirname);
 // convert public to static
-app.use(express.static(path.join(__dirname + "/public")));
+app.use(express.static(path.join(__dirname, "public", "dist")));
 // api
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/message", messageRouter);
@@ -40,11 +40,8 @@ io.on("connection", (socket) => {
   });
   socket.on("disconnect", () => {});
 });
-app.get("/", (req, res) => {
-  res.json({
-    status: true,
-    data: "Welcome to the chat application API",
-  });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "dist", "index.html"));
 });
 app.use((error, req, res) => {
   const code = error.statusCode || 500;
