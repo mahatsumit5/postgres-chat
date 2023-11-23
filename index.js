@@ -26,7 +26,7 @@ app.use("/api/v1/chat-room", chatRoomRouter);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:5173", "https://vite-chat-app-lake.vercel.app/"],
+    origin: ["https://vite-chat-app-lake.vercel.app/"],
   },
 });
 
