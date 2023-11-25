@@ -32,18 +32,27 @@ export async function uploadProfileImage(email, path) {
   });
 }
 
+export async function removeChatRoomFromUser(email, upatedData) {
+  return await prisma.user.update({
+    where: {
+      email: email,
+    },
+    data: upatedData,
+  });
+}
+
 export async function getUserByEmail({ email }) {
   const user = await prisma.user.findUnique({
     where: { email: email },
-    // include: {
-    //   chatRoom: {
-    //     select: {
-    //       user: true,
-    //       id: true,
-    //       messages: true,
-    //     },
-    //   },
-    // },
+    include: {
+      chatRoom: {
+        select: {
+          user: true,
+          id: true,
+          messages: true,
+        },
+      },
+    },
   });
   return user;
 }

@@ -71,3 +71,15 @@ export async function getMultipleRoom({ userId }) {
 
   return rooms;
 }
+
+export async function deleteChatRoom(id) {
+  try {
+    return await prisma.chatRoom.delete({
+      where: {
+        id: id,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}

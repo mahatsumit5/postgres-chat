@@ -26,7 +26,10 @@ export async function getMessage({ roomId }) {
   });
 }
 
-export async function clearMessage() {
-  console.log("message cleared");
-  await prisma.user.deleteMany();
+export async function deleteMessages(id) {
+  return await prisma.user.deleteMany({
+    where: {
+      chatRoom: id,
+    },
+  });
 }

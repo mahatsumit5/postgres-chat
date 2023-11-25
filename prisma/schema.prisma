@@ -21,10 +21,10 @@ model User {
   refreshJWT String     @default("")
   // many to many relation betwwen user and chatrrom
   chatRoom   ChatRoom[]
-
   // one to many relation between user and messages
   inbox   Message[]
   session Session[]
+  friendRequests FriendRequests[]
 }
 
 model ChatRoom {
@@ -54,4 +54,14 @@ model Session {
   userId     String
   timeStamps DateTime @default(now())
   token      String
+}
+
+model FriendRequests{
+  id         String   @id @default(uuid())
+  from       User     @relation(fields: [fromId], references: [id])
+  fromId     String
+  to         User     @relation(fields: [toId], references: [id])
+  toId       String
+  status     Boolean  @default(false)
+
 }

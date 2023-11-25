@@ -34,7 +34,6 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
   socket.on("send_message", (data) => {
     socket.broadcast.emit("receive_message", data);
   });

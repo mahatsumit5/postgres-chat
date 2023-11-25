@@ -1,10 +1,13 @@
 import { Router } from "express";
 import {
   createChatRoom,
+  deleteChatRoom,
   getChatRoom,
   getChatRoomById,
   getMultipleRoom,
 } from "../queries/chatModel.js";
+import { deleteMessages } from "../queries/messageModel.js";
+import { removeChatRoomFromUser } from "../queries/userModel.js";
 const router = Router();
 
 router.get("/:userId", async (req, res) => {
@@ -75,6 +78,38 @@ router.post("/", async (req, res) => {
       status: false,
       error: error.message,
     });
+  }
+});
+router.delete("/:id", async (req, res, next) => {
+  try {
+    console.log(req.body);
+    const { email, ...rest } = req.body;
+    const { id } = req.params;
+    const isUpdate = await removeChatRoomFromUser(email, rest);
+    // if user table is upadete delete the messages then delete the chat room
+    if (isUpdate) {
+      const isDeleted = await deleteMessages(id);
+      if (isDeleted) {
+        const result = await deleteChatRoom(id);
+        result?.id
+          ? res.json({
+              status: "success",
+              message: "Your chat has been deleted successfully.",
+            })
+          : res.json({
+              status: "error",
+              message: "Unable to delete chat at the moment.",
+            });
+        return;
+      }
+    }
+
+    res.json({
+      status: "error",
+      message: "Unable to delete",
+    });
+  } catch (error) {
+    next(error);
   }
 });
 
