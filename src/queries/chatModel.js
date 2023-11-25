@@ -2,19 +2,25 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function createChatRoom({ from, to }) {
-  const room = await prisma.chatRoom.create({
-    data: {
-      user: {
-        connect: [
-          {
-            id: from,
-          },
-          { id: to },
-        ],
+  try {
+    const room = await prisma.chatRoom.create({
+      data: {
+        user: {
+          connect: [
+            {
+              id: from,
+            },
+            { id: to },
+          ],
+        },
       },
-    },
-  });
-  return room;
+    });
+    return room;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 // get chat room if it exists between two users
@@ -38,6 +44,8 @@ export async function getChatRoom({ from, to }) {
     return room;
   } catch (error) {
     console.log(error);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 export async function getChatRoomById({ id }) {
@@ -55,21 +63,27 @@ export async function getChatRoomById({ id }) {
 }
 
 export async function getMultipleRoom({ userId }) {
-  const rooms = await prisma.chatRoom.findMany({
-    where: {
-      user: {
-        some: {
-          id: userId,
+  try {
+    const rooms = await prisma.chatRoom.findMany({
+      where: {
+        user: {
+          some: {
+            id: userId,
+          },
         },
       },
-    },
-    include: {
-      user: true,
-      messages: true,
-    },
-  });
+      include: {
+        user: true,
+        messages: true,
+      },
+    });
 
-  return rooms;
+    return rooms;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function deleteChatRoom(id) {
@@ -81,5 +95,7 @@ export async function deleteChatRoom(id) {
     });
   } catch (error) {
     console.log(error);
+  } finally {
+    await prisma.$disconnect();
   }
 }

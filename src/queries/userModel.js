@@ -2,75 +2,122 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function createUser(obj) {
-  return await prisma.user.create({
-    data: obj,
-  });
+  try {
+    return await prisma.user.create({
+      data: obj,
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function getUser() {
-  return await prisma.user.findMany();
+  try {
+    return await prisma.user.findMany();
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function changePassword({ email, newPassword }) {
-  return await prisma.user.update({
-    where: {
-      email: email,
-    },
-    data: {
-      password: newPassword,
-    },
-  });
+  try {
+    return await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        password: newPassword,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 export async function uploadProfileImage(email, path) {
-  return await prisma.user.update({
-    where: {
-      email: email,
-    },
-    data: {
-      profile: path,
-    },
-  });
+  try {
+    return await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        profile: path,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function removeChatRoomFromUser(email, upatedData) {
-  return await prisma.user.update({
-    where: {
-      email: email,
-    },
-    data: upatedData,
-  });
+  try {
+    return await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: upatedData,
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function getUserByEmail({ email }) {
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    include: {
-      chatRoom: {
-        select: {
-          user: true,
-          id: true,
-          messages: true,
+  try {
+    return await prisma.user.findUnique({
+      where: { email: email },
+      include: {
+        chatRoom: {
+          select: {
+            user: true,
+            id: true,
+            messages: true,
+          },
         },
       },
-    },
-  });
-  return user;
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function getAllUsers(email) {
-  const users = await prisma.user.findMany({
-    where: {
-      NOT: { email: email },
-    },
-  });
+  try {
+    const users = await prisma.user.findMany({
+      where: {
+        NOT: { email: email },
+      },
+    });
 
-  return users;
+    return users;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function deleteUser(id) {
-  return await prisma.user.delete({
-    where: {
-      id: id,
-    },
-  });
+  try {
+    return await prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }

@@ -1,35 +1,53 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 export async function sendMessage({ content, from, to, roomid }) {
-  return await prisma.message.create({
-    data: {
-      content: content,
-      chat: {
-        connect: { id: roomid },
+  try {
+    return await prisma.message.create({
+      data: {
+        content: content,
+        chat: {
+          connect: { id: roomid },
+        },
+        to: {
+          connect: { id: to },
+        },
       },
-      to: {
-        connect: { id: to },
-      },
-    },
-  });
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function getMessage({ roomId }) {
-  return await prisma.chatRoom.findFirst({
-    where: {
-      id: roomId,
-    },
+  try {
+    return await prisma.chatRoom.findFirst({
+      where: {
+        id: roomId,
+      },
 
-    include: {
-      messages: true,
-    },
-  });
+      include: {
+        messages: true,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
 export async function deleteMessages(id) {
-  return await prisma.user.deleteMany({
-    where: {
-      chatRoom: id,
-    },
-  });
+  try {
+    return await prisma.user.deleteMany({
+      where: {
+        chatRoom: id,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
 }

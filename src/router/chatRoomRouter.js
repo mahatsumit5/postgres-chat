@@ -53,7 +53,6 @@ router.get("/chat/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body);
     const roomExist = await getChatRoom(req.body);
     if (roomExist?.id) {
       return res.json({

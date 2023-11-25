@@ -11,20 +11,21 @@ datasource db {
 }
 
 model User {
-  id         String     @id @default(uuid())
-  email      String     @unique
-  fName      String
-  lName      String
-  isActive   Boolean    @default(true)
-  password   String
-  profile    String?
-  refreshJWT String     @default("")
+  id             String           @id @default(uuid())
+  email          String           @unique
+  fName          String
+  lName          String
+  isActive       Boolean          @default(true)
+  password       String
+  profile        String?
+  refreshJWT     String           @default("")
   // many to many relation betwwen user and chatrrom
-  chatRoom   ChatRoom[]
+  chatRoom       ChatRoom[]
   // one to many relation between user and messages
-  inbox   Message[]
-  session Session[]
-  friendRequests FriendRequests[]
+  inbox          Message[]
+  session        Session[]
+  friendRequests FriendRequests[] @relation("receiver")
+  sentRequests   FriendRequests[] @relation("sender")
 }
 
 model ChatRoom {
@@ -56,12 +57,18 @@ model Session {
   token      String
 }
 
-model FriendRequests{
-  id         String   @id @default(uuid())
-  from       User     @relation(fields: [fromId], references: [id])
-  fromId     String
-  to         User     @relation(fields: [toId], references: [id])
-  toId       String
-  status     Boolean  @default(false)
+model FriendRequests {
+  // id     String @id @default(uuid())
+  from   User   @relation("sender", fields: [fromId], references: [id])
+  fromId String
+  to     User   @relation("receiver", fields: [toId], references: [id])
+  toId   String
+  status Status @default(PENDING)
+  @@id([fromId,toId])
+}
 
+enum Status {
+  ACCEPTED
+  REJECTED
+  PENDING
 }

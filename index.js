@@ -12,6 +12,7 @@ app.use(express.json());
 import userRouter from "./src/router/userRouter.js";
 import messageRouter from "./src/router/messageRouter.js";
 import chatRoomRouter from "./src/router/chatRoomRouter.js";
+import friendRequestRouter from "./src/router/friendRequestsRouter.js";
 
 import path from "path";
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, "public", "dist")));
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/chat-room", chatRoomRouter);
+app.use("/api/v1/friend-request", friendRequestRouter);
 
 const io = new Server(httpServer, {
   cors: {
