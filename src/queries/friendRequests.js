@@ -31,6 +31,16 @@ export async function getMySentFriendRequests(id) {
         fromId: id,
         status: "PENDING",
       },
+      include: {
+        to: {
+          select: {
+            fName: true,
+            lName: true,
+            email: true,
+            profile: true,
+          },
+        },
+      },
     });
     return requests;
   } catch (error) {
@@ -45,6 +55,16 @@ export async function getMyFriendRequests(id) {
       where: {
         toId: id,
         status: "PENDING",
+      },
+      include: {
+        from: {
+          select: {
+            fName: true,
+            lName: true,
+            email: true,
+            profile: true,
+          },
+        },
       },
     });
     return requests;

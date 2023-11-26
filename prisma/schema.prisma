@@ -10,6 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User model with fields like id, email, first name, last name, isActive, password, profile, refreshJWT
 model User {
   id             String           @id @default(uuid())
   email          String           @unique
@@ -28,6 +29,7 @@ model User {
   sentRequests   FriendRequests[] @relation("sender")
 }
 
+// ChatRoom model with fields like id and user
 model ChatRoom {
   id       String    @id @default(uuid())
   // one to many relation between chatroom and messages
@@ -36,6 +38,7 @@ model ChatRoom {
   user     User[]
 }
 
+// Message model with fields like id, content, createdAt, isSeen, chat, and to
 model Message {
   id         String   @id @default(uuid())
   content    String
@@ -49,6 +52,7 @@ model Message {
   toId       String
 }
 
+// Session model with fields like sessionID, associate, userId, timeStamps, and token
 model Session {
   sessionID  String   @id @default(uuid())
   associate  User     @relation(fields: [userId], references: [id])
@@ -57,18 +61,22 @@ model Session {
   token      String
 }
 
+// FriendRequests model with fields like from, to, status
 model FriendRequests {
-  // id     String @id @default(uuid())
   from   User   @relation("sender", fields: [fromId], references: [id])
   fromId String
   to     User   @relation("receiver", fields: [toId], references: [id])
   toId   String
   status Status @default(PENDING)
-  @@id([fromId,toId])
+
+  @@id([fromId, toId])
 }
 
+// Enum for status of friend requests
 enum Status {
   ACCEPTED
   REJECTED
   PENDING
 }
+
+//This code provides a clear and concise commenting for each model and its fields. It also includes comments for the FriendRequests model and the Status enum..</s>

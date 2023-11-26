@@ -56,21 +56,6 @@ export async function uploadProfileImage(email, path) {
   }
 }
 
-export async function removeChatRoomFromUser(email, upatedData) {
-  try {
-    return await prisma.user.update({
-      where: {
-        email: email,
-      },
-      data: upatedData,
-    });
-  } catch (error) {
-    console.log(error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
 export async function getUserByEmail({ email }) {
   try {
     return await prisma.user.findUnique({
@@ -92,11 +77,18 @@ export async function getUserByEmail({ email }) {
   }
 }
 
-export async function getAllUsers(email) {
+export async function getAllUsers(email, roomId) {
   try {
     const users = await prisma.user.findMany({
       where: {
-        NOT: { email: email },
+        NOT: {
+          email: email,
+        },
+        chatRoom: {
+          none: {
+            id: roomId,
+          },
+        },
       },
     });
 

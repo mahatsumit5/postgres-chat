@@ -12,7 +12,7 @@ router.post("/", async (req, res, next) => {
   try {
     const { from, to } = req.body;
     const result = await sendfriendRequests(from, to);
-    result.status
+    result?.status
       ? res.json({
           status: "success",
           message: "Friend request sent",
@@ -28,16 +28,17 @@ router.post("/", async (req, res, next) => {
 
 router.get("/:id", async (req, res, next) => {
   try {
-    const friendRequets = await getMyFriendRequests(req.params.id);
-    friendRequets.length
+    const friendRequests = await getMyFriendRequests(req.params.id);
+    friendRequests.length
       ? res.json({
           status: "success",
-          message: `You have ${friendRequets.length} new requests. `,
-          friendRequets,
+          message: `You have ${friendRequests.length} new requests pendings. `,
+          friendRequests,
         })
       : res.json({
           status: "error",
-          message: "No friend requets found",
+          message: "No friend requests found",
+          friendRequests: [],
         });
   } catch (error) {
     next(error);
@@ -45,16 +46,17 @@ router.get("/:id", async (req, res, next) => {
 });
 router.get("/sent/:id", async (req, res, next) => {
   try {
-    const friendRequets = await getMySentFriendRequests(req.params.id);
-    friendRequets.length
+    const friendRequests = await getMySentFriendRequests(req.params.id);
+    friendRequests.length
       ? res.json({
           status: "success",
-          message: `You have sent ${friendRequets.length} requests. `,
-          friendRequets,
+          message: `You have sent ${friendRequests.length} requests. `,
+          friendRequests,
         })
       : res.json({
           status: "error",
           message: "No friend requets sent",
+          friendRequests: [],
         });
   } catch (error) {
     next(error);
@@ -66,7 +68,8 @@ router.put("/", async (req, res, next) => {
     result.status
       ? res.json({
           status: "success",
-          message: `Your ${result.status} this requets.`,
+          message: `Your ${result.status} this requests.`,
+          result,
         })
       : res.json({
           status: "error",
@@ -80,10 +83,10 @@ router.delete("/", async (req, res, next) => {
   try {
     const result = await deleteFriendRequest(req.body);
 
-    result.status
+    result?.status
       ? res.json({
           status: "success",
-          message: `Your deleted this requets.`,
+          message: `Request deleted.`,
         })
       : res.json({
           status: "error",

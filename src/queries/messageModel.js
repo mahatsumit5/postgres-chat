@@ -40,9 +40,9 @@ export async function getMessage({ roomId }) {
 
 export async function deleteMessages(id) {
   try {
-    return await prisma.user.deleteMany({
+    return await prisma.message.deleteMany({
       where: {
-        chatRoom: id,
+        chatRoomId: id,
       },
     });
   } catch (error) {

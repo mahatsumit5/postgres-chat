@@ -17,9 +17,10 @@ import friendRequestRouter from "./src/router/friendRequestsRouter.js";
 import path from "path";
 
 const __dirname = path.resolve();
-console.log(__dirname);
+
 // convert public to static
 app.use(express.static(path.join(__dirname, "public", "dist")));
+app.use(express.static("public"));
 // api
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/message", messageRouter);
