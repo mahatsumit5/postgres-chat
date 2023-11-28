@@ -56,9 +56,9 @@ export async function uploadProfileImage(email, path) {
   }
 }
 
-export async function getUserByEmail({ email }) {
+export async function getUserByEmail(email) {
   try {
-    return await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email: email },
       include: {
         chatRoom: {
@@ -70,6 +70,8 @@ export async function getUserByEmail({ email }) {
         },
       },
     });
+    console.log(user);
+    return user;
   } catch (error) {
     console.log(error);
   } finally {

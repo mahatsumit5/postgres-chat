@@ -100,7 +100,8 @@ router.get("/:email", async (req, res) => {
 
 router.get("/reset-password/:email", async (req, res, next) => {
   try {
-    const user = await getUserByEmail(req.params);
+    const { email } = req.params;
+    const user = await getUserByEmail(email);
     if (user?.id) {
       const obj = {
         uid: user.id,
