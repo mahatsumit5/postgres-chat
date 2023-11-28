@@ -51,7 +51,7 @@ router.post("/", newUserValidation, async (req, res) => {
 router.post("/login-user", loginValidation, async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await getUserByEmail({ email });
+    const user = await getUserByEmail(email);
     if (user?.id) {
       const isPasswordMatched = comparePassword(password, user.password);
       isPasswordMatched
@@ -112,7 +112,7 @@ router.get("/reset-password/:email", async (req, res, next) => {
       return res.json({
         status: "success",
         message: "Click the link below to reset your password",
-        link: `${process.env.FRONTEND_URL}/reset-password?code=${session?.token}&&e=${user.email}`,
+        link: `${process.env.FRONTEND_URL}/reset-password?code=${obj?.token}&&e=${user.email}`,
       });
     }
     res.json({

@@ -4,7 +4,7 @@ export async function createSession({ uid, token }) {
   try {
     return await prisma.session.create({
       data: {
-        token: token,
+        token,
         associate: {
           connect: { id: uid },
         },
