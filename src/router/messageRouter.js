@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { getMessage, sendMessage } from "../queries/messageModel.js";
 import { createChatRoom, getChatRoom } from "../queries/chatModel.js";
+import { getAllSession } from "../queries/sessionModel.js";
 const router = Router();
 
 router.post("/", async (req, res) => {
@@ -39,6 +40,19 @@ router.get("/:roomId", async (req, res) => {
     res.json({
       status: true,
       message,
+    });
+  } catch (error) {
+    res.json({
+      error: error.message,
+    });
+  }
+});
+router.get("/session/all", async (req, res) => {
+  try {
+    const session = await getAllSession();
+    res.json({
+      status: true,
+      session,
     });
   } catch (error) {
     res.json({
