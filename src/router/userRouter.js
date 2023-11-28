@@ -108,10 +108,11 @@ router.get("/reset-password/:email", async (req, res, next) => {
         token: generateToken(),
       };
       const session = await createSession(obj);
+
       return res.json({
         status: "success",
         message: "Click the link below to reset your password",
-        link: `${process.env.FRONTEND_URL}/reset-password?code=${session.token}&&e=${user.email}`,
+        link: `${process.env.FRONTEND_URL}/reset-password?code=${session?.token}&&e=${user.email}`,
       });
     }
     res.json({

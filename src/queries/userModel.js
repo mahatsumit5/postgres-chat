@@ -70,7 +70,6 @@ export async function getUserByEmail(email) {
         },
       },
     });
-    console.log(user);
     return user;
   } catch (error) {
     console.log(error);
