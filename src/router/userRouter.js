@@ -30,7 +30,7 @@ router.post("/", newUserValidation, async (req, res) => {
     req.body.password = hashPass(password);
 
     const result = await createUser(req.body);
-    result.id
+    result?.id
       ? res.json({
           status: true,
           message: "Account created sucessfully",

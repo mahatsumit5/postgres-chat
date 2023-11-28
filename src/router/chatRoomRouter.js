@@ -51,7 +51,7 @@ router.get("/chat/:id", async (req, res) => {
     const room = await getChatRoomById(req.params);
     room.id
       ? res.json({
-          status: true,
+          status: "success",
           message: "success",
           data: room,
         })
