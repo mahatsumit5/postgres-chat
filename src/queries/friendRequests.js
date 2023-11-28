@@ -18,7 +18,7 @@ export async function sendfriendRequests(from, to) {
       },
     });
   } catch (error) {
-    console.log("this is error", error);
+    console.log("wrror creating friend requests", error);
   } finally {
     await prisma.$disconnect();
   }

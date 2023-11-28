@@ -29,7 +29,7 @@ router.post("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   try {
     const friendRequests = await getMyFriendRequests(req.params.id);
-    friendRequests.length
+    friendRequests?.length
       ? res.json({
           status: "success",
           message: `You have ${friendRequests.length} new requests pendings. `,
