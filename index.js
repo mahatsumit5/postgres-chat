@@ -16,6 +16,8 @@ import friendRequestRouter from "./src/router/friendRequestsRouter.js";
 
 import path from "path";
 import { connectSocket } from "./src/utils/socket.js";
+import { createAccessJWT } from "./src/utils/jwt.js";
+import { auth } from "./src/middleware/authMiddleware.js";
 connectSocket();
 const __dirname = path.resolve();
 
@@ -24,9 +26,10 @@ app.use(express.static(path.join(__dirname, "public", "dist")));
 app.use(express.static("public"));
 // api
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/message", messageRouter);
-app.use("/api/v1/chat-room", chatRoomRouter);
-app.use("/api/v1/friend-request", friendRequestRouter);
+app.use("/api/v1/message", auth, messageRouter);
+app.use("/api/v1/chat-room", auth, chatRoomRouter);
+app.use("/api/v1/friend-request", auth, friendRequestRouter);
+createAccessJWT("mahatsumit5@gmail.com");
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "dist", "index.html"));
@@ -38,7 +41,6 @@ app.use((error, req, res) => {
     message: error.message,
   });
 });
-
 httpServer.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

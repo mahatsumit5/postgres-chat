@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-export async function createSession({ uid, token }) {
+export async function createSession({ email, token }) {
   try {
     return await prisma.session.create({
       data: {
         token,
         associate: {
-          connect: { id: uid },
+          connect: { email: email },
         },
       },
     });

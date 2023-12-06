@@ -55,6 +55,20 @@ export async function uploadProfileImage(email, path) {
     await prisma.$disconnect();
   }
 }
+export async function getUserByEmailAndUpdate(email, dataToUpdate) {
+  try {
+    return await prisma.user.update({
+      where: {
+        email: email,
+      },
+      data: dataToUpdate,
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
 
 export async function getUserByEmail(email) {
   try {

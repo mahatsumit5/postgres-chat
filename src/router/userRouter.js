@@ -16,8 +16,21 @@ import {
 import { createSession } from "../queries/sessionModel.js";
 import { generateToken } from "../utils/tokenGenerator.js";
 import { upload } from "../utils/multer.js";
+import { createTokens } from "../utils/jwt.js";
+import { auth } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
+router.get("/", auth, (req, res, next) => {
+  try {
+    res.json({
+      status: "success",
+      message: `Welcome back ${req.userInfo.fName} ${req.userInfo.lName}`,
+      user: req.userInfo,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 router.post("/", newUserValidation, async (req, res) => {
   try {
     const { fName, lName, email, password } = req.body;
@@ -54,17 +67,18 @@ router.post("/login-user", loginValidation, async (req, res) => {
     const user = await getUserByEmail(email);
     if (user?.id) {
       const isPasswordMatched = comparePassword(password, user.password);
-      isPasswordMatched
-        ? res.json({
-            status: "success",
-            messgae: "password matched",
-            user,
-          })
-        : res.json({
-            status: "error",
-            message: "Incorrect password",
-          });
-      return;
+      if (isPasswordMatched) {
+        return res.json({
+          status: "success",
+          messgae: "password matched",
+          tokens: await createTokens(user.email),
+        });
+      }
+
+      return res.json({
+        status: "error",
+        message: "Incorrect password",
+      });
     }
     res.json({
       status: "error",
@@ -160,7 +174,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/", upload.single("profile"), async (req, res, next) => {
+router.put("/", auth, upload.single("profile"), async (req, res, next) => {
   try {
     if (req.file) {
       const user = await uploadProfileImage(req.body.email, req.file.path);
