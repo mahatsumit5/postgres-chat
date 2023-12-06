@@ -34,7 +34,7 @@ createAccessJWT("mahatsumit5@gmail.com");
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "dist", "index.html"));
 });
-app.use((error, req, res) => {
+app.use((error, req, res, next) => {
   const code = error.statusCode || 500;
   res.status(code).json({
     status: "error",

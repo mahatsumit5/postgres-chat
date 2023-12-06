@@ -49,7 +49,7 @@ router.get("/:userId", async (req, res) => {
 router.get("/chat/:id", async (req, res) => {
   try {
     const room = await getChatRoomById(req.params);
-    room.id
+    room?.id
       ? res.json({
           status: "success",
           message: "success",
@@ -116,7 +116,6 @@ router.post("/", async (req, res) => {
 router.delete("/:id", async (req, res, next) => {
   try {
     const { id } = req.params;
-
     const { count } = await deleteMessages(id);
     if (count) {
       const result = await deleteChatRoom(id);

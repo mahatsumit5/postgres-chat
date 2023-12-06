@@ -21,6 +21,7 @@ export const auth = async (req, res, next) => {
         return next();
       }
     }
+    console.log(decoded, "from jwt");
   } catch (error) {
     if (error.message.includes("jwt expired")) {
       error.statusCode = 403;
