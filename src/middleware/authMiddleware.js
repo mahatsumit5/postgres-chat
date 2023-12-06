@@ -1,5 +1,9 @@
 import { getUserByEmail } from "../queries/userModel.js";
-import { verifyAccessJWt } from "../utils/jwt.js";
+import {
+  createAccessJWT,
+  veifyRefreshAuth,
+  verifyAccessJWt,
+} from "../utils/jwt.js";
 
 export const auth = async (req, res, next) => {
   try {
@@ -27,6 +31,29 @@ export const auth = async (req, res, next) => {
       error.statusCode = 403;
       error.message = "Your session has expired. Please login Again.";
     }
+    next(error);
+  }
+};
+
+export const refreshAccessJWT = async (req, res, next) => {
+  try {
+    const { authorization } = req.headers;
+    const decoded = veifyRefreshAuth(authorization);
+    if (decoded?.email) {
+      const user = await getUserByEmail(decoded.email);
+      if (user?.id) {
+        let accessJWT = await createAccessJWT(user);
+        return res.json({
+          status: "success",
+          accessJWT,
+        });
+      }
+    }
+    res.json({
+      status: "error",
+      message: "Invalid Refresh Token.",
+    });
+  } catch (error) {
     next(error);
   }
 };

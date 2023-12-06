@@ -17,7 +17,7 @@ import friendRequestRouter from "./src/router/friendRequestsRouter.js";
 import path from "path";
 import { connectSocket } from "./src/utils/socket.js";
 import { createAccessJWT } from "./src/utils/jwt.js";
-import { auth } from "./src/middleware/authMiddleware.js";
+import { auth, refreshAccessJWT } from "./src/middleware/authMiddleware.js";
 connectSocket();
 const __dirname = path.resolve();
 
@@ -34,6 +34,8 @@ createAccessJWT("mahatsumit5@gmail.com");
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "dist", "index.html"));
 });
+
+app.get("/get-refreshAccessJWT", refreshAccessJWT);
 app.use((error, req, res, next) => {
   const code = error.statusCode || 500;
   res.status(code).json({

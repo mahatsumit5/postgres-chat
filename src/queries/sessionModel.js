@@ -16,6 +16,24 @@ export async function createSession({ email, token }) {
     await prisma.$disconnect();
   }
 }
+export async function findSessionAndDel(token, email) {
+  try {
+    const result = await prisma.session.delete({
+      where: {
+        userEmail_token: {
+          userEmail: email,
+          token,
+        },
+      },
+    });
+
+    return result;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
 
 export async function getAllSession() {
   try {

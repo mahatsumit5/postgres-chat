@@ -5,6 +5,7 @@ import {
   deleteUser,
   getAllUsers,
   getUserByEmail,
+  getUserByEmailAndUpdate,
   uploadProfileImage,
 } from "../queries/userModel.js";
 import { comparePassword, hashPass } from "../utils/bcrypt.js";
@@ -13,7 +14,7 @@ import {
   loginValidation,
   newUserValidation,
 } from "../utils/joiValidation.js";
-import { createSession } from "../queries/sessionModel.js";
+import { createSession, findSessionAndDel } from "../queries/sessionModel.js";
 import { generateToken } from "../utils/tokenGenerator.js";
 import { upload } from "../utils/multer.js";
 import { createTokens } from "../utils/jwt.js";
@@ -188,6 +189,22 @@ router.put("/", auth, upload.single("profile"), async (req, res, next) => {
             status: "error",
             message: "Image upload failed",
           });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+router.put("/logout", async (req, res, next) => {
+  try {
+    const { accessJWT, refreshJWT, email } = req.body;
+    await findSessionAndDel(accessJWT, email);
+    if (refreshJWT) {
+      const user = await getUserByEmailAndUpdate(email, { refreshJWT: "" });
+      user?.id &&
+        res.json({
+          status: "success",
+          message: "Logged out successfully",
+        });
     }
   } catch (error) {
     next(error);

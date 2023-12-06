@@ -54,11 +54,11 @@ model Message {
 
 // Session model with fields like sessionID, associate, userId, timeStamps, and token
 model Session {
-  sessionID  String   @id @default(uuid())
   associate  User     @relation(fields: [userEmail], references: [email])
   userEmail  String
   timeStamps DateTime @default(now())
   token      String
+  @@id([userEmail,token])
 }
 
 // FriendRequests model with fields like from, to, status
