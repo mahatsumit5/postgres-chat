@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model with fields like id, email, first name, last name, isActive, password, profile, refreshJWT
+model User {
+  id             String           @id @default(uuid())
+  email          String           @unique
+  fName          String
+  lName          String
+  isActive       Boolean          @default(true)
+  password       String
+  profile        String?
+  refreshJWT     String           @default("")
+  chatRoom       ChatRoom[]
+  session        Session[]
+  friendRequests FriendRequests[] @relation("receiver")
+  sentRequests   FriendRequests[] @relation("sender")
+}
+
+model ChatRoom {
+  id       String    @id @default(uuid())
+  messages Message[]
+  user     User[]
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  content    String
+  createdAt  DateTime @default(now())
+  isSeen     Boolean  @default(false)
+  chat       ChatRoom @relation(fields: [chatRoomId], references: [id])
+  chatRoomId String
+  toId       String
+}
+
+model Session {
+  associate  User     @relation(fields: [userEmail], references: [email])
+  userEmail  String
+  timeStamps DateTime @default(now())
+  token      String
+  @@id([userEmail,token])
+}
+
+model FriendRequests {
+  from   User   @relation("sender", fields: [fromId], references: [id])
+  fromId String
+  to     User   @relation("receiver", fields: [toId], references: [id])
+  toId   String
+  status Status @default(PENDING)
+
+  @@id([fromId, toId])
+}
+
+enum Status {
+  ACCEPTED
+  REJECTED
+  PENDING
+}
+
