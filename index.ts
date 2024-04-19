@@ -1,17 +1,16 @@
 import express, { NextFunction, Request, Response } from "express";
 import { createServer } from "node:http";
-import { Server } from "socket.io";
 import { connectSocket } from "./src/utils/socket";
+import cors from "cors";
+connectSocket();
 
 const port = 8080;
 const app = express();
 export const server = createServer(app);
-
-connectSocket();
-
-app.get("/", (req, res) => {
-  res.send("Hello, TypeScript with Express!");
-});
+app.use(cors());
+app.use(express.json());
+import userRouter from "./src/router/user.router";
+app.use("/api/v1/users", userRouter);
 
 app.use(
   (error: CustomError, req: Request, res: Response, next: NextFunction) => {
@@ -19,11 +18,17 @@ app.use(
     const msg = error.message || "Internal Server Error.";
     return res.status(code).json({
       status: "error",
-      message: error.message,
+      message: msg,
     });
   }
 );
 
+app.get("/", (req, res) => {
+  res.json({
+    status: "success",
+    message: "Welcome to the User",
+  });
+});
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
