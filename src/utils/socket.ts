@@ -4,7 +4,7 @@ import { server } from "../..";
 export function connectSocket() {
   const io = new Server(server, {
     cors: {
-      origin: ["http://localhost:5173"],
+      origin: ["http://localhost:5173", "192.168.20.13:5173"],
     },
   });
 

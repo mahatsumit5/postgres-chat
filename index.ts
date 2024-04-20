@@ -10,7 +10,7 @@ export const server = createServer(app);
 app.use(cors());
 app.use(express.json());
 import userRouter from "./src/router/user.router";
-app.use("/api/v1/users", userRouter);
+app.use("/api/v1/user", userRouter);
 
 app.use(
   (error: CustomError, req: Request, res: Response, next: NextFunction) => {
