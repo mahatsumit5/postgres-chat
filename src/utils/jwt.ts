@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { createSession } from "../query/session.query";
 import { getUserByEmailAndUpdate } from "../query/user.query";
+import { jwtReturnType } from "../types";
 export const createAccessJWT = async (email: string) => {
   const token = jwt.sign({ email }, process.env.JWT_ACCESS_SECRET as string, {
     expiresIn: "15m",
@@ -9,8 +10,11 @@ export const createAccessJWT = async (email: string) => {
   return token;
 };
 
-export const verifyAccessJWT = (token: string) => {
-  return jwt.verify(token, process.env.JWT_ACCESS_SECRET as string);
+export const verifyAccessJWT = (token: string): jwtReturnType => {
+  return jwt.verify(
+    token,
+    process.env.JWT_ACCESS_SECRET as string
+  ) as jwtReturnType;
 };
 
 export const createRefreshJWT = async (email: string) => {

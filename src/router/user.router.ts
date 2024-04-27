@@ -1,20 +1,23 @@
 import { Router } from "express";
 import { createUser, getAllUsers, getUserByEmail } from "../query/user.query";
-import { comparePassword } from "../utils/bcrypt";
+import { comparePassword, hashPass } from "../utils/bcrypt";
+import { createAccessJWT, createRefreshJWT } from "../utils/jwt";
+import { auth } from "../middleware";
 const router = Router();
 
-router.get("/", async (req, res, next) => {
+router.get("/", auth, async (req, res, next) => {
   try {
-    const users = await getAllUsers((req.query.email as string) || "", "");
-    users.length
-      ? res.json({ status: true, data: users })
-      : res.status(404).json({ message: "No user found.", status: "error" });
+    const user = req.userInfo;
+    user?.id
+      ? res.json({ status: true, data: user })
+      : res.status(404).json({ message: "No user found.", status: false });
   } catch (error) {
     next(error);
   }
 });
 router.post("/sign-up", async (req, res, next) => {
   try {
+    req.body.password = hashPass(req.body.password);
     const user = await createUser(req.body);
     user?.id
       ? res.json({ status: true, message: "User Created", data: user })
@@ -35,7 +38,9 @@ router.post("/", async (req, res, next) => {
         message: "User not Found with that email",
       });
     }
+
     const isPasswordCorrect = comparePassword(req.body.password, user.password);
+    console.log(isPasswordCorrect);
     if (!isPasswordCorrect) {
       return res.json({
         status: "error",
@@ -46,11 +51,12 @@ router.post("/", async (req, res, next) => {
       status: "success",
       message: "Logged In Successfully!",
       token: {
-        accessJWT: "",
-        refreshJWT: "",
+        accessJWT: await createAccessJWT(req.body.email),
+        refreshJWT: await createRefreshJWT(req.body.email),
       },
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 });
