@@ -15,8 +15,20 @@ router.get("/", auth, async (req, res, next) => {
     next(error);
   }
 });
+router.get("/all-users", auth, async (req, res, next) => {
+  try {
+    const user = req.userInfo;
+    const users = await getAllUsers(user?.email || "");
+    users.length
+      ? res.status(200).json({ status: true, data: users })
+      : res.status(401).json({ message: "Unauthorized" });
+  } catch (error) {
+    next(error);
+  }
+});
 router.post("/sign-up", async (req, res, next) => {
   try {
+    console.log(req.body);
     req.body.password = hashPass(req.body.password);
     const user = await createUser(req.body);
     user?.id

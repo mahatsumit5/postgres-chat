@@ -4,7 +4,7 @@ import { getUserByEmailAndUpdate } from "../query/user.query";
 import { jwtReturnType } from "../types";
 export const createAccessJWT = async (email: string) => {
   const token = jwt.sign({ email }, process.env.JWT_ACCESS_SECRET as string, {
-    expiresIn: "15m",
+    expiresIn: "20d",
   });
   await createSession({ token, email });
   return token;

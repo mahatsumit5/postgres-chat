@@ -64,31 +64,32 @@ export async function getUserByEmail(email: string) {
   return executeQuery(
     prisma.user.findUnique({
       where: { email: email },
-      include: {
-        chatRoom: {
-          select: {
-            user: true,
-            id: true,
-            messages: true,
-          },
-        },
-      },
     })
   );
 }
 
-export async function getAllUsers(email: string, roomId: string) {
+export async function getAllUsers(email: string) {
   return executeQuery(
     prisma.user.findMany({
       where: {
         NOT: {
-          email: email,
-        },
-        chatRoom: {
-          none: {
-            id: roomId,
+          chatRoom: {
+            some: {
+              user: {
+                some: {
+                  email: email,
+                },
+              },
+            },
           },
         },
+      },
+      select: {
+        fName: true,
+        lName: true,
+        email: true,
+        profile: true,
+        id: true,
       },
     })
   );

@@ -4,11 +4,13 @@ import { server } from "../..";
 export function connectSocket() {
   const io = new Server(server, {
     cors: {
-      origin: ["http://localhost:5173", "192.168.20.13:5173"],
+      origin: "http://localhost:5173",
     },
   });
 
   io.on("connection", (socket) => {
+    console.log("user is connected");
+
     socket.on("send_message", (message, id) => {
       console.log(message, id);
       if (!id) {
