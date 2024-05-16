@@ -24,6 +24,7 @@ model User {
   session        Session[]
   friendRequests FriendRequests[] @relation("receiver")
   sentRequests   FriendRequests[] @relation("sender")
+  messages       Message[]
 }
 
 model ChatRoom {
@@ -39,7 +40,8 @@ model Message {
   isSeen     Boolean  @default(false)
   chat       ChatRoom @relation(fields: [chatRoomId], references: [id])
   chatRoomId String
-  toId       String
+  creatorId  User     @relation(fields: [author], references: [id])
+  author     String
 }
 
 model Session {
@@ -47,7 +49,8 @@ model Session {
   userEmail  String
   timeStamps DateTime @default(now())
   token      String
-  @@id([userEmail,token])
+
+  @@id([userEmail, token])
 }
 
 model FriendRequests {
@@ -65,4 +68,3 @@ enum Status {
   REJECTED
   PENDING
 }
-

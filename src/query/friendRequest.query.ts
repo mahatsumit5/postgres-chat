@@ -13,7 +13,6 @@ export async function sendFriendRequest(from: string, to: string) {
       },
     })
   );
-  console.log(result);
   return result;
 }
 
@@ -62,7 +61,6 @@ export async function getYourSentRequest(id: string) {
 }
 
 export async function deleteSentRequest(fromId: string, toId: string) {
-  console.log(fromId, toId);
   const result = await executeQuery(
     prisma.friendRequests.delete({
       where: {
@@ -73,7 +71,6 @@ export async function deleteSentRequest(fromId: string, toId: string) {
       },
     })
   );
-  console.log("This request has been deleted", result);
   return result;
 }
 export async function acceptFriendReq(fromId: string, toId: string) {

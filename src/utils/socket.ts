@@ -8,19 +8,27 @@ export function connectSocket() {
     },
   });
 
-  io.on("connection", (socket) => {
-    console.log("user is connected");
+  io.on("connect", (socket) => {
+    console.log("user is connected", socket.id);
 
     socket.on("send_message", (message, id) => {
       console.log(message, id);
       if (!id) {
-        console.log("room is required");
+        throw new Error("room is required");
       } else {
-        socket.to(id).emit("send_message_client", message);
+        socket.to(id).emit("send_message_client", message, id);
+      }
+    });
+    socket.on("typing", (id) => {
+      console.log(id, "is typing");
+      if (!id) {
+        throw new Error("room is required");
+      } else {
+        socket.to(id).emit("typing", id);
       }
     });
     socket.on("join-room", (room) => {
-      console.log(room);
+      console.log("this is your rooms", room);
       socket.join(room);
     });
   });

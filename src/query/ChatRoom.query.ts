@@ -15,7 +15,6 @@ export async function createChatRoom(from: string, to: string) {
       },
     })
   );
-  console.log(result);
   return result;
 }
 
@@ -23,11 +22,15 @@ export async function getChatRoom(userId: string) {
   const rooms = await executeQuery(
     prisma.chatRoom.findMany({
       where: {
-        user: {
-          some: {
-            id: userId,
+        AND: [
+          {
+            user: {
+              some: {
+                id: userId,
+              },
+            },
           },
-        },
+        ],
       },
       include: {
         user: {
@@ -39,12 +42,14 @@ export async function getChatRoom(userId: string) {
             profile: true,
             isActive: true,
           },
+          where: {
+            NOT: {
+              id: userId,
+            },
+          },
         },
       },
     })
   );
-  console.log(rooms);
   return rooms;
 }
-
-getChatRoom("19b1cb63-1d59-4805-92c5-4bfd0cbe42fd");

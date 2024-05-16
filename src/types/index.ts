@@ -22,3 +22,8 @@ declare global {
     }
   }
 }
+
+export interface IRoom {
+  id: string;
+  user: IUser[];
+}
