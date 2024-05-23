@@ -1,11 +1,9 @@
 import { Router } from "express";
 import { getMessageByUsers, sendMessage } from "../query/message.query";
-import { error } from "console";
 
 const router = Router();
 router.post("/", async (req, res, next) => {
   try {
-    console.log(req.body);
     const result = await sendMessage(req.body);
     result?.id
       ? res.json({
@@ -20,9 +18,8 @@ router.post("/", async (req, res, next) => {
 
 router.get("/:id", async (req, res, next) => {
   try {
-    console.log(req.params.id);
-    const messages = await getMessageByUsers(req.params.id);
-    console.log(messages);
+    const number = req.query;
+    const messages = await getMessageByUsers(req.params.id, Number(number.num));
     !messages
       ? next(new Error("Unable to get messages"))
       : res.json({
@@ -33,4 +30,5 @@ router.get("/:id", async (req, res, next) => {
     next(error);
   }
 });
+
 export default router;

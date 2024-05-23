@@ -8,7 +8,6 @@ type createUserParams = {
   lName: string;
 };
 export async function createUser(obj: createUserParams) {
-  console.log(obj);
   return await executeQuery(
     prisma.user.create({
       data: obj,

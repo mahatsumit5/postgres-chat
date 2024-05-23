@@ -27,20 +27,54 @@ export const sendMessage = async ({
       },
     })
   );
-  console.log("here is your message", result);
   return result;
 };
 
-export const getMessageByUsers = async (id: string) => {
+export const getMessageByUsers = async (
+  id: string,
+  numberOfMessages: number
+) => {
   const result = await executeQuery(
     prisma.chatRoom.findFirst({
       where: {
         id,
       },
       select: {
-        messages: true,
+        messages: {
+          orderBy: {
+            createdAt: "asc",
+          },
+          take: -numberOfMessages,
+        },
+        _count: {
+          select: {
+            messages: true,
+          },
+        },
       },
     })
   );
   return result;
 };
+
+export const getLastMessageByRoomId = async (roomid: string) => {
+  const result = await executeQuery(
+    prisma.chatRoom.findFirst({
+      where: {
+        id: roomid,
+      },
+      select: {
+        messages: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 1,
+        },
+      },
+    })
+  );
+  console.log(result);
+  return result;
+};
+
+// getLastMessageByRoomId("36706157-afbe-458b-ba78-48e7a6afe76f");
