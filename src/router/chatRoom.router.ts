@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { createChatRoom, getChatRoom } from "../query/ChatRoom.query";
 import { IRoom } from "../types";
-import { getLastMessageByRoomId } from "../query/message.query";
+import {
+  getLastMessageByRoomId,
+  numberOfUnSeenMessagesByUser,
+} from "../query/message.query";
 const router = Router();
 
 router.post("/", async (req, res, next) => {
@@ -22,20 +25,22 @@ router.get("/", async (req, res, next) => {
     const userId = req.userInfo?.id;
     if (!userId) throw new Error("User is not logged in.");
     const data = await getChatRoom(userId);
-
     if (!data.length) {
       next(new Error("Server error while getting chatrooms."));
     } else {
       let lastMessage = [];
-      for (let index = 0; index < data.length; index++) {
-        const element = data[index];
-        const result = await getLastMessageByRoomId(element.id);
-        lastMessage.push(result);
+      let unSeenMessageCount: number[] = [];
+      for (let i = 0; i < data.length; i++) {
+        lastMessage.push(await getLastMessageByRoomId(data[i].id));
+        unSeenMessageCount.push(
+          await numberOfUnSeenMessagesByUser(data[i].user[0].id, data[i].id)
+        );
       }
-      console.log("this is last message", lastMessage);
+      console.log(unSeenMessageCount);
       const rooms = data.map((item: IRoom, index: number) => {
         return {
           id: item.id,
+          userId: item.user[0].id,
           fName: item.user[0].fName,
           lName: item.user[0].lName,
           email: item.user[0].email,
@@ -43,7 +48,10 @@ router.get("/", async (req, res, next) => {
           isActive: item.user[0].isActive,
           lastMessage:
             lastMessage[index]?.messages[0]?.content || "Start a conversation",
-          isLastMessageSeen: lastMessage[index].messages[0]?.isSeen,
+          isLastMessageSeen: lastMessage[index].messages[0]?.isSeen || false,
+          lastmessageAuthor:
+            lastMessage[index].messages[0]?.author || undefined,
+          unSeenMessageCount: unSeenMessageCount[index],
         };
       });
       return res.status(200).json({ status: true, data: rooms });

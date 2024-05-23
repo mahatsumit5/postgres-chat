@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getMessageByUsers, sendMessage } from "../query/message.query";
+import {
+  getMessageByUsers,
+  messageSeenByRoom,
+  sendMessage,
+} from "../query/message.query";
 
 const router = Router();
 router.post("/", async (req, res, next) => {
@@ -30,5 +34,18 @@ router.get("/:id", async (req, res, next) => {
     next(error);
   }
 });
-
+router.put("/", async (req, res, next) => {
+  try {
+    const result = await messageSeenByRoom(req.body);
+    !result
+      ? next(new Error("Unable to mark message as seen"))
+      : res.json({
+          status: true,
+          message: "Success",
+          result,
+        });
+  } catch (error) {
+    next(error);
+  }
+});
 export default router;

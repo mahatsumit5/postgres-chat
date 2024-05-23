@@ -42,6 +42,7 @@ model Message {
   chatRoomId String
   creatorId  User     @relation(fields: [author], references: [id])
   author     String
+  
 }
 
 model Session {

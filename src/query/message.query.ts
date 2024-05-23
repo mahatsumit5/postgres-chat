@@ -73,8 +73,44 @@ export const getLastMessageByRoomId = async (roomid: string) => {
       },
     })
   );
-  console.log(result);
   return result;
 };
 
-// getLastMessageByRoomId("36706157-afbe-458b-ba78-48e7a6afe76f");
+export const messageSeenByRoom = async ({
+  roomid,
+  author,
+}: {
+  roomid: string;
+  author: string;
+}) => {
+  const result = await executeQuery(
+    prisma.message.updateMany({
+      data: {
+        isSeen: true,
+      },
+      where: {
+        chatRoomId: roomid,
+        author: {
+          not: author,
+        },
+      },
+    })
+  );
+  return result;
+};
+export const numberOfUnSeenMessagesByUser = async (
+  author: string,
+  roomId: string
+) => {
+  const result = await executeQuery(
+    prisma.message.count({
+      where: {
+        isSeen: false,
+        author: author,
+        chatRoomId: roomId,
+      },
+    })
+  );
+  console.log("the num of unseen message for this room is:", result);
+  return result;
+};
