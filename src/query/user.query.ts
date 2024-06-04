@@ -1,4 +1,3 @@
-import { Url } from "url";
 import { executeQuery, prisma } from "../../script";
 
 type createUserParams = {

@@ -19,6 +19,14 @@ router.get("/all-users", auth, async (req, res, next) => {
   try {
     const user = req.userInfo;
     const users = await getAllUsers(user?.email || "");
+
+    res.cookie("check", "1232132", {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      maxAge: 24 * 60 * 60,
+    });
+
     users.length
       ? res.status(200).json({ status: true, data: users })
       : res.status(401).json({ message: "Unauthorized" });
@@ -28,9 +36,9 @@ router.get("/all-users", auth, async (req, res, next) => {
 });
 router.post("/sign-up", async (req, res, next) => {
   try {
-    console.log(req.body);
     req.body.password = hashPass(req.body.password);
     const user = await createUser(req.body);
+    console.log(user);
     user?.id
       ? res.json({ status: true, message: "User Created", data: user })
       : res.status(400).json({
