@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const ChatRoom_query_1 = require("../query/ChatRoom.query");
+const message_query_1 = require("../query/message.query");
 const router = (0, express_1.Router)();
 router.post("/", async (req, res, next) => {
     try {
@@ -27,14 +28,26 @@ router.get("/", async (req, res, next) => {
             next(new Error("Server error while getting chatrooms."));
         }
         else {
-            const rooms = data.map((item) => {
+            let lastMessage = [];
+            let unSeenMessageCount = [];
+            for (let i = 0; i < data.length; i++) {
+                lastMessage.push(await (0, message_query_1.getLastMessageByRoomId)(data[i].id));
+                unSeenMessageCount.push(await (0, message_query_1.numberOfUnSeenMessagesByUser)(data[i].user[0].id, data[i].id));
+            }
+            console.log(unSeenMessageCount);
+            const rooms = data.map((item, index) => {
                 return {
                     id: item.id,
+                    userId: item.user[0].id,
                     fName: item.user[0].fName,
                     lName: item.user[0].lName,
                     email: item.user[0].email,
                     profile: item.user[0].profile,
                     isActive: item.user[0].isActive,
+                    lastMessage: lastMessage[index]?.messages[0]?.content || "Start a conversation",
+                    isLastMessageSeen: lastMessage[index].messages[0]?.isSeen || false,
+                    lastmessageAuthor: lastMessage[index].messages[0]?.author || undefined,
+                    unSeenMessageCount: unSeenMessageCount[index],
                 };
             });
             return res.status(200).json({ status: true, data: rooms });

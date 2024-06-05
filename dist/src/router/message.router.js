@@ -5,7 +5,6 @@ const message_query_1 = require("../query/message.query");
 const router = (0, express_1.Router)();
 router.post("/", async (req, res, next) => {
     try {
-        console.log(req.body);
         const result = await (0, message_query_1.sendMessage)(req.body);
         result?.id
             ? res.json({
@@ -20,14 +19,28 @@ router.post("/", async (req, res, next) => {
 });
 router.get("/:id", async (req, res, next) => {
     try {
-        console.log(req.params.id);
-        const messages = await (0, message_query_1.getMessageByUsers)(req.params.id);
-        console.log(messages);
+        const number = req.query;
+        const messages = await (0, message_query_1.getMessageByUsers)(req.params.id, Number(number.num));
         !messages
             ? next(new Error("Unable to get messages"))
             : res.json({
                 status: true,
                 result: messages,
+            });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+router.put("/", async (req, res, next) => {
+    try {
+        const result = await (0, message_query_1.messageSeenByRoom)(req.body);
+        !result
+            ? next(new Error("Unable to mark message as seen"))
+            : res.json({
+                status: true,
+                message: "Success",
+                result,
             });
     }
     catch (error) {

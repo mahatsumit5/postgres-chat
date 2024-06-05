@@ -30,7 +30,6 @@ function connectSocket() {
             }
         });
         socket.on("join-room", (room) => {
-            console.log("this is your rooms", room);
             socket.join(room);
         });
     });

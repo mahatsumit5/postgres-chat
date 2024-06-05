@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUser = exports.getAllUsers = exports.getUserByEmail = exports.getUserByEmailAndUpdate = exports.uploadProfileImage = exports.changePassword = exports.createUser = void 0;
 const script_1 = require("../../script");
 async function createUser(obj) {
-    console.log(obj);
     return await (0, script_1.executeQuery)(script_1.prisma.user.create({
         data: obj,
     }));

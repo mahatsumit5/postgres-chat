@@ -9,7 +9,7 @@ const session_query_1 = require("../query/session.query");
 const user_query_1 = require("../query/user.query");
 const createAccessJWT = async (email) => {
     const token = jsonwebtoken_1.default.sign({ email }, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: "20d",
+        expiresIn: "7d",
     });
     await (0, session_query_1.createSession)({ token, email });
     return token;
@@ -21,17 +21,17 @@ const verifyAccessJWT = (token) => {
 exports.verifyAccessJWT = verifyAccessJWT;
 const createRefreshJWT = async (email) => {
     const refreshJWT = jsonwebtoken_1.default.sign({ email }, process.env.JWT_REFRESH_SECRET, {
-        expiresIn: "7d",
+        expiresIn: 24 * 60 * 60 * 30, //1 months duration
     });
     await (0, user_query_1.getUserByEmailAndUpdate)(email, { refreshJWT: refreshJWT });
     return refreshJWT;
 };
 exports.createRefreshJWT = createRefreshJWT;
 const verifyRefreshJWT = (token) => {
-    return jsonwebtoken_1.default.verify(token, process.env.JWT_ACCESS_SECRET);
+    return jsonwebtoken_1.default.verify(token, process.env.JWT_REFRESH_SECRET);
 };
 exports.verifyRefreshJWT = verifyRefreshJWT;
-const createTokens = async (email) => {
+const createTokens = (email) => {
     return {
         accessJWT: (0, exports.createAccessJWT)(email),
         refreshJWT: (0, exports.createRefreshJWT)(email),

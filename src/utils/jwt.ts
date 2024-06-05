@@ -35,7 +35,7 @@ export const verifyRefreshJWT = (token: string) => {
     process.env.JWT_REFRESH_SECRET as string
   ) as jwtReturnType;
 };
-export const createTokens = async (email: string) => {
+export const createTokens = (email: string) => {
   return {
     accessJWT: createAccessJWT(email),
     refreshJWT: createRefreshJWT(email),
