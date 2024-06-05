@@ -1,8 +1,13 @@
 import { Router } from "express";
 import { createUser, getAllUsers, getUserByEmail } from "../query/user.query";
 import { comparePassword, hashPass } from "../utils/bcrypt";
-import { createAccessJWT, createRefreshJWT } from "../utils/jwt";
+import {
+  createAccessJWT,
+  createRefreshJWT,
+  verifyRefreshJWT,
+} from "../utils/jwt";
 import { auth } from "../middleware";
+import { findSessionAndDelete } from "../query/session.query";
 const router = Router();
 
 router.get("/", auth, async (req, res, next) => {
@@ -20,13 +25,6 @@ router.get("/all-users", auth, async (req, res, next) => {
     const user = req.userInfo;
     const users = await getAllUsers(user?.email || "");
 
-    res.cookie("check", "1232132", {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-      maxAge: 24 * 60 * 60,
-    });
-
     users.length
       ? res.status(200).json({ status: true, data: users })
       : res.status(401).json({ message: "Unauthorized" });
@@ -38,7 +36,7 @@ router.post("/sign-up", async (req, res, next) => {
   try {
     req.body.password = hashPass(req.body.password);
     const user = await createUser(req.body);
-    console.log(user);
+    user.password = undefined;
     user?.id
       ? res.json({ status: true, message: "User Created", data: user })
       : res.status(400).json({
@@ -49,26 +47,19 @@ router.post("/sign-up", async (req, res, next) => {
     next(error);
   }
 });
-router.post("/", async (req, res, next) => {
+router.post("/sign-in", async (req, res, next) => {
   try {
     const user = await getUserByEmail(req.body.email);
     if (!user) {
-      return res.json({
-        status: "error",
-        message: "User not Found with that email",
-      });
+      next(new Error("User not found"));
     }
 
     const isPasswordCorrect = comparePassword(req.body.password, user.password);
-    console.log(isPasswordCorrect);
     if (!isPasswordCorrect) {
-      return res.json({
-        status: "error",
-        message: "Incorrect Password",
-      });
+      next(new Error("Incorrect Password"));
     }
     return res.json({
-      status: "success",
+      status: true,
       message: "Logged In Successfully!",
       token: {
         accessJWT: await createAccessJWT(req.body.email),
@@ -77,6 +68,42 @@ router.post("/", async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
+    next(error);
+  }
+});
+
+router.post("/logout", auth, async (req, res, next) => {
+  try {
+    const token = req.headers.authorization;
+    const user = req.userInfo;
+
+    const result = await findSessionAndDelete(
+      token as string,
+      user?.email || ""
+    );
+    console.log(result);
+    result ? res.json({ status: true }) : next(new Error("Unable to logout"));
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch("/new-accessJWT", async (req, res, next) => {
+  try {
+    const result = verifyRefreshJWT(req.headers.refreshjwt as string);
+    if (result?.email) {
+      const token = await createAccessJWT(result.email);
+      return res.json({
+        status: true,
+        data: token,
+      });
+    } else {
+      return res.json({
+        status: false,
+        message: "Unexxpected error occured.",
+      });
+    }
+  } catch (error) {
     next(error);
   }
 });

@@ -17,7 +17,7 @@ export async function createSession({
     })
   );
 }
-export async function findSessionAndDel(token: string, email: string) {
+export async function findSessionAndDelete(token: string, email: string) {
   return executeQuery(
     prisma.session.delete({
       where: {

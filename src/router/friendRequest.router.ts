@@ -7,7 +7,6 @@ import {
   sendFriendRequest,
 } from "../query/friendRequest.query";
 import { createChatRoom } from "../query/ChatRoom.query";
-import { stat } from "fs";
 const router = Router();
 
 router.post("/send-request", async (req, res, next) => {
