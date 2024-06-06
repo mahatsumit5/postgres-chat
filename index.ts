@@ -11,9 +11,9 @@ connectSocket();
 
 app.use(
   cors({
-    origin: process.env.WEB_DOMAIN,
+    origin: ["http://localhost:5173", "https://daisy-ui-chat-app.vercel.app"],
     methods: "GET, PUT, PATCH, DELETE, POST",
-    // allowedHeaders: "authorization", "refreshjwt",
+    allowedHeaders: ["authorization", "refreshjwt"],
     // credentials: true,
   })
 );
