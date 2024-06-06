@@ -4,7 +4,7 @@ import { server } from "../..";
 export function connectSocket() {
   const io = new Server(server, {
     cors: {
-      origin: process.env.WEB_DOMAIN,
+      origin: "https://daisy-ui-chat-app.vercel.app",
     },
   });
 

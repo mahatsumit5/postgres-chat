@@ -6,7 +6,7 @@ const __1 = require("../..");
 function connectSocket() {
     const io = new socket_io_1.Server(__1.server, {
         cors: {
-            origin: process.env.WEB_DOMAIN,
+            origin: "https://daisy-ui-chat-app.vercel.app",
         },
     });
     io.on("connect", (socket) => {
