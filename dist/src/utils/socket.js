@@ -4,9 +4,13 @@ exports.connectSocket = void 0;
 const socket_io_1 = require("socket.io");
 const __1 = require("../..");
 function connectSocket() {
+    const origin = process.env.ENVIRONMENT === "Development"
+        ? "http://localhost:5173"
+        : "https://daisy-ui-chat-app.vercel.app";
+    console.log("this is origin", origin);
     const io = new socket_io_1.Server(__1.server, {
         cors: {
-            origin: "https://daisy-ui-chat-app.vercel.app",
+            origin,
         },
     });
     io.on("connect", (socket) => {

@@ -2,9 +2,14 @@ import { Server } from "socket.io";
 import { server } from "../..";
 
 export function connectSocket() {
+  const origin =
+    process.env.ENVIRONMENT === "Development"
+      ? "http://localhost:5173"
+      : "https://daisy-ui-chat-app.vercel.app";
+  console.log("this is origin", origin);
   const io = new Server(server, {
     cors: {
-      origin: "https://daisy-ui-chat-app.vercel.app",
+      origin,
     },
   });
 
