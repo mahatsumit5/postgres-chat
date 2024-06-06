@@ -15,9 +15,9 @@ const app = (0, express_1.default)();
 exports.server = http_1.default.createServer(app);
 (0, socket_1.connectSocket)();
 app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
+    origin: process.env.WEB_DOMAIN,
     methods: "GET, PUT, PATCH, DELETE, POST",
-    // allowedHeaders: "authorization", "refreshjwt",
+    allowedHeaders: ["authorization", "refreshjwt"],
     // credentials: true,
 }));
 app.use(express_1.default.json());
