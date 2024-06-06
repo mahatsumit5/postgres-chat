@@ -51,6 +51,6 @@ export async function getChatRoom(userId: string) {
       },
     })
   );
-  console.log(rooms[0].user);
+
   return rooms;
 }
