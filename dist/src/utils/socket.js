@@ -6,14 +6,11 @@ const __1 = require("../..");
 function connectSocket() {
     const io = new socket_io_1.Server(__1.server, {
         cors: {
-            origin: [
-                "http://localhost:5173",
-                "https://daisy-ui-chat-app.vercel.app/",
-            ],
+            origin: process.env.WEB_DOMAIN,
         },
     });
     io.on("connect", (socket) => {
-        console.log("user is connected", socket.id);
+        // console.log("user is connected", socket.id);
         socket.on("send_message", (message, id) => {
             console.log(message, id);
             if (!id) {
