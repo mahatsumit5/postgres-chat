@@ -9,14 +9,16 @@ const app = express();
 export const server = http.createServer(app);
 connectSocket();
 
-app.use(
-  cors({
-    origin: process.env.WEB_DOMAIN as string,
-    methods: "GET, PUT, PATCH, DELETE, POST",
-    allowedHeaders: ["authorization", "refreshjwt"],
-    // credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: process.env.WEB_DOMAIN as string,
+//     methods: "GET, PUT, PATCH, DELETE, POST",
+//     allowedHeaders: ["authorization", "refreshjwt"],
+//     // credentials: true,
+//   })
+// );
+
+app.use(cors());
 app.use(express.json());
 import userRouter from "./src/router/user.router";
 import friendRouter from "./src/router/friendRequest.router";

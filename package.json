@@ -5,7 +5,8 @@
   "scripts": {
     "build": "npx tsc",
     "start": "npx prisma generate && node dist/index.js",
-    "dev": "nodemon index.ts"
+    "dev": "nodemon index.ts",
+    "git": "npx tsc && git add . && git commit -m \"build folder ready\" && git push "
   },
   "keywords": [],
   "author": "",
