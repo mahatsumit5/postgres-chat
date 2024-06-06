@@ -11,7 +11,7 @@ connectSocket();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.WEB_DOMAIN,
     methods: "GET, PUT, PATCH, DELETE, POST",
     // allowedHeaders: "authorization", "refreshjwt",
     // credentials: true,
