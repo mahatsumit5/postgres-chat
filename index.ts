@@ -1,12 +1,22 @@
 import express, { NextFunction, Request, Response } from "express";
 import http from "http";
+import { config } from "dotenv";
+config();
 import { connectSocket } from "./src/utils/socket";
 import cors from "cors";
 const port = 8080;
 const app = express();
 export const server = http.createServer(app);
 connectSocket();
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: "GET, PUT, PATCH, DELETE, POST",
+    // allowedHeaders: "authorization", "refreshjwt",
+    // credentials: true,
+  })
+);
 app.use(express.json());
 import userRouter from "./src/router/user.router";
 import friendRouter from "./src/router/friendRequest.router";
@@ -17,6 +27,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/friend", auth, friendRouter);
 app.use("/api/v1/room", auth, chatRoomRouter);
 app.use("/api/v1/message", auth, messageRouter);
+
 app.use(
   (error: CustomError, req: Request, res: Response, next: NextFunction) => {
     const code = error.statusCode || 500;

@@ -24,7 +24,7 @@ router.get("/all-users", middleware_1.auth, async (req, res, next) => {
         const users = await (0, user_query_1.getAllUsers)(user?.email || "");
         users.length
             ? res.status(200).json({ status: true, data: users })
-            : res.status(401).json({ message: "Unauthorized" });
+            : res.status(200).json({ message: "No other user available" });
     }
     catch (error) {
         next(error);

@@ -4,9 +4,10 @@ import { getUserByEmailAndUpdate } from "../query/user.query";
 import { jwtReturnType } from "../types";
 export const createAccessJWT = async (email: string) => {
   const token = jwt.sign({ email }, process.env.JWT_ACCESS_SECRET as string, {
-    expiresIn: "7d",
+    expiresIn: "24h",
   });
   await createSession({ token, email });
+
   return token;
 };
 
@@ -22,7 +23,7 @@ export const createRefreshJWT = async (email: string) => {
     { email },
     process.env.JWT_REFRESH_SECRET as string,
     {
-      expiresIn: 24 * 60 * 60 * 30, //1 months duration
+      expiresIn: 24 * 60 * 60 * 10, //10 days duration
     }
   );
   await getUserByEmailAndUpdate(email, { refreshJWT: refreshJWT });

@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Response } from "express";
 import { createUser, getAllUsers, getUserByEmail } from "../query/user.query";
 import { comparePassword, hashPass } from "../utils/bcrypt";
 import {
@@ -27,7 +27,7 @@ router.get("/all-users", auth, async (req, res, next) => {
 
     users.length
       ? res.status(200).json({ status: true, data: users })
-      : res.status(401).json({ message: "Unauthorized" });
+      : res.status(200).json({ message: "No other user available" });
   } catch (error) {
     next(error);
   }
@@ -47,7 +47,7 @@ router.post("/sign-up", async (req, res, next) => {
     next(error);
   }
 });
-router.post("/sign-in", async (req, res, next) => {
+router.post("/sign-in", async (req, res: Response, next) => {
   try {
     const user = await getUserByEmail(req.body.email);
     if (!user) {

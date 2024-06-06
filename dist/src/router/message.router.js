@@ -17,10 +17,11 @@ router.post("/", async (req, res, next) => {
         next(error);
     }
 });
-router.get("/:id", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
     try {
-        const number = req.query;
-        const messages = await (0, message_query_1.getMessageByUsers)(req.params.id, Number(number.num));
+        console.log(req.query);
+        const { id, num } = req.query;
+        const messages = await (0, message_query_1.getMessageByUsers)(id, Number(num));
         !messages
             ? next(new Error("Unable to get messages"))
             : res.json({

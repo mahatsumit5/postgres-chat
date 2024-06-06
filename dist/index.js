@@ -6,13 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.server = void 0;
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
 const socket_1 = require("./src/utils/socket");
 const cors_1 = __importDefault(require("cors"));
 const port = 8080;
 const app = (0, express_1.default)();
 exports.server = http_1.default.createServer(app);
 (0, socket_1.connectSocket)();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: "http://localhost:5173",
+    methods: "GET, PUT, PATCH, DELETE, POST",
+    // allowedHeaders: "authorization", "refreshjwt",
+    // credentials: true,
+}));
 app.use(express_1.default.json());
 const user_router_1 = __importDefault(require("./src/router/user.router"));
 const friendRequest_router_1 = __importDefault(require("./src/router/friendRequest.router"));

@@ -4,7 +4,10 @@ import { server } from "../..";
 export function connectSocket() {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:5173",
+      origin: [
+        "http://localhost:5173",
+        "https://daisy-ui-chat-app.vercel.app/",
+      ],
     },
   });
 
@@ -19,12 +22,18 @@ export function connectSocket() {
         socket.to(id).emit("send_message_client", message, id);
       }
     });
-    socket.on("typing", (id) => {
-      console.log(id, "is typing");
+    socket.on("typing", (id, email) => {
       if (!id) {
         throw new Error("room is required");
       } else {
-        socket.to(id).emit("typing", id);
+        socket.to(id).emit("typing", email);
+      }
+    });
+    socket.on("stopped_typing", (id, email) => {
+      if (!id) {
+        throw new Error("room is required");
+      } else {
+        socket.to(id).emit("stopped_typing", email);
       }
     });
     socket.on("join-room", (room) => {
