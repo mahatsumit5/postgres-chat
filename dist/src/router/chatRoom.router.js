@@ -57,4 +57,21 @@ router.get("/", async (req, res, next) => {
         next(error);
     }
 });
+router.delete("/", async (req, res, next) => {
+    try {
+        const { id } = req.query;
+        if (!id)
+            next(new Error("ID is required."));
+        const result = await (0, ChatRoom_query_1.deleteChatRoom)(id);
+        result
+            ? res.json({
+                status: true,
+                result,
+            })
+            : next(new Error("Unable to delete chatRoom"));
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.default = router;

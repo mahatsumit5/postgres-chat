@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getChatRoom = exports.createChatRoom = void 0;
+exports.deleteChatRoom = exports.getChatRoom = exports.createChatRoom = void 0;
 const script_1 = require("../../script");
 async function createChatRoom(from, to) {
     const result = await (0, script_1.executeQuery)(script_1.prisma.chatRoom.create({
@@ -52,3 +52,16 @@ async function getChatRoom(userId) {
     return rooms;
 }
 exports.getChatRoom = getChatRoom;
+async function deleteChatRoom(roomId) {
+    await (0, script_1.executeQuery)(script_1.prisma.message.deleteMany({
+        where: {
+            chatRoomId: roomId,
+        },
+    }));
+    return await (0, script_1.executeQuery)(script_1.prisma.chatRoom.delete({
+        where: {
+            id: roomId,
+        },
+    }));
+}
+exports.deleteChatRoom = deleteChatRoom;

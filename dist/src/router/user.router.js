@@ -75,7 +75,6 @@ router.post("/logout", middleware_1.auth, async (req, res, next) => {
         const token = req.headers.authorization;
         const user = req.userInfo;
         const result = await (0, session_query_1.findSessionAndDelete)(token, user?.email || "");
-        console.log(result);
         result ? res.json({ status: true }) : next(new Error("Unable to logout"));
     }
     catch (error) {

@@ -66,11 +66,8 @@ router.delete("/:fromId/:toId", async (req, res, next) => {
 router.patch("/", async (req, res, next) => {
     try {
         const user = req.userInfo;
-        if (!user?.id) {
-            next(new Error("Unable to accept your friend request.Please try again"));
-        }
         const { fromId, toId } = req.body;
-        const result = await (0, friendRequest_query_1.acceptFriendReq)(fromId, user?.id || "");
+        const result = await (0, friendRequest_query_1.deleteSentRequest)(fromId, user?.id);
         if (result) {
             const newRoom = await (0, ChatRoom_query_1.createChatRoom)(fromId, user?.id || "");
             newRoom
