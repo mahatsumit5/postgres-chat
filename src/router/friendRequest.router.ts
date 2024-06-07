@@ -70,11 +70,8 @@ router.patch("/", async (req, res, next) => {
   try {
     const user = req.userInfo;
 
-    if (!user?.id) {
-      next(new Error("Unable to accept your friend request.Please try again"));
-    }
     const { fromId, toId } = req.body;
-    const result = await acceptFriendReq(fromId, user?.id || "");
+    const result = await deleteSentRequest(fromId, user?.id as string);
     if (result) {
       const newRoom = await createChatRoom(fromId, user?.id || "");
 

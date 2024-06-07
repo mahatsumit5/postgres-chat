@@ -62,6 +62,7 @@ model FriendRequests {
   status Status @default(PENDING)
 
   @@id([fromId, toId])
+  
 }
 
 enum Status {

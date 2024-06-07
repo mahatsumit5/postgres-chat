@@ -54,3 +54,20 @@ export async function getChatRoom(userId: string) {
 
   return rooms;
 }
+
+export async function deleteChatRoom(roomId: string) {
+  await executeQuery(
+    prisma.message.deleteMany({
+      where: {
+        chatRoomId: roomId,
+      },
+    })
+  );
+  return await executeQuery(
+    prisma.chatRoom.delete({
+      where: {
+        id: roomId,
+      },
+    })
+  );
+}

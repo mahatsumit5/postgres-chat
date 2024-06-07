@@ -14,7 +14,7 @@ export function connectSocket() {
   });
 
   io.on("connect", (socket) => {
-    // console.log("user is connected", socket.id);
+    console.log("user is connected", socket.id);
 
     socket.on("send_message", (message, id) => {
       console.log(message, id);
@@ -38,8 +38,13 @@ export function connectSocket() {
         socket.to(id).emit("stopped_typing", email);
       }
     });
-    socket.on("join-room", (room) => {
+    socket.on("join-room", (room, email) => {
+      console.log(email, "is online and joined", room.length, "rooms");
       socket.join(room);
+      socket.to(room).emit("online_users", email);
+    });
+    socket.on("disconnect", (reason, detail) => {
+      console.log("disconnected", reason);
     });
   });
 }

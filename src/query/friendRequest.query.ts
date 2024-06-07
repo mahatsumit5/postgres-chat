@@ -13,6 +13,7 @@ export async function sendFriendRequest(from: string, to: string) {
       },
     })
   );
+  console.log(result);
   return result;
 }
 

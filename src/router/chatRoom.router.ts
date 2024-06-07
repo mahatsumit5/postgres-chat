@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createChatRoom, getChatRoom } from "../query/ChatRoom.query";
+import {
+  createChatRoom,
+  deleteChatRoom,
+  getChatRoom,
+} from "../query/ChatRoom.query";
 import { IRoom } from "../types";
 import {
   getLastMessageByRoomId,
@@ -56,6 +60,21 @@ router.get("/", async (req, res, next) => {
       });
       return res.status(200).json({ status: true, data: rooms });
     }
+  } catch (error) {
+    next(error);
+  }
+});
+router.delete("/", async (req, res, next) => {
+  try {
+    const { id } = req.query;
+    if (!id) next(new Error("ID is required."));
+    const result = await deleteChatRoom(id as string);
+    result
+      ? res.json({
+          status: true,
+          result,
+        })
+      : next(new Error("Unable to delete chatRoom"));
   } catch (error) {
     next(error);
   }

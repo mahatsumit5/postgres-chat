@@ -81,7 +81,6 @@ router.post("/logout", auth, async (req, res, next) => {
       token as string,
       user?.email || ""
     );
-    console.log(result);
     result ? res.json({ status: true }) : next(new Error("Unable to logout"));
   } catch (error) {
     next(error);
