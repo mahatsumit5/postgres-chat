@@ -45,6 +45,9 @@ function connectSocket() {
             socket.join(room);
             socket.to(room).emit("online_users", email);
         });
+        socket.on("friend_request_notification", (userID, sender) => {
+            socket.to(userID).emit("receive_friend_request", sender);
+        });
         socket.on("disconnect", (reason, detail) => {
             console.log("disconnected", reason);
         });
