@@ -90,3 +90,17 @@ export async function acceptFriendReq(fromId: string, toId: string) {
   );
   return result;
 }
+
+export async function getNumberOfFriendReq(email: string) {
+  const result = await executeQuery(
+    prisma.friendRequests.count({
+      where: {
+        to: {
+          email,
+        },
+      },
+    })
+  );
+  console.log(email, "friend request", result);
+  return result;
+}
