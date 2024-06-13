@@ -40,12 +40,14 @@ function connectSocket() {
                 socket.to(id).emit("stopped_typing", email);
             }
         });
-        socket.on("join-room", (room, email) => {
+        socket.on("join-room", (room, email, id) => {
             console.log(email, "is online and joined", room.length, "rooms");
             socket.join(room);
             socket.to(room).emit("online_users", email);
+            socket.join(id);
         });
         socket.on("friend_request_notification", (userID, sender) => {
+            console.log("friend request received from", sender, "to", userID);
             socket.to(userID).emit("receive_friend_request", sender);
         });
         socket.on("disconnect", (reason, detail) => {
