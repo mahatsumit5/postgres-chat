@@ -44,9 +44,10 @@ router.get("/sent-request", async (req, res, next) => {
         const result = await (0, friendRequest_query_1.getYourSentRequest)(user.id);
         result?.length
             ? res.status(201).json({ status: true, data: result })
-            : res.status(400).json({
+            : res.status(200).json({
                 status: true,
-                message: "You do  have not sent any request",
+                data: [],
+                message: "You have not sent any request",
             });
     }
     catch (error) {
@@ -55,7 +56,6 @@ router.get("/sent-request", async (req, res, next) => {
 });
 router.delete("/:fromId/:toId", async (req, res, next) => {
     try {
-        console.log(req.params);
         const fromId = req.params.fromId;
         const toId = req.params.toId;
         const result = await (0, friendRequest_query_1.deleteSentRequest)(fromId, toId);
