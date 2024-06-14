@@ -19,16 +19,17 @@ router.post("/send-request", async (req, res, next) => {
         next(error);
     }
 });
-router.get("/", async (req, res, next) => {
+router.get("/friend-request", async (req, res, next) => {
     try {
         const user = req.userInfo;
         if (!user) {
             return res.status(401).json({ message: "Unauthorized" });
         }
         const result = await (0, friendRequest_query_1.getFriendRequestByUser)(user.id);
+        const friendReqCount = await (0, friendRequest_query_1.getNumberOfFriendReq)(user.email);
         result?.length
-            ? res.status(201).json({ status: true, data: result })
-            : next(new Error("You do have any friend Request"));
+            ? res.status(201).json({ status: true, data: { result, friendReqCount } })
+            : next(new Error("You do not have any friend Request"));
     }
     catch (error) {
         next(error);
@@ -43,7 +44,10 @@ router.get("/sent-request", async (req, res, next) => {
         const result = await (0, friendRequest_query_1.getYourSentRequest)(user.id);
         result?.length
             ? res.status(201).json({ status: true, data: result })
-            : next(new Error("You have not sent any friend Request"));
+            : res.status(400).json({
+                status: true,
+                message: "You do  have not sent any request",
+            });
     }
     catch (error) {
         next(error);

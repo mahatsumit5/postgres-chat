@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.acceptFriendReq = exports.deleteSentRequest = exports.getYourSentRequest = exports.getFriendRequestByUser = exports.sendFriendRequest = void 0;
+exports.getNumberOfFriendReq = exports.acceptFriendReq = exports.deleteSentRequest = exports.getYourSentRequest = exports.getFriendRequestByUser = exports.sendFriendRequest = void 0;
 const script_1 = require("../../script");
 async function sendFriendRequest(from, to) {
     const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.create({
@@ -84,3 +84,15 @@ async function acceptFriendReq(fromId, toId) {
     return result;
 }
 exports.acceptFriendReq = acceptFriendReq;
+async function getNumberOfFriendReq(email) {
+    const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.count({
+        where: {
+            to: {
+                email,
+            },
+        },
+    }));
+    console.log(email, "friend request", result);
+    return result;
+}
+exports.getNumberOfFriendReq = getNumberOfFriendReq;

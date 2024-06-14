@@ -29,6 +29,7 @@ function connectSocket() {
                 throw new Error("room is required");
             }
             else {
+                console.log(email, "is typing");
                 socket.to(id).emit("typing", email);
             }
         });
@@ -41,10 +42,8 @@ function connectSocket() {
             }
         });
         socket.on("join-room", (room, email, id) => {
-            console.log(email, "is online and joined", room.length, "rooms");
             socket.join(room);
             socket.to(room).emit("online_users", email);
-            socket.join(id);
         });
         socket.on("friend_request_notification", (userID, sender) => {
             console.log("friend request received from", sender, "to", userID);
