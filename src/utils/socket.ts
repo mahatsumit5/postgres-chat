@@ -4,7 +4,7 @@ import { server } from "../..";
 export function connectSocket() {
   const origin =
     process.env.ENVIRONMENT === "Development"
-      ? "http://localhost:5173"
+      ? "http://192.168.20.8:5173"
       : "https://daisy-ui-chat-app.vercel.app";
   console.log("this is origin", origin);
   const io = new Server(server, {
@@ -20,15 +20,12 @@ export function connectSocket() {
       if (!id) {
         throw new Error("room is required");
       } else {
-        socket.to(id).emit("send_message_client", message, id);
+        socket.to(id).emit("send_message_client", message);
       }
     });
     socket.on("typing", (id, email) => {
-      if (!id) {
-        throw new Error("room is required");
-      } else {
-        socket.to(id).emit("typing", email);
-      }
+      console.log(email, "is typing");
+      socket.to(id).emit("typing", email);
     });
     socket.on("stopped_typing", (id, email) => {
       if (!id) {

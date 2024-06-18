@@ -22,6 +22,7 @@ exports.server = http_1.default.createServer(app);
 //     // credentials: true,
 //   })
 // );
+const ip = process.env.ENVIRONMENT === "Development" ? "192.168.20.8" : "0.0.0.0";
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 const user_router_1 = __importDefault(require("./src/router/user.router"));
@@ -47,6 +48,6 @@ app.get("/", async (req, res) => {
         message: "Welcome to the chat application",
     });
 });
-exports.server.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+exports.server.listen(port, ip, () => {
+    console.log(`Server is running on http://${ip}:${port}`);
 });

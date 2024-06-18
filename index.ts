@@ -18,6 +18,9 @@ connectSocket();
 //   })
 // );
 
+const ip =
+  process.env.ENVIRONMENT === "Development" ? "192.168.20.8" : "0.0.0.0";
+
 app.use(cors());
 app.use(express.json());
 import userRouter from "./src/router/user.router";
@@ -47,8 +50,8 @@ app.get("/", async (req, res) => {
     message: "Welcome to the chat application",
   });
 });
-server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+server.listen(port, ip, () => {
+  console.log(`Server is running on http://${ip}:${port}`);
 });
 export interface CustomError extends Error {
   statusCode: number;
