@@ -13,35 +13,28 @@ export function connectSocket() {
     },
   });
 
+  const onLineUsers: Record<string, string> = {};
   io.on("connect", (socket) => {
-    console.log("user is connected", socket.id);
+    const email = socket.handshake.query.email;
 
+    if (email != undefined && typeof email === "string")
+      onLineUsers[email] = socket.id;
+    console.log(onLineUsers);
+    io.emit("getOnlineUsers", Object.keys(onLineUsers));
     socket.on("send_message", (message, id) => {
-      if (!id) {
-        throw new Error("room is required");
-      } else {
-        socket.to(id).emit("send_message_client", message);
-      }
+      socket.to(id).emit("send_message_client", message);
     });
     socket.on("typing", (id, email) => {
-      console.log(email, "is typing");
       socket.to(id).emit("typing", email);
     });
     socket.on("stopped_typing", (id, email) => {
-      if (!id) {
-        throw new Error("room is required");
-      } else {
-        socket.to(id).emit("stopped_typing", email);
-      }
+      socket.to(id).emit("stopped_typing", email);
     });
-    socket.on("join-room", (room, email) => {
-      console.log(email);
+    socket.on("join-room", (room) => {
       socket.join(room);
-      socket.to(room).emit("online_users", email);
     });
 
     socket.on("join_your_room", (loggedInUserId) => {
-      console.log(loggedInUserId);
       socket.join(loggedInUserId);
     });
     socket.on("friend_request_notification", (userID, sender) => {
@@ -54,6 +47,7 @@ export function connectSocket() {
     });
     socket.on("disconnect", (reason, detail) => {
       console.log("disconnected", reason);
+      delete onLineUsers[email as string];
     });
   });
 }

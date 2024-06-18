@@ -13,7 +13,6 @@ export async function sendFriendRequest(from: string, to: string) {
       },
     })
   );
-  console.log(result);
   return result;
 }
 
@@ -101,6 +100,5 @@ export async function getNumberOfFriendReq(email: string) {
       },
     })
   );
-  console.log(email, "friend request", result);
   return result;
 }
