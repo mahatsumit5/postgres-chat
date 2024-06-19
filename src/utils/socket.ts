@@ -35,6 +35,7 @@ export function connectSocket() {
     });
 
     socket.on("join-room", (roomIds) => {
+      console.log("this is roomId", roomIds);
       socket.join(roomIds);
     });
 
@@ -56,6 +57,11 @@ export function connectSocket() {
     socket.on("request_deleted", (data, receiver) => {
       console.log(data);
       socket.to(receiver).emit("getRequestDeleted", data);
+    });
+
+    socket.on("deleteChatRoom", (data) => {
+      console.log(data);
+      socket.to(data.result.id).emit("getDeletedChatRoom", data);
     });
 
     socket.on("disconnect", () => {

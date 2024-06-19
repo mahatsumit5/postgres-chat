@@ -6,6 +6,7 @@ type createUserParams = {
   fName: string;
   lName: string;
 };
+
 export async function createUser(obj: createUserParams) {
   return await executeQuery(
     prisma.user.create({
@@ -66,8 +67,16 @@ export async function getUserByEmail(email: string) {
   );
 }
 
-export async function getAllUsers(email: string) {
-  return executeQuery(
+export async function getAllUsers(
+  email: string,
+  take: number,
+  page: number,
+  order: "asc" | "desc",
+  contains?: string
+) {
+  console.log(page);
+  const skipAmount = (page - 1) * take;
+  const users: [] = await executeQuery(
     prisma.user.findMany({
       where: {
         NOT: {
@@ -81,6 +90,9 @@ export async function getAllUsers(email: string) {
             },
           },
         },
+        email: {
+          contains: contains || "",
+        },
       },
       select: {
         fName: true,
@@ -89,8 +101,34 @@ export async function getAllUsers(email: string) {
         profile: true,
         id: true,
       },
+      take: take,
+      orderBy: { fName: order },
+      skip: skipAmount,
     })
   );
+
+  const totalUsers = await executeQuery(
+    prisma.user.count({
+      where: {
+        NOT: {
+          chatRoom: {
+            some: {
+              user: {
+                some: {
+                  email: email,
+                },
+              },
+            },
+          },
+        },
+        email: {
+          contains: "",
+        },
+      },
+    })
+  );
+
+  return { users, totalUsers };
 }
 
 export async function deleteUser(id: string) {

@@ -23,11 +23,20 @@ router.get("/", auth, async (req, res, next) => {
 router.get("/all-users", auth, async (req, res, next) => {
   try {
     const user = req.userInfo;
-    const users = await getAllUsers(user?.email || "");
+    const order = req.query.order as "asc" | "desc";
+    const page = Number(req.query.page);
+    const take = Number(req.query.take);
+    const search = req.query.search;
+    const { users, totalUsers } = await getAllUsers(
+      user?.email || "",
+      take,
+      page,
+      order
+    );
 
-    users.length
-      ? res.status(200).json({ status: true, data: users })
-      : res.status(200).json({ message: "No other user available" });
+    users?.length
+      ? res.status(200).json({ status: true, data: users, totalUsers })
+      : res.status(400).json({ message: "No other user available" });
   } catch (error) {
     next(error);
   }
