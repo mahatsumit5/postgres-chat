@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  acceptFriendReq,
   deleteSentRequest,
   getFriendRequestByUser,
   getNumberOfFriendReq,
@@ -67,7 +66,11 @@ router.delete("/:fromId/:toId", async (req, res, next) => {
     const toId = req.params.toId;
     const result = await deleteSentRequest(fromId, toId);
     result
-      ? res.status(200).json({ status: true, data: "Deleted Successfully" })
+      ? res.status(200).json({
+          status: true,
+          data: result,
+          message: "Friend request deleted",
+        })
       : next(new Error("Unable to Delete the request"));
   } catch (error) {
     next(error);
@@ -84,7 +87,9 @@ router.patch("/", async (req, res, next) => {
       const newRoom = await createChatRoom(fromId, user?.id || "");
 
       newRoom
-        ? res.status(201).json({ status: true, data: newRoom })
+        ? res
+            .status(201)
+            .json({ status: true, data: newRoom, friendRequest: result })
         : next(new Error("Unable to create chat room"));
     } else {
       next(new Error("Unable to accept your friend request.Please try again"));
