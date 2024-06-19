@@ -29,7 +29,9 @@ router.get("/friend-request", async (req, res, next) => {
         const friendReqCount = await (0, friendRequest_query_1.getNumberOfFriendReq)(user.email);
         result?.length
             ? res.status(201).json({ status: true, data: { result, friendReqCount } })
-            : next(new Error("You do not have any friend Request"));
+            : res
+                .status(201)
+                .json({ status: true, data: { result, friendReqCount } });
     }
     catch (error) {
         next(error);
@@ -60,7 +62,11 @@ router.delete("/:fromId/:toId", async (req, res, next) => {
         const toId = req.params.toId;
         const result = await (0, friendRequest_query_1.deleteSentRequest)(fromId, toId);
         result
-            ? res.status(200).json({ status: true, data: "Deleted Successfully" })
+            ? res.status(200).json({
+                status: true,
+                data: result,
+                message: "Friend request deleted",
+            })
             : next(new Error("Unable to Delete the request"));
     }
     catch (error) {
@@ -75,7 +81,9 @@ router.patch("/", async (req, res, next) => {
         if (result) {
             const newRoom = await (0, ChatRoom_query_1.createChatRoom)(fromId, user?.id || "");
             newRoom
-                ? res.status(201).json({ status: true, data: newRoom })
+                ? res
+                    .status(201)
+                    .json({ status: true, data: newRoom, friendRequest: result })
                 : next(new Error("Unable to create chat room"));
         }
         else {

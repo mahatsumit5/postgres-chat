@@ -34,8 +34,8 @@ export function connectSocket() {
       socket.to(id).emit("stopped_typing", email);
     });
 
-    socket.on("join-room", (room) => {
-      socket.join(room);
+    socket.on("join-room", (roomIds) => {
+      socket.join(roomIds);
     });
 
     socket.on("join_your_room", (loggedInUserId) => {

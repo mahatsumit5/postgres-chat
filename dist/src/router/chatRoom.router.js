@@ -34,7 +34,6 @@ router.get("/", async (req, res, next) => {
                 lastMessage.push(await (0, message_query_1.getLastMessageByRoomId)(data[i].id));
                 unSeenMessageCount.push(await (0, message_query_1.numberOfUnSeenMessagesByUser)(data[i].user[0].id, data[i].id));
             }
-            console.log(unSeenMessageCount);
             const rooms = data.map((item, index) => {
                 return {
                     id: item.id,

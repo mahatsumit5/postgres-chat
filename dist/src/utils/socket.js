@@ -16,9 +16,9 @@ function connectSocket() {
     const onLineUsers = {};
     io.on("connect", (socket) => {
         const email = socket.handshake.query.email;
+        console.log("onlineUsers", onLineUsers);
         if (email != undefined && typeof email === "string")
             onLineUsers[email] = socket.id;
-        console.log(onLineUsers);
         io.emit("getOnlineUsers", Object.keys(onLineUsers));
         socket.on("send_message", (message, id) => {
             socket.to(id).emit("send_message_client", message);
@@ -29,22 +29,26 @@ function connectSocket() {
         socket.on("stopped_typing", (id, email) => {
             socket.to(id).emit("stopped_typing", email);
         });
-        socket.on("join-room", (room) => {
-            socket.join(room);
+        socket.on("join-room", (roomIds) => {
+            socket.join(roomIds);
         });
         socket.on("join_your_room", (loggedInUserId) => {
             socket.join(loggedInUserId);
         });
-        socket.on("friend_request_notification", (userID, sender) => {
-            console.log("friend req received from ", sender, "to", userID);
-            socket.to(userID).emit("receive_friend_request", sender);
+        socket.on("sendFriendRequest", (data, receiver) => {
+            console.log(receiver);
+            socket.to(receiver).emit("getFriendRequest", data);
         });
-        socket.on("friend_request_accepted", (senderId) => {
-            console.log("request accepted", senderId);
-            socket.to(senderId).emit("friend_req_accepted_notification");
+        socket.on("friend_request_accepted", (acceptedRequest, fromId) => {
+            socket
+                .to(fromId)
+                .emit("friend_req_accepted_notification", acceptedRequest);
         });
-        socket.on("disconnect", (reason, detail) => {
-            console.log("disconnected", reason);
+        socket.on("request_deleted", (data, receiver) => {
+            console.log(data);
+            socket.to(receiver).emit("getRequestDeleted", data);
+        });
+        socket.on("disconnect", () => {
             delete onLineUsers[email];
         });
     });

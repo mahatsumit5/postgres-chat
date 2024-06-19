@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNumberOfFriendReq = exports.acceptFriendReq = exports.deleteSentRequest = exports.getYourSentRequest = exports.getFriendRequestByUser = exports.sendFriendRequest = void 0;
+exports.getNumberOfFriendReq = exports.deleteSentRequest = exports.getYourSentRequest = exports.getFriendRequestByUser = exports.sendFriendRequest = void 0;
 const script_1 = require("../../script");
 async function sendFriendRequest(from, to) {
-    const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.create({
+    return await (0, script_1.executeQuery)(script_1.prisma.friendRequests.create({
         data: {
             from: {
                 connect: { id: from },
@@ -12,13 +12,33 @@ async function sendFriendRequest(from, to) {
                 connect: { id: to },
             },
         },
+        select: {
+            to: {
+                select: {
+                    id: true,
+                    fName: true,
+                    lName: true,
+                    email: true,
+                    profile: true,
+                },
+            },
+            from: {
+                select: {
+                    id: true,
+                    fName: true,
+                    lName: true,
+                    email: true,
+                    profile: true,
+                },
+            },
+            status: true,
+        },
     }));
-    return result;
 }
 exports.sendFriendRequest = sendFriendRequest;
 async function getFriendRequestByUser(id) {
     // Get friend requests sent by the user with this ID
-    const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.findMany({
+    return await (0, script_1.executeQuery)(script_1.prisma.friendRequests.findMany({
         where: {
             toId: id,
             status: "PENDING",
@@ -34,63 +54,89 @@ async function getFriendRequestByUser(id) {
                 },
             },
             status: true,
+            to: {
+                select: {
+                    fName: true,
+                    lName: true,
+                    email: true,
+                    profile: true,
+                    id: true,
+                },
+            },
         },
     }));
-    return result;
 }
 exports.getFriendRequestByUser = getFriendRequestByUser;
 async function getYourSentRequest(id) {
     // Get friend requests sent by the user with this ID
-    const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.findMany({
+    return await (0, script_1.executeQuery)(script_1.prisma.friendRequests.findMany({
         where: {
             fromId: id,
             status: "PENDING",
         },
         select: {
             to: {
-                select: { fName: true, lName: true, email: true, profile: true },
+                select: {
+                    id: true,
+                    fName: true,
+                    lName: true,
+                    email: true,
+                    profile: true,
+                },
+            },
+            from: {
+                select: {
+                    id: true,
+                    fName: true,
+                    lName: true,
+                    email: true,
+                    profile: true,
+                },
             },
             status: true,
         },
     }));
-    return result;
 }
 exports.getYourSentRequest = getYourSentRequest;
 async function deleteSentRequest(fromId, toId) {
-    const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.delete({
+    return await (0, script_1.executeQuery)(script_1.prisma.friendRequests.delete({
         where: {
             fromId_toId: {
                 fromId: fromId,
                 toId: toId,
             },
         },
+        select: {
+            to: {
+                select: {
+                    id: true,
+                    fName: true,
+                    lName: true,
+                    email: true,
+                    profile: true,
+                },
+            },
+            from: {
+                select: {
+                    fName: true,
+                    lName: true,
+                    email: true,
+                    profile: true,
+                    id: true,
+                },
+            },
+            status: true,
+        },
     }));
-    return result;
 }
 exports.deleteSentRequest = deleteSentRequest;
-async function acceptFriendReq(fromId, toId) {
-    const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.update({
-        where: {
-            fromId_toId: {
-                fromId: fromId,
-                toId: toId,
-            },
-        },
-        data: {
-            status: "ACCEPTED",
-        },
-    }));
-    return result;
-}
-exports.acceptFriendReq = acceptFriendReq;
 async function getNumberOfFriendReq(email) {
-    const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.count({
+    return await (0, script_1.executeQuery)(script_1.prisma.friendRequests.count({
         where: {
             to: {
                 email,
             },
         },
     }));
-    return result;
 }
 exports.getNumberOfFriendReq = getNumberOfFriendReq;

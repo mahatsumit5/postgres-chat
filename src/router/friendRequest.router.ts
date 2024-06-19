@@ -35,7 +35,9 @@ router.get("/friend-request", async (req, res, next) => {
     const friendReqCount = await getNumberOfFriendReq(user.email);
     result?.length
       ? res.status(201).json({ status: true, data: { result, friendReqCount } })
-      : next(new Error("You do not have any friend Request"));
+      : res
+          .status(201)
+          .json({ status: true, data: { result, friendReqCount } });
   } catch (error) {
     next(error);
   }

@@ -40,7 +40,6 @@ router.get("/", async (req, res, next) => {
           await numberOfUnSeenMessagesByUser(data[i].user[0].id, data[i].id)
         );
       }
-      console.log(unSeenMessageCount);
       const rooms = data.map((item: IRoom, index: number) => {
         return {
           id: item.id,
