@@ -32,7 +32,7 @@ router.get("/all-users", auth, async (req, res, next) => {
       take,
       page,
       order,
-      search ? search.toString() : ""
+      search ? search.toString().toLowerCase() : ""
     );
 
     users?.length

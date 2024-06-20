@@ -91,7 +91,7 @@ export async function getAllUsers(
           },
         },
         email: {
-          contains: contains || "",
+          contains: contains.toLowerCase(),
         },
       },
       select: {

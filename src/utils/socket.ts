@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import { server } from "../..";
 
-export function connectSocket() {
+export async function connectSocket() {
   const origin =
     process.env.ENVIRONMENT === "Development"
       ? "http://192.168.20.8:5173"
@@ -68,4 +68,7 @@ export function connectSocket() {
       delete onLineUsers[email as string];
     });
   });
+
+  const sockets = await io.fetchSockets();
+  console.log("these are sockets", sockets);
 }
