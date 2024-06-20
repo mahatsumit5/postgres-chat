@@ -72,9 +72,9 @@ export async function getAllUsers(
   take: number,
   page: number,
   order: "asc" | "desc",
-  contains?: string
+  contains: string
 ) {
-  console.log(page);
+  console.log(contains);
   const skipAmount = (page - 1) * take;
   const users: [] = await executeQuery(
     prisma.user.findMany({
@@ -122,7 +122,7 @@ export async function getAllUsers(
           },
         },
         email: {
-          contains: "",
+          contains: contains || "",
         },
       },
     })

@@ -31,7 +31,8 @@ router.get("/all-users", auth, async (req, res, next) => {
       user?.email || "",
       take,
       page,
-      order
+      order,
+      search ? search.toString() : ""
     );
 
     users?.length
