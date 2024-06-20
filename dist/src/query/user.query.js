@@ -45,8 +45,10 @@ async function getUserByEmail(email) {
     }));
 }
 exports.getUserByEmail = getUserByEmail;
-async function getAllUsers(email) {
-    return (0, script_1.executeQuery)(script_1.prisma.user.findMany({
+async function getAllUsers(email, take, page, order, contains) {
+    console.log(contains);
+    const skipAmount = (page - 1) * take;
+    const users = await (0, script_1.executeQuery)(script_1.prisma.user.findMany({
         where: {
             NOT: {
                 chatRoom: {
@@ -59,6 +61,9 @@ async function getAllUsers(email) {
                     },
                 },
             },
+            email: {
+                contains: contains.toLowerCase(),
+            },
         },
         select: {
             fName: true,
@@ -67,7 +72,29 @@ async function getAllUsers(email) {
             profile: true,
             id: true,
         },
+        take: take,
+        orderBy: { fName: order },
+        skip: skipAmount,
     }));
+    const totalUsers = await (0, script_1.executeQuery)(script_1.prisma.user.count({
+        where: {
+            NOT: {
+                chatRoom: {
+                    some: {
+                        user: {
+                            some: {
+                                email: email,
+                            },
+                        },
+                    },
+                },
+            },
+            email: {
+                contains: contains || "",
+            },
+        },
+    }));
+    return { users, totalUsers };
 }
 exports.getAllUsers = getAllUsers;
 async function deleteUser(id) {

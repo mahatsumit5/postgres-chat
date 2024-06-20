@@ -21,10 +21,14 @@ router.get("/", middleware_1.auth, async (req, res, next) => {
 router.get("/all-users", middleware_1.auth, async (req, res, next) => {
     try {
         const user = req.userInfo;
-        const users = await (0, user_query_1.getAllUsers)(user?.email || "");
-        users.length
-            ? res.status(200).json({ status: true, data: users })
-            : res.status(200).json({ message: "No other user available" });
+        const order = req.query.order;
+        const page = Number(req.query.page);
+        const take = Number(req.query.take);
+        const search = req.query.search;
+        const { users, totalUsers } = await (0, user_query_1.getAllUsers)(user?.email || "", take, page, order, search ? search.toString().toLowerCase() : "");
+        users?.length
+            ? res.status(200).json({ status: true, data: users, totalUsers })
+            : res.status(400).json({ message: "No other user available" });
     }
     catch (error) {
         next(error);
