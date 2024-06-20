@@ -40,10 +40,10 @@ async function connectSocket() {
             console.log(receiver);
             socket.to(receiver).emit("getFriendRequest", data);
         });
-        socket.on("friend_request_accepted", (acceptedRequest, fromId) => {
-            socket
-                .to(fromId)
-                .emit("friend_req_accepted_notification", acceptedRequest);
+        socket.on("friend_request_accepted", (roomId, fromId) => {
+            console.log(roomId, fromId);
+            socket.join(roomId);
+            socket.to(fromId).emit("getReqAcceptedNotification", roomId);
         });
         socket.on("request_deleted", (data, receiver) => {
             console.log(data);

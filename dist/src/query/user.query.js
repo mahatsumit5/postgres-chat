@@ -46,20 +46,28 @@ async function getUserByEmail(email) {
 }
 exports.getUserByEmail = getUserByEmail;
 async function getAllUsers(email, take, page, order, contains) {
-    console.log(contains);
     const skipAmount = (page - 1) * take;
     const users = await (0, script_1.executeQuery)(script_1.prisma.user.findMany({
         where: {
             NOT: {
-                chatRoom: {
-                    some: {
-                        user: {
+                OR: [
+                    {
+                        chatRoom: {
                             some: {
-                                email: email,
+                                user: {
+                                    some: {
+                                        email: email,
+                                    },
+                                },
                             },
                         },
                     },
-                },
+                    {
+                        friendRequests: {
+                            some: { from: { email: email } },
+                        },
+                    },
+                ],
             },
             email: {
                 contains: contains.toLowerCase(),

@@ -25,7 +25,13 @@ router.get("/", async (req, res, next) => {
             throw new Error("User is not logged in.");
         const data = await (0, ChatRoom_query_1.getChatRoom)(userId);
         if (!data.length) {
-            next(new Error("Your chat room is empty."));
+            return res
+                .status(200)
+                .json({
+                status: false,
+                data: [],
+                message: "Your do not have any chat room.",
+            });
         }
         else {
             let lastMessage = [];

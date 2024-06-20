@@ -16,7 +16,8 @@ router.post("/send-request", async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    const result = await sendFriendRequest(user.id, req.body.userId);
+    console.log(req.body);
+    const result = await sendFriendRequest(user.id, req.body.to);
     result
       ? res.status(201).json({ status: true, data: result })
       : next(new Error("Failed to create friend request"));
@@ -49,9 +50,17 @@ router.get("/sent-request", async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    const result = await getYourSentRequest(user.id);
-    result?.length
-      ? res.status(201).json({ status: true, data: result })
+
+    const skip = Number(req.query.skip) || 0;
+    const search = req.query.search || "";
+    const { count, result } = await getYourSentRequest(
+      user.id,
+      skip,
+
+      search ? search.toString() : ""
+    );
+    result.length
+      ? res.status(201).json({ status: true, data: result, count })
       : res.status(200).json({
           status: true,
           data: [],

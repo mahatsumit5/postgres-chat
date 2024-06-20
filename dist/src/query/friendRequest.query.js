@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNumberOfFriendReq = exports.deleteSentRequest = exports.getYourSentRequest = exports.getFriendRequestByUser = exports.sendFriendRequest = void 0;
 const script_1 = require("../../script");
 async function sendFriendRequest(from, to) {
-    return await (0, script_1.executeQuery)(script_1.prisma.friendRequests.create({
+    console.log(from, to);
+    const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.create({
         data: {
             from: {
                 connect: { id: from },
@@ -34,6 +35,8 @@ async function sendFriendRequest(from, to) {
             status: true,
         },
     }));
+    console.log("this is new fr req", result);
+    return result;
 }
 exports.sendFriendRequest = sendFriendRequest;
 async function getFriendRequestByUser(id) {
@@ -67,12 +70,17 @@ async function getFriendRequestByUser(id) {
     }));
 }
 exports.getFriendRequestByUser = getFriendRequestByUser;
-async function getYourSentRequest(id) {
+async function getYourSentRequest(id, skip, search) {
     // Get friend requests sent by the user with this ID
-    return await (0, script_1.executeQuery)(script_1.prisma.friendRequests.findMany({
+    const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.findMany({
         where: {
             fromId: id,
             status: "PENDING",
+            to: {
+                email: {
+                    contains: search,
+                },
+            },
         },
         select: {
             to: {
@@ -95,7 +103,21 @@ async function getYourSentRequest(id) {
             },
             status: true,
         },
+        skip: skip,
+        take: 10,
     }));
+    const count = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.count({
+        where: {
+            fromId: id,
+            status: "PENDING",
+            to: {
+                email: {
+                    contains: search,
+                },
+            },
+        },
+    }));
+    return { result, count };
 }
 exports.getYourSentRequest = getYourSentRequest;
 async function deleteSentRequest(fromId, toId) {

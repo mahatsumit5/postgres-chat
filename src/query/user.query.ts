@@ -74,21 +74,29 @@ export async function getAllUsers(
   order: "asc" | "desc",
   contains: string
 ) {
-  console.log(contains);
   const skipAmount = (page - 1) * take;
   const users: [] = await executeQuery(
     prisma.user.findMany({
       where: {
         NOT: {
-          chatRoom: {
-            some: {
-              user: {
+          OR: [
+            {
+              chatRoom: {
                 some: {
-                  email: email,
+                  user: {
+                    some: {
+                      email: email,
+                    },
+                  },
                 },
               },
             },
-          },
+            {
+              friendRequests: {
+                some: { from: { email: email } },
+              },
+            },
+          ],
         },
         email: {
           contains: contains.toLowerCase(),

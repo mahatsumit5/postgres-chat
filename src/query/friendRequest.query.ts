@@ -1,7 +1,8 @@
 import { executeQuery, prisma } from "../../script";
 
 export async function sendFriendRequest(from: string, to: string) {
-  return await executeQuery(
+  console.log(from, to);
+  const result = await executeQuery(
     prisma.friendRequests.create({
       data: {
         from: {
@@ -34,6 +35,8 @@ export async function sendFriendRequest(from: string, to: string) {
       },
     })
   );
+  console.log("this is new fr req", result);
+  return result;
 }
 
 export async function getFriendRequestByUser(id: string) {
@@ -68,13 +71,23 @@ export async function getFriendRequestByUser(id: string) {
     })
   );
 }
-export async function getYourSentRequest(id: string) {
+export async function getYourSentRequest(
+  id: string,
+  skip: number,
+
+  search: string
+) {
   // Get friend requests sent by the user with this ID
-  return await executeQuery(
+  const result: [] = await executeQuery(
     prisma.friendRequests.findMany({
       where: {
         fromId: id,
         status: "PENDING",
+        to: {
+          email: {
+            contains: search,
+          },
+        },
       },
       select: {
         to: {
@@ -97,8 +110,24 @@ export async function getYourSentRequest(id: string) {
         },
         status: true,
       },
+      skip: skip,
+      take: 10,
     })
   );
+  const count = await executeQuery(
+    prisma.friendRequests.count({
+      where: {
+        fromId: id,
+        status: "PENDING",
+        to: {
+          email: {
+            contains: search,
+          },
+        },
+      },
+    })
+  );
+  return { result, count };
 }
 
 export async function deleteSentRequest(fromId: string, toId: string) {
