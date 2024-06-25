@@ -4,6 +4,7 @@ import {
   createUser,
   getAllUsers,
   getUserByEmail,
+  uploadProfileImage,
 } from "../query/user.query";
 import { comparePassword, hashPass } from "../utils/bcrypt";
 import {
@@ -11,7 +12,7 @@ import {
   createRefreshJWT,
   verifyRefreshJWT,
 } from "../utils/jwt";
-import { auth } from "../middleware";
+import { auth, upload } from "../middleware";
 import { findSessionAndDelete } from "../query/session.query";
 const router = Router();
 
@@ -144,5 +145,30 @@ router.put("/reset-password", auth, async (req, res, next) => {
     next(error);
   }
 });
+
+router.put(
+  "/upload-profile",
+  auth,
+  upload.single("profile"),
+  async (req, res, next) => {
+    try {
+      const user = req.userInfo;
+      if (!user) throw new Error("Not authorized");
+      const file = req.file as Express.MulterS3.File;
+      const imagePath = file.location;
+
+      const result = await uploadProfileImage(user.email, imagePath);
+      result
+        ? res.status(200).json({
+            status: true,
+            message: "Profile Image Uploaded",
+            result,
+          })
+        : next(new Error("Unable to upload your profile image"));
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default router;

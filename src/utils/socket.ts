@@ -16,9 +16,9 @@ export async function connectSocket() {
   const onLineUsers: Record<string, string> = {};
   io.on("connect", (socket) => {
     const email = socket.handshake.query.email;
-    console.log("onlineUsers", onLineUsers);
     if (email != undefined && typeof email === "string")
       onLineUsers[email] = socket.id;
+    console.log("onlineUsers", onLineUsers);
 
     io.emit("getOnlineUsers", Object.keys(onLineUsers));
 
@@ -49,7 +49,7 @@ export async function connectSocket() {
     });
 
     socket.on("friend_request_accepted", (roomId, fromId) => {
-      console.log(roomId, fromId);
+      console.log("new room crated with id", roomId, fromId);
       socket.join(roomId);
       socket.to(fromId).emit("getReqAcceptedNotification", roomId);
     });

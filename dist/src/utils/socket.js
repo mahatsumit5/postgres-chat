@@ -16,9 +16,9 @@ async function connectSocket() {
     const onLineUsers = {};
     io.on("connect", (socket) => {
         const email = socket.handshake.query.email;
-        console.log("onlineUsers", onLineUsers);
         if (email != undefined && typeof email === "string")
             onLineUsers[email] = socket.id;
+        console.log("onlineUsers", onLineUsers);
         io.emit("getOnlineUsers", Object.keys(onLineUsers));
         socket.on("send_message", (message, id) => {
             socket.to(id).emit("send_message_client", message);
@@ -41,7 +41,7 @@ async function connectSocket() {
             socket.to(receiver).emit("getFriendRequest", data);
         });
         socket.on("friend_request_accepted", (roomId, fromId) => {
-            console.log(roomId, fromId);
+            console.log("new room crated with id", roomId, fromId);
             socket.join(roomId);
             socket.to(fromId).emit("getReqAcceptedNotification", roomId);
         });

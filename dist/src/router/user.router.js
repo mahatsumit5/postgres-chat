@@ -129,4 +129,24 @@ router.put("/reset-password", middleware_1.auth, async (req, res, next) => {
         next(error);
     }
 });
+router.put("/upload-profile", middleware_1.auth, middleware_1.upload.single("profile"), async (req, res, next) => {
+    try {
+        const user = req.userInfo;
+        if (!user)
+            throw new Error("Not authorized");
+        const file = req.file;
+        const imagePath = file.location;
+        const result = await (0, user_query_1.uploadProfileImage)(user.email, imagePath);
+        result
+            ? res.status(200).json({
+                status: true,
+                message: "Profile Image Uploaded",
+                result,
+            })
+            : next(new Error("Unable to upload your profile image"));
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.default = router;

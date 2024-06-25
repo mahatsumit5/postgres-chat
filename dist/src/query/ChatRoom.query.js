@@ -19,7 +19,6 @@ async function createChatRoom(from, to) {
 }
 exports.createChatRoom = createChatRoom;
 async function getChatRoom(userId, contains, take, page) {
-    console.log("this is contains", contains);
     const rooms = await (0, script_1.executeQuery)(script_1.prisma.chatRoom.findMany({
         where: {
             AND: [

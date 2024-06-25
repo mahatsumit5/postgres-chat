@@ -20,7 +20,6 @@ router.post("/", async (req, res, next) => {
 });
 router.get("/", async (req, res, next) => {
     try {
-        console.log(req.query);
         const userId = req.userInfo?.id;
         const serachQuery = req.query.search;
         const page = Number(req.query.page);

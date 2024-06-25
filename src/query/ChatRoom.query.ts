@@ -24,7 +24,6 @@ export async function getChatRoom(
   take: number,
   page: number
 ) {
-  console.log("this is contains", contains);
   const rooms = await executeQuery(
     prisma.chatRoom.findMany({
       where: {
