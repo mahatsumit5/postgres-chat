@@ -49,6 +49,9 @@ export async function getChatRoom(userId: string) {
           },
         },
       },
+
+      take: 10,
+      skip: 0,
     })
   );
 

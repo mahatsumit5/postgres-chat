@@ -1,5 +1,10 @@
 import { Router, Response } from "express";
-import { createUser, getAllUsers, getUserByEmail } from "../query/user.query";
+import {
+  changePassword,
+  createUser,
+  getAllUsers,
+  getUserByEmail,
+} from "../query/user.query";
 import { comparePassword, hashPass } from "../utils/bcrypt";
 import {
   createAccessJWT,
@@ -112,6 +117,26 @@ router.patch("/new-accessJWT", async (req, res, next) => {
         message: "Unexxpected error occured.",
       });
     }
+  } catch (error) {
+    next(error);
+  }
+});
+router.put("/reset-password", auth, async (req, res, next) => {
+  try {
+    const user = req.userInfo;
+    if (!user) throw new Error("Not authorized");
+    req.body.password = hashPass(req.body.password);
+
+    const result = await changePassword({
+      email: user.email,
+      newPassword: req.body.password,
+    });
+    result
+      ? res.status(200).json({
+          status: true,
+          message: "Password Changed",
+        })
+      : next(new Error("Unable to change your password"));
   } catch (error) {
     next(error);
   }
