@@ -4,10 +4,15 @@ import {
   messageSeenByRoom,
   sendMessage,
 } from "../query/message.query";
+import { upload } from "../middleware";
 
 const router = Router();
-router.post("/", async (req, res, next) => {
+router.post("/", upload.single("content"), async (req, res, next) => {
   try {
+    const file = req.file as Express.MulterS3.File;
+    if (file) {
+      req.body.content = file.location;
+    }
     const result = await sendMessage(req.body);
     result?.id
       ? res.json({

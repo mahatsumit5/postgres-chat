@@ -2,9 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const message_query_1 = require("../query/message.query");
+const middleware_1 = require("../middleware");
 const router = (0, express_1.Router)();
-router.post("/", async (req, res, next) => {
+router.post("/", middleware_1.upload.single("content"), async (req, res, next) => {
     try {
+        const file = req.file;
+        if (file) {
+            req.body.content = file.location;
+        }
         const result = await (0, message_query_1.sendMessage)(req.body);
         result?.id
             ? res.json({
