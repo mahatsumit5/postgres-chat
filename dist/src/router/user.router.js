@@ -36,14 +36,16 @@ router.get("/all-users", middleware_1.auth, async (req, res, next) => {
 });
 router.post("/sign-up", async (req, res, next) => {
     try {
+        const userAlreadyExist = await (0, user_query_1.getUserByEmail)(req.body.email);
+        if (userAlreadyExist)
+            throw new Error("An account already exist with this email.");
         req.body.password = (0, bcrypt_1.hashPass)(req.body.password);
         const user = await (0, user_query_1.createUser)(req.body);
-        user.password = undefined;
         user?.id
-            ? res.json({ status: true, message: "User Created", data: user })
+            ? res.json({ status: true, message: "User Created" })
             : res.status(400).json({
                 status: false,
-                message: "Bad Request",
+                message: "Unable to create new account.Please try again.",
             });
     }
     catch (error) {

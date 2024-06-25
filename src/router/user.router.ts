@@ -49,14 +49,17 @@ router.get("/all-users", auth, async (req, res, next) => {
 });
 router.post("/sign-up", async (req, res, next) => {
   try {
+    const userAlreadyExist = await getUserByEmail(req.body.email);
+    if (userAlreadyExist)
+      throw new Error("An account already exist with this email.");
     req.body.password = hashPass(req.body.password);
     const user = await createUser(req.body);
-    user.password = undefined;
+
     user?.id
-      ? res.json({ status: true, message: "User Created", data: user })
+      ? res.json({ status: true, message: "User Created" })
       : res.status(400).json({
           status: false,
-          message: "Bad Request",
+          message: "Unable to create new account.Please try again.",
         });
   } catch (error) {
     next(error);
