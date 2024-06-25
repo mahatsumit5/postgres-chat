@@ -28,9 +28,12 @@ router.get("/", async (req, res, next) => {
   try {
     console.log(req.query);
     const userId = req.userInfo?.id;
+    const serachQuery = req.query.search;
+    const page = Number(req.query.page);
+    const take = Number(req.query.take);
     if (!userId) throw new Error("User is not logged in.");
-    const data = await getChatRoom(userId);
-    if (!data.length) {
+    const data = await getChatRoom(userId, serachQuery as string, take, page);
+    if (!data?.length) {
       return res.status(200).json({
         status: false,
         data: [],

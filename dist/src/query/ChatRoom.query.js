@@ -18,7 +18,8 @@ async function createChatRoom(from, to) {
     return result;
 }
 exports.createChatRoom = createChatRoom;
-async function getChatRoom(userId) {
+async function getChatRoom(userId, contains, take, page) {
+    console.log("this is contains", contains);
     const rooms = await (0, script_1.executeQuery)(script_1.prisma.chatRoom.findMany({
         where: {
             AND: [
@@ -26,6 +27,26 @@ async function getChatRoom(userId) {
                     user: {
                         some: {
                             id: userId,
+                        },
+                    },
+                },
+            ],
+            OR: [
+                {
+                    user: {
+                        some: {
+                            fName: {
+                                contains: contains,
+                            },
+                        },
+                    },
+                },
+                {
+                    user: {
+                        some: {
+                            lName: {
+                                contains: contains,
+                            },
                         },
                     },
                 },
@@ -48,8 +69,8 @@ async function getChatRoom(userId) {
                 },
             },
         },
-        take: 10,
-        skip: 0,
+        take: take,
+        skip: (page - 1) * take,
     }));
     return rooms;
 }
