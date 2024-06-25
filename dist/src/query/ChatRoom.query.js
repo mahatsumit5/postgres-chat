@@ -48,6 +48,8 @@ async function getChatRoom(userId) {
                 },
             },
         },
+        take: 10,
+        skip: 0,
     }));
     return rooms;
 }

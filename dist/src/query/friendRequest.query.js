@@ -70,7 +70,8 @@ async function getFriendRequestByUser(id) {
     }));
 }
 exports.getFriendRequestByUser = getFriendRequestByUser;
-async function getYourSentRequest(id, skip, search) {
+async function getYourSentRequest(id, page, take, search) {
+    console.log(page, take);
     // Get friend requests sent by the user with this ID
     const result = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.findMany({
         where: {
@@ -103,8 +104,8 @@ async function getYourSentRequest(id, skip, search) {
             },
             status: true,
         },
-        skip: skip,
-        take: 10,
+        skip: (page - 1) * 7,
+        take: take,
     }));
     const count = await (0, script_1.executeQuery)(script_1.prisma.friendRequests.count({
         where: {

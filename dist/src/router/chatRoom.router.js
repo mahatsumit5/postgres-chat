@@ -20,14 +20,13 @@ router.post("/", async (req, res, next) => {
 });
 router.get("/", async (req, res, next) => {
     try {
+        console.log(req.query);
         const userId = req.userInfo?.id;
         if (!userId)
             throw new Error("User is not logged in.");
         const data = await (0, ChatRoom_query_1.getChatRoom)(userId);
         if (!data.length) {
-            return res
-                .status(200)
-                .json({
+            return res.status(200).json({
                 status: false,
                 data: [],
                 message: "Your do not have any chat room.",

@@ -106,4 +106,25 @@ router.patch("/new-accessJWT", async (req, res, next) => {
         next(error);
     }
 });
+router.put("/reset-password", middleware_1.auth, async (req, res, next) => {
+    try {
+        const user = req.userInfo;
+        if (!user)
+            throw new Error("Not authorized");
+        req.body.password = (0, bcrypt_1.hashPass)(req.body.password);
+        const result = await (0, user_query_1.changePassword)({
+            email: user.email,
+            newPassword: req.body.password,
+        });
+        result
+            ? res.status(200).json({
+                status: true,
+                message: "Password Changed",
+            })
+            : next(new Error("Unable to change your password"));
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.default = router;

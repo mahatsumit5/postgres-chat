@@ -44,10 +44,11 @@ router.get("/sent-request", async (req, res, next) => {
         if (!user) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-        const skip = Number(req.query.skip) || 0;
+        const page = Number(req.query.page) || 0;
+        const take = Number(req.query.take) || 0;
         const search = req.query.search || "";
-        const { count, result } = await (0, friendRequest_query_1.getYourSentRequest)(user.id, skip, search ? search.toString() : "");
-        result.length
+        const { count, result } = await (0, friendRequest_query_1.getYourSentRequest)(user.id, page, take, search ? search.toString() : "");
+        result?.length
             ? res.status(201).json({ status: true, data: result, count })
             : res.status(200).json({
                 status: true,
