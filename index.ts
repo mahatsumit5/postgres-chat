@@ -14,8 +14,8 @@ app.use(
   cors({
     origin: process.env.WEB_DOMAIN as string,
     methods: "GET, PUT, PATCH, DELETE, POST",
-    allowedHeaders: ["authorization", "refreshjwt"],
-    // credentials: true,
+    // allowedHeaders: ["authorization", "refreshjwt"],
+    // // credentials: true,
   })
 );
 
