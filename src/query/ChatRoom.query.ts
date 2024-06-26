@@ -35,21 +35,10 @@ export async function getChatRoom(
               },
             },
           },
-        ],
-        OR: [
           {
             user: {
               some: {
-                fName: {
-                  contains: contains,
-                },
-              },
-            },
-          },
-          {
-            user: {
-              some: {
-                lName: {
+                email: {
                   contains: contains,
                 },
               },

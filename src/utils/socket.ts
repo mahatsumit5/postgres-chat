@@ -6,7 +6,6 @@ export async function connectSocket() {
     process.env.ENVIRONMENT === "Development"
       ? "http://192.168.20.8:5173"
       : "https://daisy-ui-chat-app.vercel.app";
-  console.log("this is origin", origin);
   const io = new Server(server, {
     cors: {
       origin,
@@ -14,8 +13,10 @@ export async function connectSocket() {
   });
 
   const onLineUsers: Record<string, string> = {};
-  io.on("connect", (socket) => {
+  io.on("connection", (socket) => {
     const email = socket.handshake.query.email;
+    console.log("new user connected", email);
+
     if (email != undefined && typeof email === "string")
       onLineUsers[email] = socket.id;
     console.log("onlineUsers", onLineUsers);
@@ -40,6 +41,7 @@ export async function connectSocket() {
     });
 
     socket.on("join_your_room", (loggedInUserId) => {
+      console.log("this is logged in user id", loggedInUserId);
       socket.join(loggedInUserId);
     });
 
@@ -64,11 +66,9 @@ export async function connectSocket() {
       socket.to(data.result.id).emit("getDeletedChatRoom", data);
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", (socket) => {
+      console.log("user disconnected");
       delete onLineUsers[email as string];
     });
   });
-
-  const sockets = await io.fetchSockets();
-  console.log("these are sockets", sockets);
 }
