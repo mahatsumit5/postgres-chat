@@ -20,7 +20,8 @@ export async function connectSocket() {
     console.log("new user connected", id);
     const user = await getUserById(id as string);
     const rooms = await getChatRoom(id as string);
-    [...rooms, user].forEach((room: { id: string }) => socket.join(room.id));
+    rooms.forEach((room: { id: string }) => socket.join(room.id));
+    socket.join(user.id);
     if (id != undefined && typeof id === "string") onLineUsers[id] = socket.id;
     console.log("onlineUsers", onLineUsers);
 
