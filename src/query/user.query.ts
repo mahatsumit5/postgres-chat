@@ -66,6 +66,16 @@ export async function getUserByEmail(email: string) {
     })
   );
 }
+export async function getUserById(id: string) {
+  return executeQuery(
+    prisma.user.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+      },
+    })
+  );
+}
 
 export async function getAllUsers(
   email: string,

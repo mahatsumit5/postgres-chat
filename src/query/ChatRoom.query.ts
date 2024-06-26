@@ -20,9 +20,9 @@ export async function createChatRoom(from: string, to: string) {
 
 export async function getChatRoom(
   userId: string,
-  contains: string,
-  take: number,
-  page: number
+  contains?: string,
+  take?: number,
+  page?: number
 ) {
   const rooms = await executeQuery(
     prisma.chatRoom.findMany({
@@ -64,8 +64,8 @@ export async function getChatRoom(
         },
       },
 
-      take: take,
-      skip: (page - 1) * take,
+      take: take ? take : undefined,
+      skip: page && take ? (page - 1) * take : undefined,
     })
   );
 

@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { verifyAccessJWT } from "../utils/jwt";
 import { getUserByEmail } from "../query/user.query";
-
+import multer, { Multer } from "multer";
+import multerS3 from "multer-s3";
+import { S3Client } from "@aws-sdk/client-s3";
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { authorization } = req.headers;
@@ -30,9 +32,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-import multer, { Multer } from "multer";
-import multerS3 from "multer-s3";
-import { S3Client } from "@aws-sdk/client-s3";
+
 const region = process.env.AWS_REGION;
 const accessKey = process.env.AWS_ACCESS_KEY as string;
 const secretKey = process.env.AWS_SECRET_KEY as string;
@@ -61,3 +61,8 @@ export const upload = multer({
     },
   }),
 });
+
+export const timeout = (req: Request, res: Response, next: NextFunction) => {
+  const data = req.setTimeout(100000);
+  setTimeout(() => res.send("Hello world!"), 10000);
+};

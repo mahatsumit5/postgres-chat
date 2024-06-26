@@ -1,5 +1,7 @@
 import { Server } from "socket.io";
 import { server } from "../..";
+import { getChatRoom } from "../query/ChatRoom.query";
+import { getUserById } from "../query/user.query";
 
 export async function connectSocket() {
   const origin =
@@ -13,12 +15,13 @@ export async function connectSocket() {
   });
 
   const onLineUsers: Record<string, string> = {};
-  io.on("connection", (socket) => {
-    const email = socket.handshake.query.email;
-    console.log("new user connected", email);
-
-    if (email != undefined && typeof email === "string")
-      onLineUsers[email] = socket.id;
+  io.on("connection", async (socket) => {
+    const id = socket.handshake.query.id;
+    console.log("new user connected", id);
+    const user = await getUserById(id as string);
+    const rooms = await getChatRoom(id as string);
+    [...rooms, user].forEach((room: { id: string }) => socket.join(room.id));
+    if (id != undefined && typeof id === "string") onLineUsers[id] = socket.id;
     console.log("onlineUsers", onLineUsers);
 
     io.emit("getOnlineUsers", Object.keys(onLineUsers));
@@ -68,7 +71,9 @@ export async function connectSocket() {
 
     socket.on("disconnect", (socket) => {
       console.log("user disconnected");
-      delete onLineUsers[email as string];
+      delete onLineUsers[id as string];
     });
+
+    console.log(socket.rooms);
   });
 }

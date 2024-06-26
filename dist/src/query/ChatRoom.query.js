@@ -29,21 +29,10 @@ async function getChatRoom(userId, contains, take, page) {
                         },
                     },
                 },
-            ],
-            OR: [
                 {
                     user: {
                         some: {
-                            fName: {
-                                contains: contains,
-                            },
-                        },
-                    },
-                },
-                {
-                    user: {
-                        some: {
-                            lName: {
+                            email: {
                                 contains: contains,
                             },
                         },
@@ -68,8 +57,8 @@ async function getChatRoom(userId, contains, take, page) {
                 },
             },
         },
-        take: take,
-        skip: (page - 1) * take,
+        take: take ? take : undefined,
+        skip: page && take ? (page - 1) * take : undefined,
     }));
     return rooms;
 }

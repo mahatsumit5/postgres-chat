@@ -23,7 +23,7 @@ exports.server = http_1.default.createServer(app);
 //   })
 // );
 const ip = process.env.ENVIRONMENT === "Development" ? "192.168.20.8" : "0.0.0.0";
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({}));
 app.use(express_1.default.json());
 const user_router_1 = __importDefault(require("./src/router/user.router"));
 const friendRequest_router_1 = __importDefault(require("./src/router/friendRequest.router"));
@@ -43,6 +43,7 @@ app.use((error, req, res, next) => {
     });
 });
 app.get("/", async (req, res) => {
+    req.setTimeout(100);
     res.json({
         status: "success",
         message: "Welcome to the chat application",

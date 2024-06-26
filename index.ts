@@ -7,6 +7,7 @@ import cors from "cors";
 const port = 8080;
 const app = express();
 export const server = http.createServer(app);
+
 connectSocket();
 
 // app.use(
@@ -21,13 +22,13 @@ connectSocket();
 const ip =
   process.env.ENVIRONMENT === "Development" ? "192.168.20.8" : "0.0.0.0";
 
-app.use(cors());
+app.use(cors({}));
 app.use(express.json());
 import userRouter from "./src/router/user.router";
 import friendRouter from "./src/router/friendRequest.router";
 import chatRoomRouter from "./src/router/chatRoom.router";
 import messageRouter from "./src/router/message.router";
-import { auth } from "./src/middleware";
+import { auth, timeout } from "./src/middleware";
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/friend", auth, friendRouter);
 app.use("/api/v1/room", auth, chatRoomRouter);
@@ -45,6 +46,7 @@ app.use(
 );
 
 app.get("/", async (req, res) => {
+  req.setTimeout(100);
   res.json({
     status: "success",
     message: "Welcome to the chat application",
@@ -53,6 +55,7 @@ app.get("/", async (req, res) => {
 server.listen(port, ip, () => {
   console.log(`Server is running on http://${ip}:${port}`);
 });
+
 export interface CustomError extends Error {
   statusCode: number;
 }
