@@ -7,26 +7,29 @@ exports.server = void 0;
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
 const dotenv_1 = require("dotenv");
-(0, dotenv_1.config)();
 const socket_1 = require("./src/utils/socket");
 const cors_1 = __importDefault(require("cors"));
-const port = 8080;
-const app = (0, express_1.default)();
-exports.server = http_1.default.createServer(app);
-(0, socket_1.connectSocket)();
-app.use((0, cors_1.default)({
-    origin: [process.env.WEB_DOMAIN],
-    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
-    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
-    credentials: true,
-}));
-const ip = process.env.ENVIRONMENT === "Development" ? "192.168.20.8" : "0.0.0.0";
-app.use(express_1.default.json());
 const user_router_1 = __importDefault(require("./src/router/user.router"));
 const friendRequest_router_1 = __importDefault(require("./src/router/friendRequest.router"));
 const chatRoom_router_1 = __importDefault(require("./src/router/chatRoom.router"));
 const message_router_1 = __importDefault(require("./src/router/message.router"));
 const middleware_1 = require("./src/middleware");
+(0, dotenv_1.config)();
+(0, socket_1.connectSocket)();
+const port = 8080;
+const app = (0, express_1.default)();
+exports.server = http_1.default.createServer(app);
+app.use((0, cors_1.default)({
+    origin: [
+        process.env.WEB_DOMAIN,
+        "http://localhost:5173",
+        "https://daisy-ui-chat-app.vercel.app/",
+    ],
+    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
+    credentials: true,
+}));
+app.use(express_1.default.json());
 app.use("/api/v1/user", user_router_1.default);
 app.use("/api/v1/friend", middleware_1.auth, friendRequest_router_1.default);
 app.use("/api/v1/room", middleware_1.auth, chatRoom_router_1.default);
@@ -50,6 +53,6 @@ app.get("/", async (req, res) => {
         message: "Welcome to the chat application",
     });
 });
-exports.server.listen(port, ip, () => {
-    console.log(`Server is running on http://${ip}:${port}`);
+exports.server.listen(port, () => {
+    console.log(`Server is running on http://:${port}`);
 });

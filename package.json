@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx prisma generate && npx tsc",
-    "start": " node dist/index.js",
+    "start": " node build/index.js",
     "dev": "nodemon index.ts",
     "git": "npx tsc && git add . && git commit -m \"build folder ready\" && git push "
   },

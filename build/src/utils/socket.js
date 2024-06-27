@@ -8,7 +8,11 @@ const user_query_1 = require("../query/user.query");
 async function connectSocket() {
     const io = new socket_io_1.Server(__1.server, {
         cors: {
-            origin: "*",
+            origin: [
+                process.env.WEB_DOMAIN,
+                "http://localhost:5173",
+                "https://daisy-ui-chat-app.vercel.app/",
+            ],
             methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
             allowedHeaders: ["Content-Type", "Authorization"],
             preflightContinue: true,

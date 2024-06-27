@@ -1,33 +1,37 @@
 import express, { NextFunction, Request, Response } from "express";
 import http from "http";
 import { config } from "dotenv";
-config();
+import path from "path";
 import { connectSocket } from "./src/utils/socket";
 import cors from "cors";
+import userRouter from "./src/router/user.router";
+import friendRouter from "./src/router/friendRequest.router";
+import chatRoomRouter from "./src/router/chatRoom.router";
+import messageRouter from "./src/router/message.router";
+import { auth } from "./src/middleware";
+
+config();
+connectSocket();
+
 const port = 8080;
 const app = express();
 export const server = http.createServer(app);
 
-connectSocket();
-
 app.use(
   cors({
-    origin: [process.env.WEB_DOMAIN as string],
+    origin: [
+      process.env.WEB_DOMAIN as string,
+      "http://localhost:5173",
+      "https://daisy-ui-chat-app.vercel.app/",
+    ],
     methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
     allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
     credentials: true,
   })
 );
 
-const ip =
-  process.env.ENVIRONMENT === "Development" ? "192.168.20.8" : "0.0.0.0";
-
 app.use(express.json());
-import userRouter from "./src/router/user.router";
-import friendRouter from "./src/router/friendRequest.router";
-import chatRoomRouter from "./src/router/chatRoom.router";
-import messageRouter from "./src/router/message.router";
-import { auth, timeout } from "./src/middleware";
+
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/friend", auth, friendRouter);
 app.use("/api/v1/room", auth, chatRoomRouter);
@@ -55,8 +59,8 @@ app.get("/", async (req, res) => {
     message: "Welcome to the chat application",
   });
 });
-server.listen(port, ip, () => {
-  console.log(`Server is running on http://${ip}:${port}`);
+server.listen(port, () => {
+  console.log(`Server is running on http://:${port}`);
 });
 
 export interface CustomError extends Error {

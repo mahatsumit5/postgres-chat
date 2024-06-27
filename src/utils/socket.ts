@@ -6,7 +6,11 @@ import { getUserByEmail } from "../query/user.query";
 export async function connectSocket() {
   const io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: [
+        process.env.WEB_DOMAIN as string,
+        "http://localhost:5173",
+        "https://daisy-ui-chat-app.vercel.app/",
+      ],
       methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
       allowedHeaders: ["Content-Type", "Authorization"],
 
