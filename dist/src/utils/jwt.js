@@ -9,7 +9,7 @@ const session_query_1 = require("../query/session.query");
 const user_query_1 = require("../query/user.query");
 const createAccessJWT = async (email) => {
     const token = jsonwebtoken_1.default.sign({ email }, process.env.JWT_ACCESS_SECRET, {
-        expiresIn: 24 * 60 * 60 * 5, //30 days duration
+        expiresIn: 24 * 60 * 60 * 5, //5 days duration
     });
     await (0, session_query_1.createSession)({ token, email });
     return token;

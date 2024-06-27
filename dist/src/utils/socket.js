@@ -6,12 +6,12 @@ const __1 = require("../..");
 const ChatRoom_query_1 = require("../query/ChatRoom.query");
 const user_query_1 = require("../query/user.query");
 async function connectSocket() {
-    const origin = process.env.ENVIRONMENT === "Development"
-        ? "http://192.168.20.8:5173"
-        : "https://daisy-ui-chat-app.vercel.app";
     const io = new socket_io_1.Server(__1.server, {
         cors: {
-            origin,
+            origin: "*",
+            methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+            allowedHeaders: ["Content-Type", "Authorization"],
+            preflightContinue: true,
         },
     });
     const onLineUsers = {};
