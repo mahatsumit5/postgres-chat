@@ -4,17 +4,17 @@ import { getUserByEmail } from "../query/user.query";
 import multer, { Multer } from "multer";
 import multerS3 from "multer-s3";
 import { S3Client } from "@aws-sdk/client-s3";
+import Joi from "joi";
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { authorization } = req.headers;
-    if (!authorization) {
+    if (!authorization || authorization === null) {
       return res.json({
         status: "error",
         message: "Not authorized",
       });
     }
     const decoded = verifyAccessJWT(authorization);
-
     if (decoded?.email) {
       const user = await getUserByEmail(decoded.email);
       if (user?.id) {
@@ -25,10 +25,6 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
   } catch (error: Error | any) {
-    if (error.message.includes("jwt expired")) {
-      error.statusCode = 403;
-      error.message = "Your session has expired. Please login Again.";
-    }
     next(error);
   }
 };
@@ -65,4 +61,30 @@ export const upload = multer({
 export const timeout = (req: Request, res: Response, next: NextFunction) => {
   const data = req.setTimeout(100000);
   setTimeout(() => res.send("Hello world!"), 10000);
+};
+
+export const validateUserSignUp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    console.log(req.body);
+    const schema = Joi.object({
+      email: Joi.string()
+        .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+        .required(),
+      password: Joi.string()
+        .pattern(new RegExp(`^[a-zA-Z0-9!]{8,30}$`))
+        .min(8)
+        .max(30),
+      fName: Joi.string().required().min(2).max(15),
+      lName: Joi.string().required().min(2).max(15),
+    });
+
+    await schema.validateAsync(req.body);
+    next();
+  } catch (error) {
+    next(error);
+  }
 };

@@ -34,7 +34,7 @@ router.get("/all-users", middleware_1.auth, async (req, res, next) => {
         next(error);
     }
 });
-router.post("/sign-up", async (req, res, next) => {
+router.post("/sign-up", middleware_1.validateUserSignUp, async (req, res, next) => {
     try {
         const userAlreadyExist = await (0, user_query_1.getUserByEmail)(req.body.email);
         if (userAlreadyExist)

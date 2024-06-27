@@ -12,7 +12,7 @@ import {
   createRefreshJWT,
   verifyRefreshJWT,
 } from "../utils/jwt";
-import { auth, upload } from "../middleware";
+import { auth, upload, validateUserSignUp } from "../middleware";
 import { findSessionAndDelete } from "../query/session.query";
 const router = Router();
 
@@ -48,7 +48,7 @@ router.get("/all-users", auth, async (req, res, next) => {
     next(error);
   }
 });
-router.post("/sign-up", async (req, res, next) => {
+router.post("/sign-up", validateUserSignUp, async (req, res, next) => {
   try {
     const userAlreadyExist = await getUserByEmail(req.body.email);
     if (userAlreadyExist)

@@ -14,16 +14,13 @@ const port = 8080;
 const app = (0, express_1.default)();
 exports.server = http_1.default.createServer(app);
 (0, socket_1.connectSocket)();
-// app.use(
-//   cors({
-//     origin: process.env.WEB_DOMAIN as string,
-//     methods: "GET, PUT, PATCH, DELETE, POST",
-//     allowedHeaders: ["authorization", "refreshjwt"],
-//     // credentials: true,
-//   })
-// );
+app.use((0, cors_1.default)({
+    origin: process.env.WEB_DOMAIN,
+    methods: "GET, PUT, PATCH, DELETE, POST",
+    // allowedHeaders: ["authorization", "refreshjwt"],
+    // // credentials: true,
+}));
 const ip = process.env.ENVIRONMENT === "Development" ? "192.168.20.8" : "0.0.0.0";
-app.use((0, cors_1.default)({}));
 app.use(express_1.default.json());
 const user_router_1 = __importDefault(require("./src/router/user.router"));
 const friendRequest_router_1 = __importDefault(require("./src/router/friendRequest.router"));
@@ -35,6 +32,10 @@ app.use("/api/v1/friend", middleware_1.auth, friendRequest_router_1.default);
 app.use("/api/v1/room", middleware_1.auth, chatRoom_router_1.default);
 app.use("/api/v1/message", middleware_1.auth, message_router_1.default);
 app.use((error, req, res, next) => {
+    console.log(error);
+    if (error.message.includes(`"password" with value`)) {
+        error.message = "Password must match the include special characters";
+    }
     const code = error.statusCode || 500;
     const msg = error.message || "Internal Server Error.";
     return res.status(code).json({

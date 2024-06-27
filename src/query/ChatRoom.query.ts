@@ -88,3 +88,21 @@ export async function deleteChatRoom(roomId: string) {
     })
   );
 }
+
+export async function getChatRoomByEmail(email: string) {
+  return await executeQuery(
+    prisma.chatRoom.findMany({
+      where: {
+        AND: [
+          {
+            user: {
+              some: {
+                email: email,
+              },
+            },
+          },
+        ],
+      },
+    })
+  );
+}

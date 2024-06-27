@@ -3,16 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.timeout = exports.upload = exports.auth = void 0;
+exports.validateUserSignUp = exports.timeout = exports.upload = exports.auth = void 0;
 const jwt_1 = require("../utils/jwt");
 const user_query_1 = require("../query/user.query");
 const multer_1 = __importDefault(require("multer"));
 const multer_s3_1 = __importDefault(require("multer-s3"));
 const client_s3_1 = require("@aws-sdk/client-s3");
+const joi_1 = __importDefault(require("joi"));
 const auth = async (req, res, next) => {
     try {
         const { authorization } = req.headers;
-        if (!authorization) {
+        if (!authorization || authorization === null) {
             return res.json({
                 status: "error",
                 message: "Not authorized",
@@ -30,10 +31,6 @@ const auth = async (req, res, next) => {
         }
     }
     catch (error) {
-        if (error.message.includes("jwt expired")) {
-            error.statusCode = 403;
-            error.message = "Your session has expired. Please login Again.";
-        }
         next(error);
     }
 };
@@ -65,3 +62,25 @@ const timeout = (req, res, next) => {
     setTimeout(() => res.send("Hello world!"), 10000);
 };
 exports.timeout = timeout;
+const validateUserSignUp = async (req, res, next) => {
+    try {
+        console.log(req.body);
+        const schema = joi_1.default.object({
+            email: joi_1.default.string()
+                .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+                .required(),
+            password: joi_1.default.string()
+                .pattern(new RegExp(`^[a-zA-Z0-9!]{8,30}$`))
+                .min(8)
+                .max(30),
+            fName: joi_1.default.string().required().min(2).max(15),
+            lName: joi_1.default.string().required().min(2).max(15),
+        });
+        await schema.validateAsync(req.body);
+        next();
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.validateUserSignUp = validateUserSignUp;

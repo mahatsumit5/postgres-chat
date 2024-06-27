@@ -16,13 +16,18 @@ async function connectSocket() {
     });
     const onLineUsers = {};
     io.on("connection", async (socket) => {
-        const id = socket.handshake.query.id;
-        console.log("new user connected", id);
-        const user = await (0, user_query_1.getUserById)(id);
-        const rooms = await (0, ChatRoom_query_1.getChatRoom)(id);
-        [...rooms, user].forEach((room) => socket.join(room.id));
-        if (id != undefined && typeof id === "string")
-            onLineUsers[id] = socket.id;
+        const email = socket.handshake.query.email;
+        console.log("new user connected", email);
+        // changes these two
+        const user = await (0, user_query_1.getUserByEmail)(email);
+        const rooms = await (0, ChatRoom_query_1.getChatRoomByEmail)(email);
+        console.log("these are my rooms", rooms);
+        rooms.forEach((room) => socket.join(room.id));
+        if (user) {
+            socket.join(user?.id);
+        }
+        if (email != undefined && typeof email === "string")
+            onLineUsers[email] = socket.id;
         console.log("onlineUsers", onLineUsers);
         io.emit("getOnlineUsers", Object.keys(onLineUsers));
         socket.on("send_message", (message, id) => {
@@ -61,7 +66,7 @@ async function connectSocket() {
         });
         socket.on("disconnect", (socket) => {
             console.log("user disconnected");
-            delete onLineUsers[id];
+            delete onLineUsers[email];
         });
         console.log(socket.rooms);
     });
