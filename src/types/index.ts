@@ -27,3 +27,12 @@ export interface IRoom {
   id: string;
   user: IUser[];
 }
+
+export type message = {
+  id: string;
+  content: string;
+  createdAt: Date;
+  isSeen: boolean;
+  chatRoomId: string;
+  author: string;
+};

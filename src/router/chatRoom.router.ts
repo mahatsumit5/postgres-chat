@@ -4,7 +4,7 @@ import {
   deleteChatRoom,
   getChatRoom,
 } from "../query/ChatRoom.query";
-import { IRoom } from "../types";
+import { IRoom, message } from "../types";
 import {
   getLastMessageByRoomId,
   numberOfUnSeenMessagesByUser,
@@ -39,7 +39,7 @@ router.get("/", async (req, res, next) => {
         message: "Your do not have any chat room.",
       });
     } else {
-      let lastMessage = [];
+      let lastMessage: { messages: message[] }[] = [];
       let unSeenMessageCount: number[] = [];
       for (let i = 0; i < data.length; i++) {
         lastMessage.push(await getLastMessageByRoomId(data[i].id));
