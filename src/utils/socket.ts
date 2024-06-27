@@ -4,7 +4,15 @@ import { getChatRoomByEmail } from "../query/ChatRoom.query";
 import { getUserByEmail } from "../query/user.query";
 
 export async function connectSocket() {
-  const io = new Server(server, {});
+  const io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+
+      preflightContinue: true,
+    },
+  });
 
   const onLineUsers: Record<string, string> = {};
   io.on("connection", async (socket) => {

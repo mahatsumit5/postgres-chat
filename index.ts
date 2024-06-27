@@ -10,15 +10,14 @@ export const server = http.createServer(app);
 
 connectSocket();
 
-app
-  .use
-  // cors({
-  //   origin: process.env.WEB_DOMAIN as string,
-  //   methods: "GET, PUT, PATCH, DELETE, POST",
-  //   // allowedHeaders: ["authorization", "refreshjwt"],
-  //   // // credentials: true,
-  // })
-  ();
+app.use(
+  cors({
+    origin: [process.env.WEB_DOMAIN as string],
+    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
+    credentials: true,
+  })
+);
 
 const ip =
   process.env.ENVIRONMENT === "Development" ? "192.168.20.8" : "0.0.0.0";
