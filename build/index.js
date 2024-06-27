@@ -22,16 +22,19 @@ exports.server = http_1.default.createServer(app);
 // const _dirName = path.resolve();
 // app.use(express.static(path.join(_dirName + "/dist")));
 //GIVE ACCESS TO USE FILE INSIDE OF BUILD FOLDER
-app.use((0, cors_1.default)({
-    origin: [
-        process.env.WEB_DOMAIN,
-        "http://localhost:5173",
-        "https://daisy-ui-chat-app.vercel.app/",
-    ],
-    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
-    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
-    credentials: true,
-}));
+// app.use(
+//   cors({
+//     origin: [
+//       process.env.WEB_DOMAIN as string,
+//       "http://localhost:5173",
+//       "https://daisy-ui-chat-app.vercel.app/",
+//     ],
+//     methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+//     allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
+//     credentials: true,
+//   })
+// );
+app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use("/api/v1/user", user_router_1.default);
 app.use("/api/v1/friend", middleware_1.auth, friendRequest_router_1.default);
