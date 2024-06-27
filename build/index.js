@@ -15,10 +15,13 @@ const chatRoom_router_1 = __importDefault(require("./src/router/chatRoom.router"
 const message_router_1 = __importDefault(require("./src/router/message.router"));
 const middleware_1 = require("./src/middleware");
 (0, dotenv_1.config)();
-(0, socket_1.connectSocket)();
-const port = 8080;
+const port = Number(process.env.PORT) || 8080;
 const app = (0, express_1.default)();
 exports.server = http_1.default.createServer(app);
+// import path from "path";
+// const _dirName = path.resolve();
+// app.use(express.static(path.join(_dirName + "/dist")));
+//GIVE ACCESS TO USE FILE INSIDE OF BUILD FOLDER
 app.use((0, cors_1.default)({
     origin: [
         process.env.WEB_DOMAIN,
@@ -46,12 +49,15 @@ app.use((error, req, res, next) => {
         message: msg,
     });
 });
-app.get("/", async (req, res) => {
-    req.setTimeout(100);
-    res.json({
-        status: "success",
-        message: "Welcome to the chat application",
-    });
+app.get("/", (req, res) => {
+    res.json({ status: true, message: "Healthy" });
+});
+// app.get("/*", (req, res) => {
+//   // You would typically send your HTML here
+//   res.sendFile(_dirName + "/dist" + "/index.html");
+// });
+app.get("/socket.io", () => {
+    (0, socket_1.connectSocket)();
 });
 exports.server.listen(port, () => {
     console.log(`Server is running on http://:${port}`);

@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import http from "http";
 import { config } from "dotenv";
-import path from "path";
 import { connectSocket } from "./src/utils/socket";
 import cors from "cors";
 import userRouter from "./src/router/user.router";
@@ -11,11 +10,15 @@ import messageRouter from "./src/router/message.router";
 import { auth } from "./src/middleware";
 
 config();
-connectSocket();
 
-const port = 8080;
+const port = Number(process.env.PORT) || 8080;
 const app = express();
 export const server = http.createServer(app);
+
+// import path from "path";
+// const _dirName = path.resolve();
+// app.use(express.static(path.join(_dirName + "/dist")));
+//GIVE ACCESS TO USE FILE INSIDE OF BUILD FOLDER
 
 app.use(
   cors({
@@ -51,13 +54,16 @@ app.use(
     });
   }
 );
+app.get("/", (req, res) => {
+  res.json({ status: true, message: "Healthy" });
+});
 
-app.get("/", async (req, res) => {
-  req.setTimeout(100);
-  res.json({
-    status: "success",
-    message: "Welcome to the chat application",
-  });
+// app.get("/*", (req, res) => {
+//   // You would typically send your HTML here
+//   res.sendFile(_dirName + "/dist" + "/index.html");
+// });
+app.get("/socket.io", () => {
+  connectSocket();
 });
 server.listen(port, () => {
   console.log(`Server is running on http://:${port}`);
