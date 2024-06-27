@@ -4,15 +4,7 @@ import { getChatRoomByEmail } from "../query/ChatRoom.query";
 import { getUserByEmail } from "../query/user.query";
 
 export async function connectSocket() {
-  const origin =
-    process.env.ENVIRONMENT === "Development"
-      ? "http://192.168.20.8:5173"
-      : "https://daisy-ui-chat-app.vercel.app";
-  const io = new Server(server, {
-    cors: {
-      origin,
-    },
-  });
+  const io = new Server(server, {});
 
   const onLineUsers: Record<string, string> = {};
   io.on("connection", async (socket) => {
