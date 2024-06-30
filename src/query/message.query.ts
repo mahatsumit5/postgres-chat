@@ -73,7 +73,6 @@ export const getLastMessageByRoomId = async (roomid: string) => {
       },
     })
   );
-  console.log("this is last message", result);
   return result;
 };
 
