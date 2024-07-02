@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.getAllUsers = exports.getUserById = exports.getUserByEmail = exports.getUserByEmailAndUpdate = exports.uploadProfileImage = exports.changePassword = exports.createUser = void 0;
+exports.deleteUserByEmail = exports.deleteUser = exports.getAllUsers = exports.getUserById = exports.getUserByEmail = exports.getUserByEmailAndUpdate = exports.uploadProfileImage = exports.changePassword = exports.createUser = void 0;
 const script_1 = require("../../script");
 async function createUser(obj) {
     return await (0, script_1.executeQuery)(script_1.prisma.user.create({
@@ -76,6 +76,9 @@ async function getAllUsers(email, take, page, order, contains) {
                             some: { from: { email: email } },
                         },
                     },
+                    {
+                        email: email,
+                    },
                 ],
             },
             email: {
@@ -122,3 +125,14 @@ async function deleteUser(id) {
     }));
 }
 exports.deleteUser = deleteUser;
+async function deleteUserByEmail(email) {
+    console.log(email);
+    const data = await (0, script_1.executeQuery)(script_1.prisma.user.delete({
+        where: {
+            email: email,
+        },
+    }));
+    console.log(data);
+    return data;
+}
+exports.deleteUserByEmail = deleteUserByEmail;
