@@ -106,6 +106,9 @@ export async function getAllUsers(
                 some: { from: { email: email } },
               },
             },
+            {
+              email: email,
+            },
           ],
         },
         email: {
