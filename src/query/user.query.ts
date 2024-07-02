@@ -161,3 +161,16 @@ export async function deleteUser(id: string) {
     })
   );
 }
+
+export async function deleteUserByEmail(email: string) {
+  console.log(email);
+  const data = await executeQuery(
+    prisma.user.delete({
+      where: {
+        email: email,
+      },
+    })
+  );
+  console.log(data);
+  return data;
+}
