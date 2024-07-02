@@ -20,19 +20,15 @@ export const server = http.createServer(app);
 // app.use(express.static(path.join(_dirName + "/dist")));
 //GIVE ACCESS TO USE FILE INSIDE OF BUILD FOLDER
 
-// app.use(
-//   cors({
-//     origin: [
-//       process.env.WEB_DOMAIN as string,
-//       "http://localhost:5173",
-//       "https://daisy-ui-chat-app.vercel.app/",
-//     ],
-//     methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
-//     allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
-//     credentials: true,
-//   })
-// );
-app.use(cors());
+app.use(
+  cors({
+    origin: [process.env.WEB_DOMAIN as string, "http://localhost:5173"],
+    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
+    credentials: true,
+  })
+);
+// app.use(cors());
 
 app.use(express.json());
 
