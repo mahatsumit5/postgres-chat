@@ -96,6 +96,7 @@ export const messageSeenByRoom = async ({
       },
     })
   );
+  console.log(result);
   return result;
 };
 export const numberOfUnSeenMessagesByUser = async (
@@ -112,5 +113,26 @@ export const numberOfUnSeenMessagesByUser = async (
     })
   );
   console.log("the num of unseen message for this room is:", result);
+  return result;
+};
+
+export const deleteMessage = async (messageId: string) => {
+  const result = await executeQuery(
+    prisma.message.deleteMany({ where: { id: messageId } })
+  );
+  return result;
+};
+
+export const updateMessage = async (messageId: string, content: string) => {
+  const result = await executeQuery(
+    prisma.message.update({
+      where: { id: messageId },
+      data: {
+        content: content,
+      },
+    })
+  );
+  console.log(result);
+
   return result;
 };

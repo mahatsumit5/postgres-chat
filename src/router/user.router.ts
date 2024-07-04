@@ -77,13 +77,20 @@ router.post("/sign-in", async (req, res: Response, next) => {
     if (!isPasswordCorrect) {
       next(new Error("Incorrect Password"));
     }
+    const token = {
+      accessJWT: await createAccessJWT(req.body.email),
+      refreshJWT: await createRefreshJWT(req.body.email),
+    };
+    res.cookie("jwt", token.accessJWT, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 60 * 1000,
+      sameSite: "none",
+      domain: "http://localhost:5173",
+    });
     return res.json({
       status: true,
       message: "Logged In Successfully!",
-      token: {
-        accessJWT: await createAccessJWT(req.body.email),
-        refreshJWT: await createRefreshJWT(req.body.email),
-      },
+      token,
     });
   } catch (error) {
     console.log(error);

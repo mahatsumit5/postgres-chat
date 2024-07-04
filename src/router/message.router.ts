@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  deleteMessage,
   getMessageByUsers,
   messageSeenByRoom,
   sendMessage,
@@ -50,6 +51,22 @@ router.put("/", async (req, res, next) => {
           message: "Success",
           result,
         });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const result = await deleteMessage(id);
+    result
+      ? res.json({
+          status: true,
+          message: "Success",
+        })
+      : next(new Error("Unable to delete message"));
   } catch (error) {
     next(error);
   }
