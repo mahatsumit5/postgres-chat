@@ -7,12 +7,17 @@ export const createAuth0Token = async (response: Response) => {
     audience: process.env.audience,
     grant_type: "client_credentials",
   };
-  const { data } = await axios({
-    method: "POST",
-    url: process.env.Request_Token_URL,
-    headers: { "content-type": "application/json" },
-    data: requestBody,
-  });
+  // await axios({
+  //   method: "POST",
+  //   url: process.env.Request_Token_URL,
+  //   headers: { "content-type": "application/json" },
+  //   data: requestBody,
+  // });
+  const { data } = await axios.post(
+    process.env.Request_Token_URL,
+    requestBody,
+    { headers: { "content-type": "application/json" } }
+  );
 
   // const cookieOptions = {
   //   secure: false,

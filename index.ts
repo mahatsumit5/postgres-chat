@@ -35,7 +35,6 @@ app.use(express.json());
 
 app.use("/api/v1/user", publicUserRouter);
 app.use("/api/v1/user", auth0Check, loggedInUserAuth, userRouter);
-
 app.use("/api/v1/friend", auth0Check, loggedInUserAuth, friendRouter);
 app.use("/api/v1/room", auth0Check, loggedInUserAuth, chatRoomRouter);
 app.use("/api/v1/message", auth0Check, loggedInUserAuth, messageRouter);
