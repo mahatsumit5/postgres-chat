@@ -11,6 +11,7 @@ import messageRouter from "./src/router/message.router";
 import { ErrorHandler } from "./src/utils/errorHandler";
 import { auth } from "express-oauth2-jwt-bearer";
 import { loggedInUserAuth } from "./src/middleware";
+import path from "path";
 config();
 export const auth0Check = auth({
   audience: process.env.audience,
@@ -21,15 +22,7 @@ export const sessions: Record<string, string> = {};
 const port = Number(process.env.PORT) || 8080;
 const app = express();
 export const server = http.createServer(app);
-
-app.use(
-  cors({
-    origin: [process.env.WEB_DOMAIN as string, "http://localhost:5173"],
-    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
-    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
-    credentials: true,
-  })
-);
+app.use("/", express.static(path.join(__dirname, "../dist")));
 
 app.use(express.json());
 
@@ -39,13 +32,23 @@ app.use("/api/v1/friend", auth0Check, loggedInUserAuth, friendRouter);
 app.use("/api/v1/room", auth0Check, loggedInUserAuth, chatRoomRouter);
 app.use("/api/v1/message", auth0Check, loggedInUserAuth, messageRouter);
 app.use(ErrorHandler);
-app.get("/", async (req, res) => {
-  res.json({ status: true, message: "Healthy" });
-});
-
 app.get("/socket.io", () => {
   connectSocket();
 });
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../dist/index.html"), (err) => {
+    err && res.send(`<h1>Unexpected Error Occured</h1>`);
+  });
+});
+
+app.use(
+  cors({
+    origin: [process.env.WEB_DOMAIN as string, "http://localhost:5173"],
+    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
+    credentials: true,
+  })
+);
 server.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
