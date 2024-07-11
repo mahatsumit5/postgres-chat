@@ -6,7 +6,6 @@ export const createAuth0Token = async (response: Response) => {
     client_secret: process.env.client_secret,
     audience: process.env.audience,
     grant_type: "client_credentials",
-    email: "mahatsumit5@gmail.com",
   };
   const { data } = await axios({
     method: "POST",
@@ -15,15 +14,15 @@ export const createAuth0Token = async (response: Response) => {
     data: requestBody,
   });
 
-  const cookieOptions = {
-    secure: false,
-    httpOnly: true,
-    expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
-  };
-  if (process.env.ENVIRONMENT !== "Development") cookieOptions.secure = true;
-  response.cookie("jwt", data.access_token, {
-    ...cookieOptions,
-    sameSite: "none",
-  });
+  // const cookieOptions = {
+  //   secure: false,
+  //   httpOnly: true,
+  //   expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+  // };
+  // if (process.env.ENVIRONMENT !== "Development") cookieOptions.secure = true;
+  // response.cookie("jwt", data.access_token, {
+  //   ...cookieOptions,
+  //   sameSite: "none",
+  // });
   return data;
 };

@@ -7,7 +7,6 @@ import {
 import { hashPass } from "../utils/bcrypt";
 import { createAccessJWT, verifyRefreshJWT } from "../utils/jwt";
 import { loggedInUserAuth, upload } from "../middleware";
-import { findSessionAndDelete } from "../query/session.query";
 import { sessions } from "../..";
 const router = Router();
 
