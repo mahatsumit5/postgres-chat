@@ -4,8 +4,6 @@ import { getChatRoomByEmail } from "../query/ChatRoom.query";
 import { getUserByEmail } from "../query/user.query";
 
 export async function connectSocket() {
-  console.log("connecting to socket");
-
   const io = new Server(server, {
     cors: {
       origin: [

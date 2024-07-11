@@ -21,6 +21,24 @@ declare global {
       userInfo?: IUser;
     }
   }
+  namespace NodeJS {
+    interface ProcessEnv {
+      DATABASE_URL: string;
+      JWT_ACCESS_SECRET: string;
+      JWT_REFRESH_SECRET: string;
+      WEB_DOMAIN: string;
+      ENVIRONMENT: string;
+      AWS_BUCKET_NAME: string;
+      AWS_REGION: string;
+      AWS_ACCESS_KEY: string;
+      AWS_SECRET_KEY: string;
+      audience: string;
+      issuerBaseURL: string;
+      Request_Token_URL: string;
+      client_id: string;
+      client_secret: string;
+    }
+  }
 }
 
 export interface IRoom {

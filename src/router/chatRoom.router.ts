@@ -9,6 +9,7 @@ import {
   getLastMessageByRoomId,
   numberOfUnSeenMessagesByUser,
 } from "../query/message.query";
+import { loggedInUserAuth } from "../middleware";
 const router = Router();
 
 router.post("/", async (req, res, next) => {
@@ -24,7 +25,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.get("/", async (req, res, next) => {
+router.get("/", loggedInUserAuth, async (req, res, next) => {
   try {
     const userId = req.userInfo?.id;
     const serachQuery = req.query.search;

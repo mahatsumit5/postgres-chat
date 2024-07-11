@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon build/index.js",
     "build": "npx prisma generate && npx tsc",
     "start": " node build/index.js",
-    "dev": "nodemon index.ts",
     "git": "npx tsc && git add . && git commit -m \"build folder ready\" && git push "
   },
   "keywords": [],
@@ -19,16 +19,18 @@
     "@types/multer-s3": "^3.0.3",
     "@types/node": "^20.12.7",
     "nodemon": "^3.1.0",
-    "prisma": "^5.15.0",
+    "prisma": "^5.16.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
   "dependencies": {
     "@prisma/client": "^5.15.0",
+    "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-oauth2-jwt-bearer": "^1.6.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",

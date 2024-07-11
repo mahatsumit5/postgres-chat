@@ -53,4 +53,19 @@ router.put("/", async (req, res, next) => {
         next(error);
     }
 });
+router.delete("/:id", async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await (0, message_query_1.deleteMessage)(id);
+        result
+            ? res.json({
+                status: true,
+                message: "Success",
+            })
+            : next(new Error("Unable to delete message"));
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.default = router;

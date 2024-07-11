@@ -60,12 +60,13 @@ export async function getUserByEmailAndUpdate(
 }
 
 export async function getUserByEmail(email: string) {
-  return executeQuery(
+  return await executeQuery(
     prisma.user.findUnique({
       where: { email: email },
     })
   );
 }
+
 export async function getUserById(id: string) {
   return executeQuery(
     prisma.user.findUnique({

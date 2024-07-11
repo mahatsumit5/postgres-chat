@@ -5,22 +5,28 @@ import multer, { Multer } from "multer";
 import multerS3 from "multer-s3";
 import { S3Client } from "@aws-sdk/client-s3";
 import Joi from "joi";
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+import { sessions } from "../..";
+export const loggedInUserAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { authorization } = req.headers;
-    if (!authorization || authorization === null) {
-      return res.json({
-        status: "error",
-        message: "Not authorized",
-      });
-    }
-    const decoded = verifyAccessJWT(authorization);
-    if (decoded?.email) {
-      const user = await getUserByEmail(decoded.email);
+    const sessionsKeys = Object.keys(sessions);
+    if (!sessionsKeys.length) throw new Error("You are not logged in");
+    const loggedInUserIndex = sessionsKeys.findIndex(
+      (token) => token === req.auth?.token
+    );
+
+    const email = Object.values(sessions)[loggedInUserIndex];
+
+    if (email) {
+      const user = await getUserByEmail(email);
       if (user?.id) {
         user.password = undefined;
         user.refreshJWT = undefined;
         req.userInfo = user;
+
         return next();
       }
     }
@@ -58,11 +64,6 @@ export const upload = multer({
   }),
 });
 
-export const timeout = (req: Request, res: Response, next: NextFunction) => {
-  const data = req.setTimeout(100000);
-  setTimeout(() => res.send("Hello world!"), 10000);
-};
-
 export const validateUserSignUp = async (
   req: Request,
   res: Response,
@@ -88,3 +89,5 @@ export const validateUserSignUp = async (
     next(error);
   }
 };
+
+export const checkJwtAuth0 = () => {};

@@ -3,25 +3,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateUserSignUp = exports.timeout = exports.upload = exports.auth = void 0;
-const jwt_1 = require("../utils/jwt");
+exports.checkJwtAuth0 = exports.validateUserSignUp = exports.upload = exports.loggedInUserAuth = void 0;
 const user_query_1 = require("../query/user.query");
 const multer_1 = __importDefault(require("multer"));
 const multer_s3_1 = __importDefault(require("multer-s3"));
 const client_s3_1 = require("@aws-sdk/client-s3");
 const joi_1 = __importDefault(require("joi"));
-const auth = async (req, res, next) => {
+const __1 = require("../..");
+const loggedInUserAuth = async (req, res, next) => {
     try {
-        const { authorization } = req.headers;
-        if (!authorization || authorization === null) {
-            return res.json({
-                status: "error",
-                message: "Not authorized",
-            });
-        }
-        const decoded = (0, jwt_1.verifyAccessJWT)(authorization);
-        if (decoded?.email) {
-            const user = await (0, user_query_1.getUserByEmail)(decoded.email);
+        const sessionsKeys = Object.keys(__1.sessions);
+        if (!sessionsKeys.length)
+            throw new Error("You are not logged in");
+        const loggedInUserIndex = sessionsKeys.findIndex((token) => token === req.auth?.token);
+        const email = Object.values(__1.sessions)[loggedInUserIndex];
+        if (email) {
+            const user = await (0, user_query_1.getUserByEmail)(email);
             if (user?.id) {
                 user.password = undefined;
                 user.refreshJWT = undefined;
@@ -34,7 +31,7 @@ const auth = async (req, res, next) => {
         next(error);
     }
 };
-exports.auth = auth;
+exports.loggedInUserAuth = loggedInUserAuth;
 const region = process.env.AWS_REGION;
 const accessKey = process.env.AWS_ACCESS_KEY;
 const secretKey = process.env.AWS_SECRET_KEY;
@@ -57,11 +54,6 @@ exports.upload = (0, multer_1.default)({
         },
     }),
 });
-const timeout = (req, res, next) => {
-    const data = req.setTimeout(100000);
-    setTimeout(() => res.send("Hello world!"), 10000);
-};
-exports.timeout = timeout;
 const validateUserSignUp = async (req, res, next) => {
     try {
         console.log(req.body);
@@ -84,3 +76,5 @@ const validateUserSignUp = async (req, res, next) => {
     }
 };
 exports.validateUserSignUp = validateUserSignUp;
+const checkJwtAuth0 = () => { };
+exports.checkJwtAuth0 = checkJwtAuth0;

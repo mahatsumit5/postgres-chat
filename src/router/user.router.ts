@@ -1,32 +1,27 @@
-import { Router, Response } from "express";
+import { Router } from "express";
 import {
   changePassword,
-  createUser,
   getAllUsers,
-  getUserByEmail,
   uploadProfileImage,
 } from "../query/user.query";
-import { comparePassword, hashPass } from "../utils/bcrypt";
-import {
-  createAccessJWT,
-  createRefreshJWT,
-  verifyRefreshJWT,
-} from "../utils/jwt";
-import { auth, upload, validateUserSignUp } from "../middleware";
+import { hashPass } from "../utils/bcrypt";
+import { createAccessJWT, verifyRefreshJWT } from "../utils/jwt";
+import { loggedInUserAuth, upload } from "../middleware";
 import { findSessionAndDelete } from "../query/session.query";
+import { sessions } from "../..";
 const router = Router();
 
-router.get("/", auth, async (req, res, next) => {
+router.get("/", loggedInUserAuth, async (req, res, next) => {
   try {
     const user = req.userInfo;
     user?.id
-      ? res.json({ status: true, data: user })
+      ? res.json({ status: true, data: user, req: req.auth })
       : res.status(404).json({ message: "No user found.", status: false });
   } catch (error) {
     next(error);
   }
 });
-router.get("/all-users", auth, async (req, res, next) => {
+router.get("/all-users", async (req, res, next) => {
   try {
     const user = req.userInfo;
     const order = req.query.order as "asc" | "desc";
@@ -48,66 +43,13 @@ router.get("/all-users", auth, async (req, res, next) => {
     next(error);
   }
 });
-router.post("/sign-up", validateUserSignUp, async (req, res, next) => {
-  try {
-    const userAlreadyExist = await getUserByEmail(req.body.email);
-    if (userAlreadyExist)
-      throw new Error("An account already exist with this email.");
-    req.body.password = hashPass(req.body.password);
-    const user = await createUser(req.body);
 
-    user?.id
-      ? res.json({ status: true, message: "User Created" })
-      : res.status(400).json({
-          status: false,
-          message: "Unable to create new account.Please try again.",
-        });
-  } catch (error) {
-    next(error);
-  }
-});
-router.post("/sign-in", async (req, res: Response, next) => {
-  try {
-    const user = await getUserByEmail(req.body.email);
-    if (!user) {
-      next(new Error("User not found"));
-    }
-
-    const isPasswordCorrect = comparePassword(req.body.password, user.password);
-    if (!isPasswordCorrect) {
-      next(new Error("Incorrect Password"));
-    }
-    const token = {
-      accessJWT: await createAccessJWT(req.body.email),
-      refreshJWT: await createRefreshJWT(req.body.email),
-    };
-    res.cookie("jwt", token.accessJWT, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 60 * 1000,
-      sameSite: "none",
-      domain: "http://localhost:5173",
-    });
-    return res.json({
-      status: true,
-      message: "Logged In Successfully!",
-      token,
-    });
-  } catch (error) {
-    console.log(error);
-    next(error);
-  }
-});
-
-router.post("/logout", auth, async (req, res, next) => {
+router.post("/logout", async (req, res, next) => {
   try {
     const token = req.headers.authorization;
     const user = req.userInfo;
-
-    const result = await findSessionAndDelete(
-      token as string,
-      user?.email || ""
-    );
-    result ? res.json({ status: true }) : next(new Error("Unable to logout"));
+    delete sessions[token as string];
+    res.json({ status: true });
   } catch (error) {
     next(error);
   }
@@ -132,7 +74,7 @@ router.patch("/new-accessJWT", async (req, res, next) => {
     next(error);
   }
 });
-router.put("/reset-password", auth, async (req, res, next) => {
+router.put("/reset-password", async (req, res, next) => {
   try {
     const user = req.userInfo;
     if (!user) throw new Error("Not authorized");
@@ -155,7 +97,7 @@ router.put("/reset-password", auth, async (req, res, next) => {
 
 router.put(
   "/upload-profile",
-  auth,
+
   upload.single("profile"),
   async (req, res, next) => {
     try {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.numberOfUnSeenMessagesByUser = exports.messageSeenByRoom = exports.getLastMessageByRoomId = exports.getMessageByUsers = exports.sendMessage = void 0;
+exports.updateMessage = exports.deleteMessage = exports.numberOfUnSeenMessagesByUser = exports.messageSeenByRoom = exports.getLastMessageByRoomId = exports.getMessageByUsers = exports.sendMessage = void 0;
 const script_1 = require("../../script");
 const sendMessage = async ({ content, roomId, author, }) => {
     const result = await (0, script_1.executeQuery)(script_1.prisma.message.create({
@@ -72,6 +72,7 @@ const messageSeenByRoom = async ({ roomid, author, }) => {
             },
         },
     }));
+    console.log(result);
     return result;
 };
 exports.messageSeenByRoom = messageSeenByRoom;
@@ -87,3 +88,19 @@ const numberOfUnSeenMessagesByUser = async (author, roomId) => {
     return result;
 };
 exports.numberOfUnSeenMessagesByUser = numberOfUnSeenMessagesByUser;
+const deleteMessage = async (messageId) => {
+    const result = await (0, script_1.executeQuery)(script_1.prisma.message.deleteMany({ where: { id: messageId } }));
+    return result;
+};
+exports.deleteMessage = deleteMessage;
+const updateMessage = async (messageId, content) => {
+    const result = await (0, script_1.executeQuery)(script_1.prisma.message.update({
+        where: { id: messageId },
+        data: {
+            content: content,
+        },
+    }));
+    console.log(result);
+    return result;
+};
+exports.updateMessage = updateMessage;

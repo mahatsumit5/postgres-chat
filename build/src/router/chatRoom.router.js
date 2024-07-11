@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const ChatRoom_query_1 = require("../query/ChatRoom.query");
 const message_query_1 = require("../query/message.query");
+const middleware_1 = require("../middleware");
 const router = (0, express_1.Router)();
 router.post("/", async (req, res, next) => {
     try {
@@ -18,7 +19,7 @@ router.post("/", async (req, res, next) => {
         next(error);
     }
 });
-router.get("/", async (req, res, next) => {
+router.get("/", middleware_1.loggedInUserAuth, async (req, res, next) => {
     try {
         const userId = req.userInfo?.id;
         const serachQuery = req.query.search;

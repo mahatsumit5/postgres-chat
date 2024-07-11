@@ -1,24 +1,26 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import http from "http";
 import { config } from "dotenv";
 import { connectSocket } from "./src/utils/socket";
 import cors from "cors";
+import publicUserRouter from "./src/router/public.router";
 import userRouter from "./src/router/user.router";
 import friendRouter from "./src/router/friendRequest.router";
 import chatRoomRouter from "./src/router/chatRoom.router";
 import messageRouter from "./src/router/message.router";
-import { auth } from "./src/middleware";
-
+import { ErrorHandler } from "./src/utils/errorHandler";
+import { auth } from "express-oauth2-jwt-bearer";
+import { loggedInUserAuth } from "./src/middleware";
 config();
+export const auth0Check = auth({
+  audience: process.env.audience,
+  issuerBaseURL: process.env.issuerBaseURL,
+});
+export const sessions: Record<string, string> = {};
 
 const port = Number(process.env.PORT) || 8080;
 const app = express();
 export const server = http.createServer(app);
-
-// import path from "path";
-// const _dirName = path.resolve();
-// app.use(express.static(path.join(_dirName + "/dist")));
-//GIVE ACCESS TO USE FILE INSIDE OF BUILD FOLDER
 
 app.use(
   cors({
@@ -28,42 +30,25 @@ app.use(
     credentials: true,
   })
 );
-// app.use(cors());
 
 app.use(express.json());
 
-app.use("/api/v1/user", userRouter);
-app.use("/api/v1/friend", auth, friendRouter);
-app.use("/api/v1/room", auth, chatRoomRouter);
-app.use("/api/v1/message", auth, messageRouter);
+app.use("/api/v1/user", publicUserRouter);
+app.use("/api/v1/user", auth0Check, loggedInUserAuth, userRouter);
 
-app.use(
-  (error: CustomError, req: Request, res: Response, next: NextFunction) => {
-    console.log(error);
-    if (error.message.includes(`"password" with value`)) {
-      error.message = "Password must match the include special characters";
-    }
-    const code = error.statusCode || 500;
-    const msg = error.message || "Internal Server Error.";
-    return res.status(code).json({
-      status: false,
-      message: msg,
-    });
-  }
-);
-app.get("/", (req, res) => {
+app.use("/api/v1/friend", auth0Check, loggedInUserAuth, friendRouter);
+app.use("/api/v1/room", auth0Check, loggedInUserAuth, chatRoomRouter);
+app.use("/api/v1/message", auth0Check, loggedInUserAuth, messageRouter);
+app.use(ErrorHandler);
+app.get("/", async (req, res) => {
   res.json({ status: true, message: "Healthy" });
 });
 
-// app.get("/*", (req, res) => {
-//   // You would typically send your HTML here
-//   res.sendFile(_dirName + "/dist" + "/index.html");
-// });
 app.get("/socket.io", () => {
   connectSocket();
 });
 server.listen(port, () => {
-  console.log(`Server is running on http://:${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
 
 export interface CustomError extends Error {

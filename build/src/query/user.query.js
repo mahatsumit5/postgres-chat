@@ -40,7 +40,7 @@ async function getUserByEmailAndUpdate(email, dataToUpdate) {
 }
 exports.getUserByEmailAndUpdate = getUserByEmailAndUpdate;
 async function getUserByEmail(email) {
-    return (0, script_1.executeQuery)(script_1.prisma.user.findUnique({
+    return await (0, script_1.executeQuery)(script_1.prisma.user.findUnique({
         where: { email: email },
     }));
 }

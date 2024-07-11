@@ -6,7 +6,6 @@ const __1 = require("../..");
 const ChatRoom_query_1 = require("../query/ChatRoom.query");
 const user_query_1 = require("../query/user.query");
 async function connectSocket() {
-    console.log("connecting to socket");
     const io = new socket_io_1.Server(__1.server, {
         cors: {
             origin: [
