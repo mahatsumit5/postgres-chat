@@ -26,7 +26,6 @@ export async function connectSocket() {
     // changes these two
     const user = await getUserByEmail(email as string);
     const rooms = await getChatRoomByEmail(email as string);
-    console.log("these are my rooms", rooms);
 
     rooms.forEach((room: { id: string }) => socket.join(room.id));
     if (user) {

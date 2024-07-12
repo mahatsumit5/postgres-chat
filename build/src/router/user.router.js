@@ -9,6 +9,7 @@ const __1 = require("../..");
 const router = (0, express_1.Router)();
 router.get("/", middleware_1.loggedInUserAuth, async (req, res, next) => {
     try {
+        console.log(req.auth);
         const user = req.userInfo;
         user?.id
             ? res.json({ status: true, data: user, req: req.auth })

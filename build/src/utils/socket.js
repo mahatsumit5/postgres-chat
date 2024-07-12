@@ -26,7 +26,6 @@ async function connectSocket() {
         // changes these two
         const user = await (0, user_query_1.getUserByEmail)(email);
         const rooms = await (0, ChatRoom_query_1.getChatRoomByEmail)(email);
-        console.log("these are my rooms", rooms);
         rooms.forEach((room) => socket.join(room.id));
         if (user) {
             socket.join(user?.id);

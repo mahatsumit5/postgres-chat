@@ -26,6 +26,12 @@ exports.auth0Check = (0, express_oauth2_jwt_bearer_1.auth)({
 exports.sessions = {};
 const port = Number(process.env.PORT) || 8080;
 const app = (0, express_1.default)();
+app.use((0, cors_1.default)({
+    origin: [process.env.WEB_DOMAIN, "http://localhost:5173"],
+    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
+    credentials: true,
+}));
 exports.server = http_1.default.createServer(app);
 app.use("/", express_1.default.static(path_1.default.join(__dirname, "../dist")));
 app.use(express_1.default.json());
@@ -43,12 +49,10 @@ app.get("/*", (req, res) => {
         err && res.send(`<h1>Unexpected Error Occured</h1>`);
     });
 });
-app.use((0, cors_1.default)({
-    origin: [process.env.WEB_DOMAIN, "http://localhost:5173"],
-    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
-    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
-    credentials: true,
-}));
-exports.server.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+process.env.ENVIRONMENT === "Development"
+    ? exports.server.listen(port, "192.168.20.8", () => {
+        console.log(`Server is running on http://192.168.20.8:${port}`);
+    })
+    : exports.server.listen(port, () => {
+        console.log(`Server is running on http://localhost:${port}`);
+    });

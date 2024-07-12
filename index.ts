@@ -21,6 +21,14 @@ export const sessions: Record<string, string> = {};
 
 const port = Number(process.env.PORT) || 8080;
 const app = express();
+app.use(
+  cors({
+    origin: [process.env.WEB_DOMAIN as string, "http://localhost:5173"],
+    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
+    credentials: true,
+  })
+);
 export const server = http.createServer(app);
 app.use("/", express.static(path.join(__dirname, "../dist")));
 
@@ -40,18 +48,13 @@ app.get("/*", (req, res) => {
     err && res.send(`<h1>Unexpected Error Occured</h1>`);
   });
 });
-
-app.use(
-  cors({
-    origin: [process.env.WEB_DOMAIN as string, "http://localhost:5173"],
-    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
-    allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
-    credentials: true,
-  })
-);
-server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+process.env.ENVIRONMENT === "Development"
+  ? server.listen(port, "192.168.20.8", () => {
+      console.log(`Server is running on http://192.168.20.8:${port}`);
+    })
+  : server.listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
+    });
 
 export interface CustomError extends Error {
   statusCode: number;
