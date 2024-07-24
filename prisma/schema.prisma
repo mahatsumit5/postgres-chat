@@ -25,7 +25,7 @@ model User {
   friendRequests FriendRequests[] @relation("receiver")
   sentRequests   FriendRequests[] @relation("sender")
   messages       Message[]
-  post           Post             @relation (fields: [postId],references: [id])
+  post           Post[]
   postId         String
 }
 
