@@ -8,10 +8,12 @@ import userRouter from "./src/router/user.router";
 import friendRouter from "./src/router/friendRequest.router";
 import chatRoomRouter from "./src/router/chatRoom.router";
 import messageRouter from "./src/router/message.router";
+import postRouter from "./src/router/post.router";
 import { ErrorHandler } from "./src/utils/errorHandler";
 import { auth } from "express-oauth2-jwt-bearer";
 import { loggedInUserAuth } from "./src/middleware";
 import path from "path";
+import { createPost } from "./src/query/post.query";
 config();
 export const auth0Check = auth({
   audience: process.env.audience,
@@ -34,6 +36,7 @@ app.use("/", express.static(path.join(__dirname, "../dist")));
 
 app.use(express.json());
 
+app.use("/api/v1/post", auth0Check, postRouter);
 app.use("/api/v1/user", publicUserRouter);
 app.use("/api/v1/user", auth0Check, loggedInUserAuth, userRouter);
 app.use("/api/v1/friend", auth0Check, loggedInUserAuth, friendRouter);

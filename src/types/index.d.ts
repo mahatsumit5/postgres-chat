@@ -54,3 +54,9 @@ export type message = {
   chatRoomId: string;
   author: string;
 };
+
+declare interface CreatePostParams {
+  title: string;
+  content: string;
+  id: string;
+}

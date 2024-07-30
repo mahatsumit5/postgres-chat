@@ -19,24 +19,50 @@ model User {
   isActive       Boolean          @default(true)
   password       String
   profile        String?
-  refreshJWT     String           @default("")
   chatRoom       ChatRoom[]
   session        Session[]
   friendRequests FriendRequests[] @relation("receiver")
   sentRequests   FriendRequests[] @relation("sender")
   messages       Message[]
-  post           Post[]
-  postId         String
+  post           Post[]           @relation("createdPost")
+  likedPosts     PostLike[]       @relation("likes")
+  comment        Comment[]
 }
 
+model PostLike {
+  id     String @id @default(uuid())
+  postId String
+  userId String
+  post   Post   @relation(fields: [postId], references: [id])
+  user   User   @relation("likes",fields: [userId], references: [id])
 
-model Post{
-  id          String           @id @default(uuid())
-  title       String
-  content     String
-  author      User             @relation(fields: [authorId], references: [id])
-  authorId    String
+  @@unique([postId, userId])
 }
+
+model Post {
+  id        String     @id @default(uuid())
+  title     String     @db.VarChar(255)
+  content   String
+  published Boolean    @default(false)
+  author    User       @relation("createdPost", fields: [authorId], references: [id])
+  authorId  String
+  comment   Comment[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  likes     PostLike[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model ChatRoom {
   id       String    @id @default(uuid())
   messages Message[]
@@ -52,7 +78,6 @@ model Message {
   chatRoomId String
   creatorId  User     @relation(fields: [author], references: [id])
   author     String
-  
 }
 
 model Session {
@@ -72,7 +97,6 @@ model FriendRequests {
   status Status @default(PENDING)
 
   @@id([fromId, toId])
-  
 }
 
 enum Status {
