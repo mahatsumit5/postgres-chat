@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Response } from "express";
-import { emit } from "process";
 export const createAuth0Token = async (response: Response) => {
   const requestBody = {
     client_id: process.env.client_id,

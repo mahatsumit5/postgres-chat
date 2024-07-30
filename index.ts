@@ -13,7 +13,6 @@ import { ErrorHandler } from "./src/utils/errorHandler";
 import { auth } from "express-oauth2-jwt-bearer";
 import { loggedInUserAuth } from "./src/middleware";
 import path from "path";
-import { createPost } from "./src/query/post.query";
 config();
 export const auth0Check = auth({
   audience: process.env.audience,

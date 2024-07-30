@@ -6,6 +6,28 @@ import multerS3 from "multer-s3";
 import { S3Client } from "@aws-sdk/client-s3";
 import Joi from "joi";
 import { sessions } from "../..";
+import { z } from "zod";
+const email = Joi.string()
+  .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+  .required();
+const password = Joi.string()
+  .pattern(
+    new RegExp(
+      `^(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':"\\\\|,.<>?])(?=.*[a-zA-Z0-9])[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':"\\\\|,.<>?]{0,30}$`
+    )
+  )
+  .min(8)
+  .max(30);
+
+const User = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(8, { message: "Must be at least 8 characters long" })
+    .max(30, {
+      message: "Password cannot be greater than 30 characters long.",
+    }),
+});
 export const loggedInUserAuth = async (
   req: Request,
   res: Response,
@@ -70,17 +92,29 @@ export const validateUserSignUp = async (
   next: NextFunction
 ) => {
   try {
-    console.log(req.body);
     const schema = Joi.object({
-      email: Joi.string()
-        .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
-        .required(),
-      password: Joi.string()
-        .pattern(new RegExp(`^[a-zA-Z0-9!]{8,30}$`))
-        .min(8)
-        .max(30),
+      email: email,
+      password: password,
       fName: Joi.string().required().min(2).max(15),
       lName: Joi.string().required().min(2).max(15),
+    });
+
+    await schema.validateAsync(req.body);
+    next();
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+export const validateUserLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const schema = Joi.object({
+      email: email,
+      password: password,
     });
 
     await schema.validateAsync(req.body);
@@ -89,5 +123,3 @@ export const validateUserSignUp = async (
     next(error);
   }
 };
-
-export const checkJwtAuth0 = () => {};

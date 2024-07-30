@@ -1,5 +1,5 @@
 import { Response, Router } from "express";
-import { validateUserSignUp } from "../middleware";
+import { validateUserLogin, validateUserSignUp } from "../middleware";
 import { createUser, getUserByEmail } from "../query/user.query";
 import { comparePassword, hashPass } from "../utils/bcrypt";
 import { createAuth0Token } from "../utils/auth0";
@@ -25,7 +25,7 @@ router.post("/sign-up", validateUserSignUp, async (req, res, next) => {
     next(error);
   }
 });
-router.post("/sign-in", async (req, res: Response, next) => {
+router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
   try {
     const user = await getUserByEmail(req.body.email);
     if (!user) {
@@ -34,6 +34,7 @@ router.post("/sign-in", async (req, res: Response, next) => {
     const isPasswordCorrect = comparePassword(req.body.password, user.password);
     if (!isPasswordCorrect) {
       next(new Error("Incorrect Password"));
+      return;
     }
     const token = await createAuth0Token(res);
     sessions[token.access_token] = req.body.email;

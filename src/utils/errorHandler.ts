@@ -9,7 +9,7 @@ export const ErrorHandler = (
 ) => {
   console.log(error);
   if (error.message.includes(`"password" with value`)) {
-    error.message = "Password must match the include special characters";
+    error.message = "Password must match the requirement";
   }
   const code = error.statusCode || 500;
   const msg = error.message || "Internal Server Error.";
