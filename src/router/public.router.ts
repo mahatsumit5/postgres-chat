@@ -1,9 +1,13 @@
 import { Response, Router } from "express";
-import { validateUserLogin, validateUserSignUp } from "../middleware";
 import { createUser, getUserByEmail } from "../query/user.query";
 import { comparePassword, hashPass } from "../utils/bcrypt";
 import { createAuth0Token } from "../utils/auth0";
 import { sessions } from "../..";
+import {
+  validateUserLogin,
+  validateUserSignUp,
+} from "../utils/data.validation";
+import { createSession } from "../query/session.query";
 
 const router = Router();
 
@@ -37,7 +41,11 @@ router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
       return;
     }
     const token = await createAuth0Token(res);
-    sessions[token.access_token] = req.body.email;
+    console.log("thi si token create", token);
+    await createSession({
+      email: user.email,
+      token: `Bearer ${token.access_token}`,
+    });
     return res.json({
       status: true,
       message: "Logged In Successfully!",

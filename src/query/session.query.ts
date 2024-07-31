@@ -33,3 +33,16 @@ export async function findSessionAndDelete(token: string, email: string) {
 export async function getAllSession() {
   return executeQuery(prisma.session.findMany());
 }
+
+export function getSession(token: string) {
+  return executeQuery(
+    prisma.session.findFirst({
+      where: {
+        token,
+      },
+      select: {
+        associate: true,
+      },
+    })
+  );
+}

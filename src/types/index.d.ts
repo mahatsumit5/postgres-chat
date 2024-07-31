@@ -1,5 +1,16 @@
+interface Issue {
+  code: string;
+  maximum: number;
+  type: string;
+  inclusive: boolean;
+  exact: boolean;
+  message: string;
+  path: string[];
+}
+
 export interface CustomError extends Error {
   statusCode: number;
+  issues: Issue[];
 }
 
 interface IUser {
@@ -59,4 +70,11 @@ declare interface CreatePostParams {
   title: string;
   content: string;
   id: string;
+  images: string[];
 }
+declare type UpdataPostParams = {
+  id: string;
+  title: string;
+  content: string;
+  images?: string[];
+};

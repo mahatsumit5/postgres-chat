@@ -7,7 +7,7 @@ export const ErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(error);
+  const zodError = error?.issues ? error.issues[0].message : undefined;
   if (error.message.includes(`"password" with value`)) {
     error.message = "Password must match the requirement";
   }
@@ -15,6 +15,6 @@ export const ErrorHandler = (
   const msg = error.message || "Internal Server Error.";
   return res.status(code).json({
     status: false,
-    message: msg,
+    message: zodError ? zodError : msg,
   });
 };

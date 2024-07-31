@@ -6,7 +6,6 @@ export const createAuth0Token = async (response: Response) => {
     client_secret: process.env.client_secret,
     audience: process.env.audience,
     grant_type: "client_credentials",
-    email: "mahatsumit.com",
   };
 
   const { data } = await axios.post(

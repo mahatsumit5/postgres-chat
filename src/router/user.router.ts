@@ -12,7 +12,6 @@ const router = Router();
 
 router.get("/", loggedInUserAuth, async (req, res, next) => {
   try {
-    console.log(req.auth);
     const user = req.userInfo;
     user?.id
       ? res.json({ status: true, data: user, req: req.auth })

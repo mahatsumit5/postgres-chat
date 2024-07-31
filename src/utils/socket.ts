@@ -21,7 +21,7 @@ export async function connectSocket() {
   const onLineUsers: Record<string, string> = {};
   io.on("connection", async (socket) => {
     const email = socket.handshake.query.email;
-    console.log("new user connected", email);
+    // console.log("new user connected", email);
 
     // changes these two
     const user = await getUserByEmail(email as string);
@@ -86,6 +86,6 @@ export async function connectSocket() {
       delete onLineUsers[email as string];
     });
 
-    console.log(socket.rooms);
+    // console.log(socket.rooms);
   });
 }
