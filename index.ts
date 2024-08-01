@@ -9,10 +9,12 @@ import friendRouter from "./src/router/friendRequest.router";
 import chatRoomRouter from "./src/router/chatRoom.router";
 import messageRouter from "./src/router/message.router";
 import postRouter from "./src/router/post.router";
+import commentRouter from "./src/router/comment.router";
 import { ErrorHandler } from "./src/utils/errorHandler";
 import { auth } from "express-oauth2-jwt-bearer";
 import { loggedInUserAuth } from "./src/middleware";
 import path from "path";
+
 config();
 export const auth0Check = auth({
   audience: process.env.audience,
@@ -35,21 +37,28 @@ app.use("/", express.static(path.join(__dirname, "../dist")));
 
 app.use(express.json());
 
-app.use("/api/v1/post", auth0Check, postRouter);
+// public route
 app.use("/api/v1/user", publicUserRouter);
+
+// Auth0 protected route
+
+app.use("/api/v1/post", auth0Check, loggedInUserAuth, postRouter);
 app.use("/api/v1/user", auth0Check, loggedInUserAuth, userRouter);
 app.use("/api/v1/friend", auth0Check, loggedInUserAuth, friendRouter);
 app.use("/api/v1/room", auth0Check, loggedInUserAuth, chatRoomRouter);
 app.use("/api/v1/message", auth0Check, loggedInUserAuth, messageRouter);
+app.use("/api/v1/comment", auth0Check, loggedInUserAuth, commentRouter);
 app.use(ErrorHandler);
 app.get("/socket.io", () => {
   connectSocket();
 });
+
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "../dist/index.html"), (err) => {
     err && res.send(`<h1>Unexpected Error Occured</h1>`);
   });
 });
+
 process.env.ENVIRONMENT === "Development"
   ? server.listen(port, "192.168.20.8", () => {
       console.log(`Server is running on http://192.168.20.8:${port}`);
