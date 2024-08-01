@@ -78,3 +78,9 @@ declare type UpdataPostParams = {
   content: string;
   images?: string[];
 };
+
+declare type CreateCommentParams = {
+  content: string;
+  postId: string;
+  userId: string;
+};

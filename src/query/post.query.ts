@@ -32,7 +32,7 @@ export const getAllPost = async () => {
         id: true,
         likes: true,
         images: true,
-        comment: true,
+        comments: true,
         title: true,
         content: true,
         createdAt: true,

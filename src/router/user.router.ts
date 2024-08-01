@@ -14,7 +14,7 @@ router.get("/", loggedInUserAuth, async (req, res, next) => {
   try {
     const user = req.userInfo;
     user?.id
-      ? res.json({ status: true, data: user, req: req.auth })
+      ? res.json({ status: true, data: user })
       : res.status(404).json({ message: "No user found.", status: false });
   } catch (error) {
     next(error);
