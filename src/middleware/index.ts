@@ -21,7 +21,6 @@ export const loggedInUserAuth = async (
       return res.redirect("/");
     }
     const user = await getSession(req.headers.authorization!);
-    console.log(user.associate);
     if (!user) {
       return res.status(401).json({ message: "You are not logged in" });
     }

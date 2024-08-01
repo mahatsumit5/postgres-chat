@@ -22,12 +22,15 @@ export function likePost(userId: string, postId: string) {
     console.log(error);
   }
 }
-export function removeLike(id: string) {
-  return executeQuery(
+export async function removeLike({ likeId }: { likeId: string }) {
+  console.log("this is id", likeId);
+  const result = await executeQuery(
     prisma.postLike.delete({
       where: {
-        id,
+        id: likeId,
       },
     })
   );
+  console.log("this is result", result);
+  return result;
 }

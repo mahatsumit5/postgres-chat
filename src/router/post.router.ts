@@ -84,14 +84,14 @@ router.put("/like", async (req, res, next) => {
     next(error);
   }
 });
-router.delete("/remove-like/:id", async (req, res, next) => {
+router.put("/remove-like", async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const deletedLike = await removeLike(id);
+    const deletedLike = await removeLike(req.body);
     deletedLike?.id
       ? res.json({
           status: true,
           message: "Like removed successfully",
+          deletedLike,
         })
       : new Error("Unable to remove like");
   } catch (error) {
