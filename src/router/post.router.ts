@@ -7,7 +7,7 @@ import {
 } from "../query/post.query";
 import { validatePost } from "../utils/data.validation";
 import { upload } from "../middleware";
-import { likePost } from "../query/postLike.query";
+import { likePost, removeLike } from "../query/postLike.query";
 
 const router = Router();
 
@@ -80,6 +80,20 @@ router.put("/like", async (req, res, next) => {
           likedPost,
         })
       : new Error("Unable to like post");
+  } catch (error) {
+    next(error);
+  }
+});
+router.delete("/remove-like/:id", async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const deletedLike = await removeLike(id);
+    deletedLike?.id
+      ? res.json({
+          status: true,
+          message: "Like removed successfully",
+        })
+      : new Error("Unable to remove like");
   } catch (error) {
     next(error);
   }
