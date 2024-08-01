@@ -7,6 +7,7 @@ import {
 } from "../query/post.query";
 import { validatePost } from "../utils/data.validation";
 import { upload } from "../middleware";
+import { likePost } from "../query/postLike.query";
 
 const router = Router();
 
@@ -64,6 +65,21 @@ router.put("/", async (req, res, next) => {
           updatedPost,
         })
       : new Error("unable to update post");
+  } catch (error) {
+    next(error);
+  }
+});
+router.put("/like", async (req, res, next) => {
+  try {
+    const user = req.userInfo;
+    const likedPost = await likePost(user?.id!, req.body.postId);
+    likedPost?.id
+      ? res.json({
+          status: true,
+          message: "Post liked successfully",
+          likedPost,
+        })
+      : new Error("Unable to like post");
   } catch (error) {
     next(error);
   }
