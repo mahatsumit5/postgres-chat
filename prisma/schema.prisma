@@ -33,7 +33,7 @@ model PostLike {
   id     String @id @default(uuid())
   postId String
   userId String
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id],onDelete: Cascade)
   user   User   @relation("likes",fields: [userId], references: [id])
 
   @@unique([postId, userId])
@@ -45,17 +45,17 @@ model Post {
   content   String
   author    User       @relation("createdPost", fields: [authorId], references: [id])
   authorId  String
-  comments  Comment[]
+  comments  Comment[]  
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  likes     PostLike[]
+  likes     PostLike[] 
   images    String[] @default([])
 }
 
 model Comment {
   id        String   @id @default(uuid())
   content   String
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId    String
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String

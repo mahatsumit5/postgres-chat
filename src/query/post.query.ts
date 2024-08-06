@@ -46,14 +46,18 @@ export const getAllPost = async () => {
 };
 
 export const deletePost = async (id: string) => {
-  return executeQuery(
+  console.log("thi is id coming from frontend", id);
+  const deletedPost = await executeQuery(
     prisma.post.delete({
       where: {
-        id,
+        id: id,
       },
     })
   );
+  console.log(deletedPost);
+  return deletedPost;
 };
+deletePost("a667bc41-cc22-48fc-b1b8-24b779e7f40f");
 export const updatePost = ({ id, ...rest }: UpdataPostParams) => {
   return executeQuery(
     prisma.post.update({
