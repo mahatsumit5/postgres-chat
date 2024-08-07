@@ -1,7 +1,7 @@
 import { executeQuery, prisma } from "../../script";
 
-export async function createChatRoom(from: string, to: string) {
-  const result = await executeQuery(
+export function createChatRoom(from: string, to: string) {
+  const result = executeQuery(
     prisma.chatRoom.create({
       data: {
         user: {
@@ -18,13 +18,13 @@ export async function createChatRoom(from: string, to: string) {
   return result;
 }
 
-export async function getChatRoom(
+export function getChatRoom(
   userId: string,
   contains?: string,
   take?: number,
   page?: number
 ) {
-  const rooms = await executeQuery(
+  const rooms = executeQuery(
     prisma.chatRoom.findMany({
       where: {
         AND: [
@@ -72,15 +72,15 @@ export async function getChatRoom(
   return rooms;
 }
 
-export async function deleteChatRoom(roomId: string) {
-  await executeQuery(
+export function deleteChatRoom(roomId: string) {
+  executeQuery(
     prisma.message.deleteMany({
       where: {
         chatRoomId: roomId,
       },
     })
   );
-  return await executeQuery(
+  return executeQuery(
     prisma.chatRoom.delete({
       where: {
         id: roomId,
@@ -89,8 +89,8 @@ export async function deleteChatRoom(roomId: string) {
   );
 }
 
-export async function getChatRoomByEmail(email: string) {
-  return await executeQuery(
+export function getChatRoomByEmail(email: string) {
+  return executeQuery(
     prisma.chatRoom.findMany({
       where: {
         AND: [

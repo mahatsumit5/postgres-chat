@@ -84,3 +84,8 @@ declare type CreateCommentParams = {
   postId: string;
   userId: string;
 };
+declare type UpdateCommentParams = {
+  commentId: string;
+  uid: string;
+  content: string;
+};

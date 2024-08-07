@@ -1,12 +1,12 @@
 import { executeQuery, prisma } from "../../script";
-export async function createSession({
+export function createSession({
   email,
   token,
 }: {
   email: string;
   token: string;
 }) {
-  return await executeQuery(
+  return executeQuery(
     prisma.session.create({
       data: {
         token,
@@ -17,7 +17,7 @@ export async function createSession({
     })
   );
 }
-export async function findSessionAndDelete(token: string, email: string) {
+export function findSessionAndDelete(token: string, email: string) {
   return executeQuery(
     prisma.session.delete({
       where: {
@@ -30,7 +30,7 @@ export async function findSessionAndDelete(token: string, email: string) {
   );
 }
 
-export async function getAllSession() {
+export function getAllSession() {
   return executeQuery(prisma.session.findMany());
 }
 

@@ -1,8 +1,7 @@
 import { executeQuery, prisma } from "../../script";
 
-export async function sendFriendRequest(from: string, to: string) {
-  console.log(from, to);
-  const result = await executeQuery(
+export function sendFriendRequest(from: string, to: string) {
+  const result = executeQuery(
     prisma.friendRequests.create({
       data: {
         from: {
@@ -39,9 +38,9 @@ export async function sendFriendRequest(from: string, to: string) {
   return result;
 }
 
-export async function getFriendRequestByUser(id: string) {
+export function getFriendRequestByUser(id: string) {
   // Get friend requests sent by the user with this ID
-  return await executeQuery(
+  return executeQuery(
     prisma.friendRequests.findMany({
       where: {
         toId: id,
@@ -71,7 +70,7 @@ export async function getFriendRequestByUser(id: string) {
     })
   );
 }
-export async function getYourSentRequest(
+export function getYourSentRequest(
   id: string,
   page: number,
   take: number,
@@ -79,7 +78,7 @@ export async function getYourSentRequest(
 ) {
   console.log(page, take);
   // Get friend requests sent by the user with this ID
-  const result: [] = await executeQuery(
+  const result: Promise<[]> = executeQuery(
     prisma.friendRequests.findMany({
       where: {
         fromId: id,
@@ -115,7 +114,7 @@ export async function getYourSentRequest(
       take: take,
     })
   );
-  const count = await executeQuery(
+  const count = executeQuery(
     prisma.friendRequests.count({
       where: {
         fromId: id,
@@ -131,8 +130,8 @@ export async function getYourSentRequest(
   return { result, count };
 }
 
-export async function deleteSentRequest(fromId: string, toId: string) {
-  return await executeQuery(
+export function deleteSentRequest(fromId: string, toId: string) {
+  return executeQuery(
     prisma.friendRequests.delete({
       where: {
         fromId_toId: {
@@ -165,8 +164,8 @@ export async function deleteSentRequest(fromId: string, toId: string) {
   );
 }
 
-export async function getNumberOfFriendReq(email: string) {
-  return await executeQuery(
+export function getNumberOfFriendReq(email: string) {
+  return executeQuery(
     prisma.friendRequests.count({
       where: {
         to: {

@@ -7,15 +7,15 @@ type createUserParams = {
   lName: string;
 };
 
-export async function createUser(obj: createUserParams) {
-  return await executeQuery(
+export function createUser(obj: createUserParams) {
+  return executeQuery(
     prisma.user.create({
       data: obj,
     })
   );
 }
 
-export async function changePassword({
+export function changePassword({
   email,
   newPassword,
 }: {
@@ -33,7 +33,7 @@ export async function changePassword({
     })
   );
 }
-export async function uploadProfileImage(email: string, path: string) {
+export function uploadProfileImage(email: string, path: string) {
   return executeQuery(
     prisma.user.update({
       where: {
@@ -45,10 +45,7 @@ export async function uploadProfileImage(email: string, path: string) {
     })
   );
 }
-export async function getUserByEmailAndUpdate(
-  email: string,
-  dataToUpdate: any
-) {
+export function getUserByEmailAndUpdate(email: string, dataToUpdate: any) {
   return executeQuery(
     prisma.user.update({
       where: {
@@ -59,15 +56,15 @@ export async function getUserByEmailAndUpdate(
   );
 }
 
-export async function getUserByEmail(email: string) {
-  return await executeQuery(
+export function getUserByEmail(email: string) {
+  return executeQuery(
     prisma.user.findUnique({
       where: { email: email },
     })
   );
 }
 
-export async function getUserById(id: string) {
+export function getUserById(id: string) {
   return executeQuery(
     prisma.user.findUnique({
       where: { id: id },
@@ -153,7 +150,7 @@ export async function getAllUsers(
   return { users, totalUsers };
 }
 
-export async function deleteUser(id: string) {
+export function deleteUser(id: string) {
   return executeQuery(
     prisma.user.delete({
       where: {
@@ -163,9 +160,9 @@ export async function deleteUser(id: string) {
   );
 }
 
-export async function deleteUserByEmail(email: string) {
+export function deleteUserByEmail(email: string) {
   console.log(email);
-  const data = await executeQuery(
+  const data = executeQuery(
     prisma.user.delete({
       where: {
         email: email,

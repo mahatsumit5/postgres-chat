@@ -1,8 +1,8 @@
 import { executeQuery, prisma } from "../../script";
 import { CreatePostParams, UpdataPostParams } from "../types";
 
-export const createPost = async ({ id, ...rest }: CreatePostParams) => {
-  return await executeQuery(
+export const createPost = ({ id, ...rest }: CreatePostParams) => {
+  return executeQuery(
     prisma.post.create({
       data: {
         ...rest,
@@ -16,7 +16,7 @@ export const createPost = async ({ id, ...rest }: CreatePostParams) => {
     })
   );
 };
-export const getAllPost = async () => {
+export const getAllPost = () => {
   return executeQuery(
     prisma.post.findMany({
       select: {
@@ -30,9 +30,32 @@ export const getAllPost = async () => {
           },
         },
         id: true,
-        likes: true,
+        likes: {
+          select: {
+            id: true,
+            userId: true,
+            postId: true,
+          },
+        },
         images: true,
-        comments: true,
+        comments: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                fName: true,
+                lName: true,
+                email: true,
+                profile: true,
+              },
+            },
+            likes: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+        },
         title: true,
         content: true,
         createdAt: true,
@@ -45,19 +68,16 @@ export const getAllPost = async () => {
   );
 };
 
-export const deletePost = async (id: string) => {
-  console.log("thi is id coming from frontend", id);
-  const deletedPost = await executeQuery(
+export const deletePost = (id: string, authorId: string) => {
+  return executeQuery(
     prisma.post.delete({
       where: {
-        id: id,
+        id,
+        authorId,
       },
     })
   );
-  console.log(deletedPost);
-  return deletedPost;
 };
-deletePost("a667bc41-cc22-48fc-b1b8-24b779e7f40f");
 export const updatePost = ({ id, ...rest }: UpdataPostParams) => {
   return executeQuery(
     prisma.post.update({

@@ -1,6 +1,6 @@
 import { executeQuery, prisma } from "../../script";
 
-export const sendMessage = async ({
+export const sendMessage = ({
   content,
   roomId,
   author,
@@ -9,7 +9,7 @@ export const sendMessage = async ({
   author: string;
   roomId: string;
 }) => {
-  const result = await executeQuery(
+  const result = executeQuery(
     prisma.message.create({
       data: {
         content,
@@ -30,11 +30,8 @@ export const sendMessage = async ({
   return result;
 };
 
-export const getMessageByUsers = async (
-  id: string,
-  numberOfMessages: number
-) => {
-  const result = await executeQuery(
+export const getMessageByUsers = (id: string, numberOfMessages: number) => {
+  const result = executeQuery(
     prisma.chatRoom.findFirst({
       where: {
         id,
@@ -57,8 +54,8 @@ export const getMessageByUsers = async (
   return result;
 };
 
-export const getLastMessageByRoomId = async (roomid: string) => {
-  const result = await executeQuery(
+export const getLastMessageByRoomId = (roomid: string) => {
+  const result = executeQuery(
     prisma.chatRoom.findFirst({
       where: {
         id: roomid,
@@ -76,14 +73,14 @@ export const getLastMessageByRoomId = async (roomid: string) => {
   return result;
 };
 
-export const messageSeenByRoom = async ({
+export const messageSeenByRoom = ({
   roomid,
   author,
 }: {
   roomid: string;
   author: string;
 }) => {
-  const result = await executeQuery(
+  const result = executeQuery(
     prisma.message.updateMany({
       data: {
         isSeen: true,
@@ -99,11 +96,11 @@ export const messageSeenByRoom = async ({
   console.log(result);
   return result;
 };
-export const numberOfUnSeenMessagesByUser = async (
+export const numberOfUnSeenMessagesByUser = (
   author: string,
   roomId: string
 ) => {
-  const result = await executeQuery(
+  const result = executeQuery(
     prisma.message.count({
       where: {
         isSeen: false,
@@ -116,15 +113,15 @@ export const numberOfUnSeenMessagesByUser = async (
   return result;
 };
 
-export const deleteMessage = async (messageId: string) => {
-  const result = await executeQuery(
+export const deleteMessage = (messageId: string) => {
+  const result = executeQuery(
     prisma.message.deleteMany({ where: { id: messageId } })
   );
   return result;
 };
 
-export const updateMessage = async (messageId: string, content: string) => {
-  const result = await executeQuery(
+export const updateMessage = (messageId: string, content: string) => {
+  const result = executeQuery(
     prisma.message.update({
       where: { id: messageId },
       data: {

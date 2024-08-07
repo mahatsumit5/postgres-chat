@@ -43,7 +43,11 @@ router.get("/", async (req, res, next) => {
 
 router.delete("/:id", async (req, res, next) => {
   try {
-    const post = await deletePost(req.params.id);
+    const user = req.userInfo;
+    console.log(user);
+    if (!user) throw new Error("Logged in user id is required");
+
+    const post = await deletePost(req.params.id, user?.id!);
     post?.id
       ? res.json({
           status: true,
@@ -72,6 +76,7 @@ router.put("/", async (req, res, next) => {
 router.put("/like", async (req, res, next) => {
   try {
     const user = req.userInfo;
+    if (!user?.id) throw new Error("Userid is required");
     const likedPost = await likePost(user?.id!, req.body.postId);
     likedPost?.id
       ? res.json({
