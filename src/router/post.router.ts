@@ -31,7 +31,9 @@ router.post("/", upload.array("images"), async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const posts = await getAllPost();
+    const { take } = req.query;
+    console.log(take);
+    const posts = await getAllPost(Number(take));
 
     posts?.length
       ? res.status(200).json({ status: true, posts })

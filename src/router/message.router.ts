@@ -28,7 +28,6 @@ router.post("/", upload.single("content"), async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    console.log(req.query);
     const { id, num } = req.query;
     const messages = await getMessageByUsers(id as string, Number(num));
     !messages

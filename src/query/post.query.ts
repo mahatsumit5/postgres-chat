@@ -16,7 +16,7 @@ export const createPost = ({ id, ...rest }: CreatePostParams) => {
     })
   );
 };
-export const getAllPost = () => {
+export const getAllPost = (take = 10) => {
   return executeQuery(
     prisma.post.findMany({
       select: {
@@ -64,6 +64,7 @@ export const getAllPost = () => {
       orderBy: {
         createdAt: "desc",
       },
+      take: take,
     })
   );
 };
