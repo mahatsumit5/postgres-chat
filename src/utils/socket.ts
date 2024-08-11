@@ -80,6 +80,11 @@ export async function connectSocket() {
       socket.to(data.result.id).emit("getDeletedChatRoom", data);
     });
 
+    socket.on("send_like_notification", (data) => {
+      console.log("Coming from server ", data);
+      socket.to(data.to).emit("getLikedNotification", data);
+    });
+
     socket.on("disconnect", (socket) => {
       console.log("user disconnected");
 

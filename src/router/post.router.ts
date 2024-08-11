@@ -31,12 +31,12 @@ router.post("/", upload.array("images"), async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const { take } = req.query;
-    console.log(take);
-    const posts = await getAllPost(Number(take));
-
+    const { skip, take } = req.query;
+    const { count, data } = getAllPost(Number(skip), Number(take));
+    const posts = await data;
+    const totalNumberOfPosts = await count;
     posts?.length
-      ? res.status(200).json({ status: true, posts })
+      ? res.status(200).json({ status: true, posts, totalNumberOfPosts })
       : res.status(400).json({ message: "No posts available." });
   } catch (error) {
     next(error);
