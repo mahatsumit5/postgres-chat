@@ -25,7 +25,11 @@ const port = Number(process.env.PORT) || 8080;
 const app = express();
 app.use(
   cors({
-    origin: [process.env.WEB_DOMAIN as string, "http://localhost:5173"],
+    origin: [
+      process.env.WEB_DOMAIN as string,
+      "http://localhost:5173",
+      "http://sumitmessenger-website-bucket.s3-website-us-east-1.amazonaws.com",
+    ],
     methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
     allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
     credentials: true,
