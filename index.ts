@@ -13,7 +13,6 @@ import commentRouter from "./src/router/comment.router";
 import { ErrorHandler } from "./src/utils/errorHandler";
 import { auth } from "express-oauth2-jwt-bearer";
 import { loggedInUserAuth } from "./src/middleware";
-import path from "path";
 
 config();
 export const auth0Check = auth({
@@ -33,7 +32,6 @@ app.use(
   })
 );
 export const server = http.createServer(app);
-app.use("/", express.static(path.join(__dirname, "../dist")));
 
 app.use(express.json());
 
@@ -49,13 +47,15 @@ app.use("/api/v1/room", auth0Check, loggedInUserAuth, chatRoomRouter);
 app.use("/api/v1/message", auth0Check, loggedInUserAuth, messageRouter);
 app.use("/api/v1/comment", auth0Check, loggedInUserAuth, commentRouter);
 app.use(ErrorHandler);
+
 app.get("/socket.io", () => {
   connectSocket();
 });
 
 app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../dist/index.html"), (err) => {
-    err && res.send(`<h1>Unexpected Error Occured</h1>`);
+  res.json({
+    status: true,
+    message: "Server is Healthy",
   });
 });
 
