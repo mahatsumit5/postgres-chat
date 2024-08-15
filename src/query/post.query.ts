@@ -50,7 +50,7 @@ export const createPost = ({ id, ...rest }: CreatePostParams) => {
     })
   );
 };
-export const getAllPost = (skip: number, take: number) => {
+export const getAllPost = (skip = 0, take = 4) => {
   const data = executeQuery(
     prisma.post.findMany({
       select: {
