@@ -13,6 +13,7 @@ const router = Router();
 
 router.post("/sign-up", validateUserSignUp, async (req, res, next) => {
   try {
+    console.log(req.body);
     const userAlreadyExist = await getUserByEmail(req.body.email);
     if (userAlreadyExist)
       throw new Error("An account already exist with this email.");
@@ -31,6 +32,7 @@ router.post("/sign-up", validateUserSignUp, async (req, res, next) => {
 });
 router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
   try {
+    console.log(req.body);
     const user = await getUserByEmail(req.body.email);
     if (!user) {
       next(new Error("User not found"));
@@ -41,7 +43,6 @@ router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
       return;
     }
     const token = await createAuth0Token(res);
-    console.log("thi si token create", token);
     await createSession({
       email: user.email,
       token: `Bearer ${token.access_token}`,

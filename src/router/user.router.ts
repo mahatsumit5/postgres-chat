@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   changePassword,
   getAllUsers,
+  updateUser,
   uploadProfileImage,
 } from "../query/user.query";
 import { hashPass } from "../utils/bcrypt";
@@ -34,7 +35,7 @@ router.get("/all-users", async (req, res, next) => {
       order,
       search ? search.toString().toLowerCase() : ""
     );
-
+    console.log(users);
     users?.length
       ? res.status(200).json({ status: true, data: users, totalUsers })
       : res.status(400).json({ message: "No other user available" });
@@ -89,6 +90,24 @@ router.put("/reset-password", async (req, res, next) => {
           message: "Password Changed",
         })
       : next(new Error("Unable to change your password"));
+  } catch (error) {
+    next(error);
+  }
+});
+router.put("/update-user", async (req, res, next) => {
+  try {
+    const user = req.userInfo;
+    if (!user) throw new Error("Not authorized");
+
+    const result = await updateUser(user.id, req.body);
+    console.log(result, "user updated");
+    result?.id
+      ? res.status(200).json({
+          status: true,
+          message: "user updated Changed",
+          result,
+        })
+      : next(new Error("Unable to updpate user information"));
   } catch (error) {
     next(error);
   }

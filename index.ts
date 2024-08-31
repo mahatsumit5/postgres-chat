@@ -32,7 +32,6 @@ app.use(
   })
 );
 
-app.use(cors());
 export const server = http.createServer(app);
 
 app.use(express.json());

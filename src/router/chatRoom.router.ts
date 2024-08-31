@@ -34,7 +34,7 @@ router.get("/", loggedInUserAuth, async (req, res, next) => {
     if (!userId) throw new Error("User is not logged in.");
     const data = await getChatRoom(userId, serachQuery as string, take, page);
     if (!data?.length) {
-      return res.status(200).json({
+      return res.status(400).json({
         status: false,
         data: [],
         message: "Your do not have any chat room.",

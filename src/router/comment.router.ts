@@ -13,7 +13,10 @@ const router = Router();
 router.get("/:id", async (req, res, next) => {
   try {
     const comments = await getCommentsByPostId(req.params.id);
-    comments.length ? res.json(comments) : res.json([]);
+    console.log(comments);
+    comments.length
+      ? res.json({ status: true, message: "Comments data", comments })
+      : res.json([]);
   } catch (error) {
     next(error);
   }

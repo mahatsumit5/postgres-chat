@@ -18,7 +18,9 @@ export const loggedInUserAuth = async (
     // const email = Object.values(sessions)[loggedInUserIndex];
     const token = req.headers.authorization;
     if (!token) {
-      return res.redirect("/");
+      return res.status(500).json({
+        message: "You are not logged in",
+      });
     }
     const user = await getSession(req.headers.authorization!);
     if (!user) {

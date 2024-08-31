@@ -3,6 +3,7 @@ import {
   createPost,
   deletePost,
   getAllPost,
+  getPostByUser,
   updatePost,
 } from "../query/post.query";
 import { validatePost } from "../utils/data.validation";
@@ -13,10 +14,11 @@ const router = Router();
 
 router.post("/", upload.array("images"), async (req, res, next) => {
   try {
-    const file = req.files as Express.MulterS3.File[];
-    if (file.length) {
-      req.body.images = file.map((item) => item.location);
-    }
+    // const file = req.files as Express.MulterS3.File[];
+    // if (file.length) {
+    //   req.body.images = file.map((item) => item.location);
+    // }
+    console.log("this is req.body", req.body);
     const result = await createPost(req.body);
     result?.id
       ? res.status(200).json({
@@ -31,12 +33,33 @@ router.post("/", upload.array("images"), async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
+    console.log(req.query);
     const { skip, take } = req.query;
     const { count, data } = getAllPost(Number(skip), Number(take));
-    const posts = await data;
-    const totalNumberOfPosts = await count;
+
+    const [posts, totalNumberOfPosts] = await Promise.all([data, count]);
     posts?.length
-      ? res.status(200).json({ status: true, posts, totalNumberOfPosts })
+      ? res.status(200).json({
+          status: true,
+          posts,
+          totalNumberOfPosts,
+          message: "Avialbe posts",
+        })
+      : res.status(200).json({ message: "No posts available." });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/user/:userId", async (req, res, next) => {
+  try {
+    const posts = await getPostByUser(req.params.userId);
+
+    posts?.length
+      ? res.status(200).json({
+          status: true,
+          posts,
+          message: "Avialbe posts",
+        })
       : res.status(400).json({ message: "No posts available." });
   } catch (error) {
     next(error);
@@ -46,7 +69,7 @@ router.get("/", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
   try {
     const user = req.userInfo;
-    console.log(user);
+
     if (!user) throw new Error("Logged in user id is required");
 
     const post = await deletePost(req.params.id, user?.id!);

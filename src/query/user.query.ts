@@ -172,3 +172,14 @@ export function deleteUserByEmail(email: string) {
   console.log(data);
   return data;
 }
+
+export function updateUser(userId: string, data: any) {
+  return executeQuery(
+    prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data,
+    })
+  );
+}

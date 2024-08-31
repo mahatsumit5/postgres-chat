@@ -19,6 +19,8 @@ model User {
   isActive       Boolean          @default(true)
   password       String
   profile        String?
+  bio            String?          
+  coverPicture   String?
   chatRoom       ChatRoom[]
   session        Session[]
   friendRequests FriendRequests[] @relation("receiver")

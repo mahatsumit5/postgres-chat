@@ -98,6 +98,52 @@ export const getAllPost = (skip: number, take: number) => {
 
   return { data, count };
 };
+export const getPostByUser = (authorId: string) => {
+  return executeQuery(
+    prisma.post.findMany({
+      where: {
+        authorId,
+      },
+      select: {
+        author: {
+          select: {
+            email: true,
+            fName: true,
+            lName: true,
+            id: true,
+            profile: true,
+          },
+        },
+        id: true,
+        likes: {
+          select: {
+            id: true,
+            userId: true,
+            postId: true,
+          },
+        },
+        images: true,
+        comments: {
+          select: {
+            id: true,
+          },
+        },
+        title: true,
+        content: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
+  );
+};
 
 export const deletePost = (id: string, authorId: string) => {
   return executeQuery(
