@@ -29,7 +29,9 @@ router.post("/", upload.single("content"), async (req, res, next) => {
 router.get("/", async (req, res, next) => {
   try {
     const { id, num } = req.query;
-    const messages = await getMessageByUsers(id as string, Number(num));
+    const messages: [] = await getMessageByUsers(id as string, Number(num));
+
+    console.log(messages.length);
     !messages
       ? next(new Error("Unable to get messages"))
       : res.json({

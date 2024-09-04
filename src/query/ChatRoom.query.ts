@@ -55,6 +55,8 @@ export function getChatRoom(
             email: true,
             profile: true,
             isActive: true,
+            bio: true,
+            coverPicture: true,
           },
           where: {
             NOT: {
@@ -105,4 +107,29 @@ export function getChatRoomByEmail(email: string) {
       },
     })
   );
+}
+
+export async function getChatRoomByRoomId(id: string) {
+  const data = await executeQuery(
+    prisma.chatRoom.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            fName: true,
+            lName: true,
+            email: true,
+            profile: true,
+            isActive: true,
+            bio: true,
+            coverPicture: true,
+          },
+        },
+      },
+    })
+  );
+  console.log(data);
 }

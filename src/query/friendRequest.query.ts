@@ -54,6 +54,9 @@ export function getFriendRequestByUser(id: string) {
             email: true,
             profile: true,
             id: true,
+            bio: true,
+            coverPicture: true,
+            isActive: true,
           },
         },
         status: true,
@@ -66,6 +69,7 @@ export function getFriendRequestByUser(id: string) {
             id: true,
           },
         },
+        toId: true,
       },
     })
   );
