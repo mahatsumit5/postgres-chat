@@ -28,15 +28,20 @@ router.post("/", upload.single("content"), async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const { id, num } = req.query;
-    const messages: [] = await getMessageByUsers(id as string, Number(num));
-
-    console.log(messages.length);
+    const { id, take, platform } = req.query;
+    const messages = await getMessageByUsers(id as string, Number(take));
+    console.log("this req is coming from", platform);
     !messages
       ? next(new Error("Unable to get messages"))
       : res.json({
           status: true,
-          result: messages,
+          result:
+            platform === "mobile"
+              ? {
+                  messages: messages.messages.reverse(),
+                  _count: messages._count,
+                }
+              : messages,
         });
   } catch (error) {
     next(error);
