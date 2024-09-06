@@ -38,6 +38,7 @@ export async function connectSocket() {
     io.emit("getOnlineUsers", Object.keys(onLineUsers));
 
     socket.on("send_message", (message, id) => {
+      console.log("New message received from", id, message);
       socket.to(id).emit("send_message_client", message);
     });
 

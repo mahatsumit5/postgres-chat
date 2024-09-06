@@ -30,31 +30,32 @@ export const sendMessage = ({
   return result;
 };
 
-// export const getMessageByUsers = (id: string, numberOfMessages: number) => {
-//   const result = executeQuery(
-//     prisma.chatRoom.findFirst({
-//       where: {
-//         id,
-//       },
-//       select: {
-//         messages: {
-//           orderBy: {
-//             createdAt: "asc",
-//           },
-//           take: -numberOfMessages,
-//         },
-//         _count: {
-//           select: {
-//             messages: true,
-//           },
-//         },
-//       },
-//     })
-//   ) as Promise<[]>;
-//   return result;
-// };
+export const getllMessages = async () => {
+  const result = await executeQuery(
+    prisma.chatRoom.findFirst({
+      where: {
+        id: "dc52050b-59c2-404c-9cd9-bc5a5e4108f6",
+      },
+      select: {
+        messages: {
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+        _count: {
+          select: {
+            messages: true,
+          },
+        },
+      },
+    })
+  );
+  console.log(result);
+  return result;
+};
+// getllMessages();
 
-export const getMessageByUsers = (id: string, numberOfMessages: number) => {
+export const getMessageByUsers = (id: string, take: number, skip: number) => {
   const result = executeQuery(
     prisma.chatRoom.findFirst({
       where: {
@@ -65,7 +66,8 @@ export const getMessageByUsers = (id: string, numberOfMessages: number) => {
           orderBy: {
             createdAt: "asc",
           },
-          take: -numberOfMessages,
+          take: take,
+          skip,
         },
         _count: {
           select: {

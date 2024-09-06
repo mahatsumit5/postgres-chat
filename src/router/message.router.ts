@@ -28,9 +28,15 @@ router.post("/", upload.single("content"), async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const { id, take, platform } = req.query;
-    const messages = await getMessageByUsers(id as string, Number(take));
+    const { id, take, platform, skip } = req.query;
+    const messages = await getMessageByUsers(
+      id as string,
+      Number(take),
+      Number(skip)
+    );
     console.log("this req is coming from", platform);
+    console.log("this is req query", req.query);
+    console.log("numberof messages", messages._count);
     !messages
       ? next(new Error("Unable to get messages"))
       : res.json({
