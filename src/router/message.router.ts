@@ -34,20 +34,12 @@ router.get("/", async (req, res, next) => {
       Number(take),
       Number(skip)
     );
-    console.log("this req is coming from", platform);
-    console.log("this is req query", req.query);
-    console.log("numberof messages", messages._count);
+
     !messages
       ? next(new Error("Unable to get messages"))
       : res.json({
           status: true,
-          result:
-            platform === "mobile"
-              ? {
-                  messages: messages.messages.reverse(),
-                  _count: messages._count,
-                }
-              : messages,
+          result: messages,
         });
   } catch (error) {
     next(error);

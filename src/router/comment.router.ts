@@ -13,10 +13,9 @@ const router = Router();
 router.get("/:id", async (req, res, next) => {
   try {
     const comments = await getCommentsByPostId(req.params.id);
-    console.log(comments);
     comments.length
       ? res.json({ status: true, message: "Comments data", comments })
-      : res.json([]);
+      : res.json({ comments: [] });
   } catch (error) {
     next(error);
   }
@@ -68,7 +67,6 @@ router.post("/like-comment", async (req, res, next) => {
       req.body.commentId,
       req.userInfo?.id!
     );
-    console.log(likedComment);
     likedComment
       ? res.json({ status: true, message: "Comment liked", likedComment })
       : new Error("Unable to like a comment");

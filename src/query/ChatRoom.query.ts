@@ -131,5 +131,4 @@ export async function getChatRoomByRoomId(id: string) {
       },
     })
   );
-  console.log(data);
 }

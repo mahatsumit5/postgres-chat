@@ -16,7 +16,6 @@ router.post("/send-request", async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    console.log(req.body);
     const result = await sendFriendRequest(user.id, req.body.to);
     result
       ? res.status(201).json({ status: true, data: result })
@@ -33,7 +32,6 @@ router.get("/friend-request", async (req, res, next) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
     const result = await getFriendRequestByUser(user.id);
-    console.log(result);
     const friendReqCount = await getNumberOfFriendReq(user.email);
     result?.length
       ? res.status(201).json({ status: true, data: { result, friendReqCount } })
@@ -63,7 +61,6 @@ router.get("/sent-request", async (req, res, next) => {
       search ? search.toString() : ""
     );
     const sentReq = await result;
-    console.log("this is sent request", sentReq);
     sentReq?.length
       ? res.status(201).json({ status: true, data: sentReq, count })
       : res.status(200).json({

@@ -43,6 +43,7 @@ export async function connectSocket() {
     });
 
     socket.on("typing", (id, email) => {
+      console.log("typing");
       socket.to(id).emit("typing", email);
     });
 
@@ -84,6 +85,10 @@ export async function connectSocket() {
     socket.on("send_like_notification", (data) => {
       console.log("Coming from server ", data);
       socket.to(data.to).emit("getLikedNotification", data);
+    });
+    socket.on("newComment", (data) => {
+      console.log("newComment ", data);
+      socket.to(data.to).emit("getNewCommentNotification", data);
     });
 
     socket.on("disconnect", (socket) => {

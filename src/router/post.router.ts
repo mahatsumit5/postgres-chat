@@ -33,7 +33,6 @@ router.post("/", upload.array("images"), async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    console.log(req.query);
     const { skip, take } = req.query;
     const { count, data } = getAllPost(Number(skip), Number(take));
 

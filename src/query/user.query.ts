@@ -169,7 +169,6 @@ export function deleteUserByEmail(email: string) {
       },
     })
   );
-  console.log(data);
   return data;
 }
 

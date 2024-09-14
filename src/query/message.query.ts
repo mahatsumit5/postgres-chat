@@ -50,7 +50,6 @@ export const getllMessages = async () => {
       },
     })
   );
-  console.log(result);
   return result;
 };
 // getllMessages();
@@ -64,9 +63,9 @@ export const getMessageByUsers = (id: string, take: number, skip: number) => {
       select: {
         messages: {
           orderBy: {
-            createdAt: "asc",
+            createdAt: "desc",
           },
-          take: take,
+          take,
           skip,
         },
         _count: {
@@ -118,7 +117,6 @@ export const messageSeenByRoom = ({
       },
     })
   );
-  console.log(result);
   return result;
 };
 export const numberOfUnSeenMessagesByUser = (

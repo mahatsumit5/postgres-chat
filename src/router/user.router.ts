@@ -23,6 +23,7 @@ router.get("/", loggedInUserAuth, async (req, res, next) => {
 });
 router.get("/all-users", async (req, res, next) => {
   try {
+    console.log(req.query);
     const user = req.userInfo;
     const order = req.query.order as "asc" | "desc";
     const page = Number(req.query.page);
@@ -35,7 +36,6 @@ router.get("/all-users", async (req, res, next) => {
       order,
       search ? search.toString().toLowerCase() : ""
     );
-    console.log(users);
     users?.length
       ? res.status(200).json({ status: true, data: users, totalUsers })
       : res.status(400).json({ message: "No other user available" });
@@ -100,7 +100,6 @@ router.put("/update-user", async (req, res, next) => {
     if (!user) throw new Error("Not authorized");
 
     const result = await updateUser(user.id, req.body);
-    console.log(result, "user updated");
     result?.id
       ? res.status(200).json({
           status: true,

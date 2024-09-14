@@ -19,7 +19,20 @@ export function postComment({ content, postId, userId }: CreateCommentParams) {
         },
         replies: {},
       },
-      include: { likes: true, author: true },
+      include: {
+        likes: true,
+        author: {
+          select: {
+            id: true,
+            bio: true,
+            coverPicture: true,
+            email: true,
+            fName: true,
+            lName: true,
+            profile: true,
+          },
+        },
+      },
     })
   );
 }
@@ -98,6 +111,8 @@ export function getCommentsByPostId(postId: string) {
             id: true,
             email: true,
             fName: true,
+            bio: true,
+            coverPicture: true,
             lName: true,
             profile: true,
           },
