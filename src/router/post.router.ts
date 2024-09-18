@@ -6,7 +6,6 @@ import {
   getPostByUser,
   updatePost,
 } from "../query/post.query";
-import { validatePost } from "../utils/data.validation";
 import { upload } from "../middleware";
 import { likePost, removeLike } from "../query/postLike.query";
 
@@ -33,8 +32,8 @@ router.post("/", upload.array("images"), async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
-    const { skip, take } = req.query;
-    const { count, data } = getAllPost(Number(skip), Number(take));
+    const { page, take } = req.query;
+    const { count, data } = getAllPost(Number(page), Number(take));
 
     const [posts, totalNumberOfPosts] = await Promise.all([data, count]);
     posts?.length
@@ -42,7 +41,7 @@ router.get("/", async (req, res, next) => {
           status: true,
           posts,
           totalNumberOfPosts,
-          message: "Avialbe posts",
+          message: "Available posts",
         })
       : res.status(200).json({ message: "No posts available." });
   } catch (error) {

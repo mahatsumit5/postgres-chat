@@ -50,7 +50,9 @@ export const createPost = ({ id, ...rest }: CreatePostParams) => {
     })
   );
 };
-export const getAllPost = (skip: number, take: number) => {
+
+export const getAllPost = (page: number, take: number) => {
+  const skip = (page - 1) * take;
   const data = executeQuery(
     prisma.post.findMany({
       select: {
@@ -98,6 +100,7 @@ export const getAllPost = (skip: number, take: number) => {
 
   return { data, count };
 };
+
 export const getPostByUser = (authorId: string) => {
   return executeQuery(
     prisma.post.findMany({
@@ -155,6 +158,7 @@ export const deletePost = (id: string, authorId: string) => {
     })
   );
 };
+
 export const updatePost = ({ id, ...rest }: UpdataPostParams) => {
   return executeQuery(
     prisma.post.update({
