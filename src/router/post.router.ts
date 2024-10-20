@@ -34,8 +34,9 @@ router.get("/", async (req, res, next) => {
   try {
     const { page, take } = req.query;
     const { count, data } = getAllPost(Number(page), Number(take));
-
+    console.log(req.query);
     const [posts, totalNumberOfPosts] = await Promise.all([data, count]);
+    console.log(totalNumberOfPosts);
     posts?.length
       ? res.status(200).json({
           status: true,

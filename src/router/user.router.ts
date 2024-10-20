@@ -21,6 +21,7 @@ router.get("/", loggedInUserAuth, async (req, res, next) => {
     next(error);
   }
 });
+
 router.get("/all-users", async (req, res, next) => {
   try {
     console.log(req.query);

@@ -13,7 +13,8 @@ import commentRouter from "./src/router/comment.router";
 import { ErrorHandler } from "./src/utils/errorHandler";
 import { auth } from "express-oauth2-jwt-bearer";
 import { loggedInUserAuth } from "./src/middleware";
-
+import swaggerUi from "swagger-ui-express";
+import swaggerDocs from "./swagger";
 config();
 export const auth0Check = auth({
   audience: process.env.audience,
@@ -25,13 +26,18 @@ const port = Number(process.env.PORT) || 8080;
 const app = express();
 app.use(
   cors({
-    origin: [process.env.WEB_DOMAIN as string, "http://192.168.20.8:5173"],
+    origin: [
+      process.env.WEB_DOMAIN as string,
+      "http://192.168.20.8:5173",
+      "http://localhost:5173",
+    ],
     methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
     allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
     credentials: true,
   })
 );
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 export const server = http.createServer(app);
 
 app.use(express.json());
@@ -53,7 +59,7 @@ app.get("/socket.io", () => {
   connectSocket();
 });
 
-app.get("/*", (req, res) => {
+app.get("/test", (req, res) => {
   res.json({
     status: true,
     message: "Server is Healthy",
@@ -61,8 +67,8 @@ app.get("/*", (req, res) => {
 });
 
 process.env.ENVIRONMENT === "Development"
-  ? server.listen(port, "192.168.20.8", () => {
-      console.log(`Server is running on http://192.168.20.8:${port}`);
+  ? server.listen(port, () => {
+      console.log(`Server is running on http://localhost:${port}`);
     })
   : server.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
