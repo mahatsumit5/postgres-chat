@@ -1,21 +1,31 @@
 import express from "express";
 import http from "http";
 import { config } from "dotenv";
-import { connectSocket } from "./src/utils/socket";
+config();
 import cors from "cors";
-import publicUserRouter from "./src/router/public.router";
-import userRouter from "./src/router/user.router";
-import friendRouter from "./src/router/friendRequest.router";
-import chatRoomRouter from "./src/router/chatRoom.router";
-import messageRouter from "./src/router/message.router";
-import postRouter from "./src/router/post.router";
-import commentRouter from "./src/router/comment.router";
-import { ErrorHandler } from "./src/utils/errorHandler";
+
 import { auth } from "express-oauth2-jwt-bearer";
+// middleware
 import { loggedInUserAuth } from "./src/middleware";
+
+// swwagger
 import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "./swagger";
-config();
+
+// utils
+import { ErrorHandler, connectSocket } from "./src/utils/index";
+
+// Router
+import {
+  chatRoomRouter,
+  commentRouter,
+  friendReqRouter,
+  messageRouter,
+  postRouter,
+  publicRouter,
+  userRouter,
+} from "./src/router/index";
+
 export const auth0Check = auth({
   audience: process.env.audience,
   issuerBaseURL: process.env.issuerBaseURL,
@@ -43,13 +53,13 @@ export const server = http.createServer(app);
 app.use(express.json());
 
 // public route
-app.use("/api/v1/user", publicUserRouter);
+app.use("/api/v1/user", publicRouter);
 
 // Auth0 protected route
 
 app.use("/api/v1/post", auth0Check, loggedInUserAuth, postRouter);
 app.use("/api/v1/user", auth0Check, loggedInUserAuth, userRouter);
-app.use("/api/v1/friend", auth0Check, loggedInUserAuth, friendRouter);
+app.use("/api/v1/friend", auth0Check, loggedInUserAuth, friendReqRouter);
 app.use("/api/v1/room", auth0Check, loggedInUserAuth, chatRoomRouter);
 app.use("/api/v1/message", auth0Check, loggedInUserAuth, messageRouter);
 app.use("/api/v1/comment", auth0Check, loggedInUserAuth, commentRouter);
@@ -59,7 +69,7 @@ app.get("/socket.io", () => {
   connectSocket();
 });
 
-app.get("/test", (req, res) => {
+app.get("/", (req, res) => {
   res.json({
     status: true,
     message: "Server is Healthy",
