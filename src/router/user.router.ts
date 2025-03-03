@@ -37,6 +37,7 @@ router.get("/all-users", async (req, res, next) => {
       order,
       search ? search.toString().toLowerCase() : ""
     );
+
     users?.length
       ? res.status(200).json({ status: true, data: users, totalUsers })
       : res.status(400).json({ message: "No other user available" });

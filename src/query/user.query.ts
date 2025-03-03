@@ -147,6 +147,8 @@ export async function getAllUsers(
     })
   );
 
+  console.log(users);
+
   return { users, totalUsers };
 }
 

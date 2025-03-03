@@ -25,6 +25,7 @@ import {
   publicRouter,
   userRouter,
 } from "./src/router/index";
+import { getAllUsers } from "./src/query/user.query";
 
 export const auth0Check = auth({
   audience: process.env.audience,
@@ -38,7 +39,7 @@ app.use(
   cors({
     origin: [
       process.env.WEB_DOMAIN as string,
-      "http://192.168.20.8:5173",
+      "http://192.168.20.10:5173",
       "http://localhost:5173",
     ],
     methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],

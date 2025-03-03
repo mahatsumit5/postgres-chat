@@ -44,7 +44,7 @@ router.get("/", async (req, res, next) => {
           totalNumberOfPosts,
           message: "Available posts",
         })
-      : res.status(200).json({ message: "No posts available." });
+      : res.status(200).json({ message: "No posts available.", posts: [] });
   } catch (error) {
     next(error);
   }

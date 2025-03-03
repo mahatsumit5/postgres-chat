@@ -2,7 +2,6 @@ import { Response, Router } from "express";
 import { createUser, getUserByEmail } from "../query/user.query";
 import { comparePassword, hashPass } from "../utils/bcrypt";
 import { createAuth0Token } from "../utils/auth0";
-import { sessions } from "../..";
 import {
   validateUserLogin,
   validateUserSignUp,

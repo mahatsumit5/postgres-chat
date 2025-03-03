@@ -1,10 +1,10 @@
 import chatRoomRouter from "./chatRoom.router";
 import commentRouter from "./comment.router";
-import friendReqRouter from "./chatRoom.router";
-import messageRouter from "./chatRoom.router";
-import postRouter from "./chatRoom.router";
-import publicRouter from "./chatRoom.router";
-import userRouter from "./chatRoom.router";
+import friendReqRouter from "./friendRequest.router";
+import messageRouter from "./message.router";
+import postRouter from "./post.router";
+import publicRouter from "./public.router";
+import userRouter from "./user.router";
 
 export {
   chatRoomRouter,
