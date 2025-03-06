@@ -18,12 +18,8 @@ export class UserAPI extends BaseAPI {
         body: input,
       });
       return response;
-    } catch (error: any) {
-      return {
-        status: false,
-        message:
-          error.extensions.response.body.message || "unexpected error occured",
-      };
+    } catch (error) {
+      return this.handleError(error);
     }
   }
   async signIn(input: SignInUser): Promise<SignInResponse> {
@@ -31,12 +27,9 @@ export class UserAPI extends BaseAPI {
       return await this.post<SignInResponse>("sign-in", {
         body: input,
       });
-    } catch (error: any) {
-      return {
-        status: false,
-        message:
-          error.extensions.response.body.message || "unexpected error occured",
-      };
+    } catch (error) {
+      this.didEncounterError(error as Error);
+      return this.handleError(error);
     }
   }
 
@@ -50,46 +43,30 @@ export class UserAPI extends BaseAPI {
       return await this.get<AllUsersResponse>(
         `all-users?order=${order}&page=${page}&take=${take}&search=${search}`
       );
-    } catch (error: any) {
-      return {
-        status: false,
-        message:
-          error.extensions.response.body.message || "unexpected error occured",
-      };
+    } catch (error) {
+      return this.handleError(error);
     }
   }
 
   async loggedInUser(): Promise<LogInResponse> {
     try {
       return await this.get("loggedin");
-    } catch (error: any) {
-      return {
-        status: false,
-        message:
-          error.extensions.response.body.message || "unexpected error occured",
-      };
+    } catch (error) {
+      return this.handleError(error);
     }
   }
   async logout(): Promise<Response> {
     try {
       return await this.post("logout");
-    } catch (error: any) {
-      return {
-        status: false,
-        message:
-          error.extensions.response.body.message || "unexpected error occured",
-      };
+    } catch (error) {
+      return this.handleError(error);
     }
   }
   async newJwt(): Promise<Response> {
     try {
       return await this.patch("new-accessJWT", {});
-    } catch (error: any) {
-      return {
-        status: false,
-        message:
-          error.extensions.response.body.message || "unexpected error occured",
-      };
+    } catch (error) {
+      return this.handleError(error);
     }
   }
   async resetPassword(password: string): Promise<Response> {
@@ -97,23 +74,16 @@ export class UserAPI extends BaseAPI {
       return await this.put("reset-password", {
         body: { password },
       });
-    } catch (error: any) {
-      return {
-        status: false,
-        message:
-          error.extensions.response.body.message || "unexpected error occured",
-      };
+    } catch (error) {
+      return this.handleError(error);
+      throw error;
     }
   }
   async updateUser(): Promise<Response> {
     try {
       return await this.post("logout");
-    } catch (error: any) {
-      return {
-        status: false,
-        message:
-          error.extensions.response.body.message || "unexpected error occured",
-      };
+    } catch (error) {
+      return this.handleError(error);
     }
   }
 }

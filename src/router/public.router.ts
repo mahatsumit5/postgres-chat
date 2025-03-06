@@ -33,7 +33,7 @@ router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
   try {
     const user = await getUserByEmail(req.body.email);
     if (!user) {
-      next(new Error("User not found"));
+      return next(new Error("User not found"));
     }
     const isPasswordCorrect = comparePassword(req.body.password, user.password);
     if (!isPasswordCorrect) {
