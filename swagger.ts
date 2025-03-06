@@ -1,10 +1,7 @@
 import { object } from "joi";
-import { dirname } from "path";
 import swaggerJSDoc from "swagger-jsdoc";
-console.log(__dirname);
-
 const swaggerOptions = {
-  swaggerDefinition: {
+  definition: {
     openapi: "3.0.0", // OpenAPI version
     info: {
       title: "My Chat Application API", // API title
@@ -19,6 +16,9 @@ const swaggerOptions = {
     paths: {
       "/api/v1/user": {
         get: {
+          parameters: {
+            name: String,
+          },
           summary: "Retrive logged in user",
           responses: {
             200: {
@@ -26,7 +26,7 @@ const swaggerOptions = {
               content: {
                 "application/json": {
                   schema: {
-                    type: object,
+                    type: {},
                   },
                 },
               },

@@ -62,6 +62,7 @@ model Post {
   updatedAt DateTime   @updatedAt
   likes     PostLike[]
   images    String[]   @default([])
+  
 }
 
 model Comment {

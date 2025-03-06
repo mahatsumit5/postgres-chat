@@ -13,7 +13,7 @@ export interface CustomError extends Error {
   issues: Issue[];
 }
 
-interface IUser {
+export interface IUser {
   id: string;
   email: string;
   fName: string;

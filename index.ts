@@ -73,13 +73,13 @@ app.get("/socket.io", () => {
 app.get("/", (req, res) => {
   res.json({
     status: true,
-    message: "Server is Healthy",
+    message: "Serversss is Healthy",
   });
 });
 
 process.env.ENVIRONMENT === "Development"
   ? server.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
+      console.log(`Serverss is running on http://localhost:${port}`);
     })
   : server.listen(port, () => {
       console.log(`Server is running on http://localhost:${port}`);
