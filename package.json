@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "build/src/index.js",
   "scripts": {
-    "dev": "nodemon build/index.js",
+    "dev": "nodemon build/index.js --respawn",
     "build": "npx prisma generate && npx tsc",
     "start": " node build/index.js",
     "git": "npx tsc && git add . && git commit -m \"build folder ready\" && git push ",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen --watch \"./schema/**.graphql\""
   },
   "keywords": [],
   "author": "",
@@ -32,6 +32,8 @@
   "dependencies": {
     "@apollo/datasource-rest": "^6.4.1",
     "@apollo/server": "^4.11.3",
+    "@graphql-tools/merge": "^9.0.22",
+    "@graphql-tools/schema": "^10.0.21",
     "@parcel/watcher": "^2.4.0",
     "@prisma/client": "^5.22.0",
     "axios": "^1.7.2",

@@ -1,0 +1,41 @@
+type User {
+  id: ID!
+  email: String!
+  fName: String!
+  lName: String!
+  isActive: Boolean!
+  password: String!
+  profile: String
+  bio: String
+  coverPicture: String
+  chatRoom: [ChatRoom!]!
+  session: [Session!]!
+  friendRequests: [FriendRequests!]!
+  sentRequests: [FriendRequests!]!
+  messages: [Message!]!
+  post: [Post!]!
+  likedPosts: [PostLike!]!
+  likedComments: [CommentLikes!]!
+  comment: [Comment!]!
+}
+# Session model
+type Session {
+  associate: User!
+  userEmail: String!
+  timeStamps: String!
+  token: String!
+}
+
+type Query {
+  "a list of all the users"
+  loggedInUser: LogInResponse
+  "a list of all the users"
+  allUsers: AllUsersResponse
+}
+
+type Mutation {
+  logout: Response
+  resetPassword: Response
+  newJwt: Response
+  updateUser: Response
+}

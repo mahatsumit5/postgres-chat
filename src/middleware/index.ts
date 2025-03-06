@@ -16,15 +16,17 @@ export const loggedInUserAuth = async (
     // );
 
     // const email = Object.values(sessions)[loggedInUserIndex];
+    console.log(req.headers.authorization);
     const token = req.headers.authorization;
+    console.log(token);
     if (!token) {
       return res.status(500).json({
-        message: "You are not logged in",
+        message: "You are not loggssed in",
       });
     }
     const user = await getSession(req.headers.authorization!);
     if (!user) {
-      return res.status(401).json({ message: "You are not logged in" });
+      return res.status(401).json({ message: "You are not loaaaagged in" });
     }
     user.associate.password = undefined;
     user.associate.refreshJWT = undefined;

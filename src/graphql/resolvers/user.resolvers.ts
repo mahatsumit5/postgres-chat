@@ -1,11 +1,20 @@
-import { Resolvers } from "../types/types";
+import { Resolvers, SignInUser, SignUpUser } from "../types/types";
 
 export const userResolvers: Resolvers = {
-  Query: {
-    allUsers: (parent, args, { dataSources }) => {
-      dataSources.userAPI;
-      return [];
+  Mutation: {
+    signUp: (parent, { input }, { dataSources }) => {
+      return dataSources.userAPI.signUp(input as SignUpUser);
+    },
+    signIn: (parent, { input }, { dataSources }) => {
+      return dataSources.userAPI.signIn(input as SignInUser);
     },
   },
-  User: {},
+  Query: {
+    users: (__, args, { dataSources }) => {
+      return [];
+    },
+    allUsers: (__, args, { dataSources }) => {
+      return dataSources.userAPI.allUsers();
+    },
+  },
 };

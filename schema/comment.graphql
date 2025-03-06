@@ -1,0 +1,26 @@
+# # Comment model
+type Comment {
+  id: ID!
+  content: String!
+  post: Post!
+  postId: String!
+  author: User!
+  authorId: String!
+  likes: [CommentLikes!]!
+  createdAt: String!
+  updatedAt: String!
+  replies: [CommentReply!]!
+}
+
+# # CommentReply model
+type CommentReply {
+  reply: Comment!
+  replyId: String!
+}
+# # CommentLikes model
+type CommentLikes {
+  commentId: String!
+  userId: String!
+  comment: Comment!
+  user: User!
+}

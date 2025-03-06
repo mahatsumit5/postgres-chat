@@ -1,0 +1,23 @@
+type Response {
+  status: Boolean!
+  message: String!
+}
+type Token {
+  accessJWT: String!
+}
+type SignInResponse {
+  status: Boolean!
+  message: String!
+  token: Token
+}
+type LogInResponse {
+  status: Boolean!
+  message: String!
+  data: User
+}
+type AllUsersResponse {
+  status: Boolean!
+  message: String!
+  data: [User!]
+  totalUsers: Int
+}

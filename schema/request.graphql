@@ -1,0 +1,13 @@
+# # FriendRequests model
+type FriendRequests {
+  from: User!
+  fromId: String!
+  to: User!
+  toId: String!
+  status: Status!
+}
+enum Status {
+  ACCEPTED
+  PENDING
+  REJECTED
+}

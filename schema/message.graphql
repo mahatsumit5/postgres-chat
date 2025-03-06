@@ -1,0 +1,11 @@
+# # Message model
+type Message {
+  id: ID!
+  content: String!
+  createdAt: String!
+  isSeen: Boolean!
+  chat: ChatRoom!
+  chatRoomId: String!
+  creatorId: User!
+  author: String!
+}

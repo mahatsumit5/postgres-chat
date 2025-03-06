@@ -15,7 +15,7 @@ router.get("/", loggedInUserAuth, async (req, res, next) => {
   try {
     const user = req.userInfo;
     user?.id
-      ? res.json({ status: true, data: user })
+      ? res.json({ status: true, message: "Sucessfull", data: user })
       : res.status(404).json({ message: "No user found.", status: false });
   } catch (error) {
     next(error);
@@ -24,7 +24,6 @@ router.get("/", loggedInUserAuth, async (req, res, next) => {
 
 router.get("/all-users", async (req, res, next) => {
   try {
-    console.log(req.query);
     const user = req.userInfo;
     const order = req.query.order as "asc" | "desc";
     const page = Number(req.query.page);
@@ -50,7 +49,7 @@ router.post("/logout", async (req, res, next) => {
     const token = req.headers.authorization;
     const user = req.userInfo;
     delete sessions[token as string];
-    res.json({ status: true });
+    res.json({ status: true, message: "You have been logged out" });
   } catch (error) {
     next(error);
   }

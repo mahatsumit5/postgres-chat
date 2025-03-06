@@ -1,31 +1,27 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { readFileSync } from "fs";
-import { gql } from "graphql-tag";
-import { join, resolve } from "path";
-import { userResolvers } from "../graphql/resolvers/user.resolvers";
+import { resolvers } from "../graphql/resolvers/index";
 import { UserAPI } from "./datasource/user.api";
+import { typeDefs } from "./typedefs/index";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 
-const typeDefs = gql(
-  readFileSync(resolve(join(__dirname, "..", ".."), "./schema.graphql"), {
-    encoding: "utf-8",
-  })
-);
-
+const schema = makeExecutableSchema({
+  typeDefs,
+  resolvers,
+});
 export async function startApolloServer() {
-  const server = new ApolloServer({ typeDefs, resolvers: [userResolvers] });
-
-  const context = async () => {
-    const { cache } = server;
-    return {
-      dataSources: {
-        userAPI: new UserAPI({ cache }),
-      },
-    };
-  };
+  const server = new ApolloServer({ schema });
 
   const { url } = await startStandaloneServer(server, {
-    context,
+    context: async ({ req, res }) => {
+      const { cache } = server;
+      return {
+        dataSources: {
+          userAPI: new UserAPI({ cache }),
+          token: req.headers.authorization,
+        },
+      };
+    },
   });
   console.log(` 🚀  Server is running! 📭  Query at ${url} `);
 }
