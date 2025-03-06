@@ -17,8 +17,10 @@ export async function startApolloServer() {
       const { cache } = server;
       return {
         dataSources: {
-          userAPI: new UserAPI({ cache }),
-          token: req.headers.authorization,
+          userAPI: new UserAPI({
+            token: req.headers.authorization as string,
+            cache,
+          }),
         },
       };
     },

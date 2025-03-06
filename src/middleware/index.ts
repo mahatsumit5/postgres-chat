@@ -17,13 +17,12 @@ export const loggedInUserAuth = async (
 
     // const email = Object.values(sessions)[loggedInUserIndex];
     const token = req.headers.authorization;
-    console.log(req);
     if (!token) {
       return res.status(500).json({
         message: "You are not loggssed in",
       });
     }
-    const user = await getSession(req.headers.authorization!);
+    const user = await getSession(`Bearer ${token}`);
     if (!user) {
       return res.status(401).json({ message: "You are not loaaaagged in" });
     }

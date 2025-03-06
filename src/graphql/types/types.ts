@@ -19,7 +19,7 @@ export type Scalars = {
 
 export type AllUsersResponse = {
   __typename?: 'AllUsersResponse';
-  data?: Maybe<Array<User>>;
+  data?: Maybe<Array<Friend>>;
   message: Scalars['String']['output'];
   status: Scalars['Boolean']['output'];
   totalUsers?: Maybe<Scalars['Int']['output']>;
@@ -58,6 +58,15 @@ export type CommentReply = {
   __typename?: 'CommentReply';
   reply: Comment;
   replyId: Scalars['String']['output'];
+};
+
+export type Friend = {
+  __typename?: 'Friend';
+  email: Scalars['String']['output'];
+  fName: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  lName: Scalars['String']['output'];
+  profile?: Maybe<Scalars['String']['output']>;
 };
 
 export type FriendRequests = {
@@ -116,6 +125,11 @@ export type MutationSignUpArgs = {
   input?: InputMaybe<SignUpUser>;
 };
 
+export enum Order {
+  Asc = 'asc',
+  Desc = 'desc'
+}
+
 export type Post = {
   __typename?: 'Post';
   author: User;
@@ -145,6 +159,11 @@ export type Query = {
   allUsers?: Maybe<AllUsersResponse>;
   /** a list of all the users */
   loggedInUser?: Maybe<LogInResponse>;
+};
+
+
+export type QueryAllUsersArgs = {
+  params?: InputMaybe<AllUser>;
 };
 
 export type Response = {
@@ -211,6 +230,13 @@ export type User = {
   profile?: Maybe<Scalars['String']['output']>;
   sentRequests: Array<FriendRequests>;
   session: Array<Session>;
+};
+
+export type AllUser = {
+  order: Order;
+  page: Scalars['Int']['input'];
+  search: Scalars['String']['input'];
+  take: Scalars['Int']['input'];
 };
 
 
@@ -290,12 +316,14 @@ export type ResolversTypes = {
   Comment: ResolverTypeWrapper<Comment>;
   CommentLikes: ResolverTypeWrapper<CommentLikes>;
   CommentReply: ResolverTypeWrapper<CommentReply>;
+  Friend: ResolverTypeWrapper<Friend>;
   FriendRequests: ResolverTypeWrapper<FriendRequests>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LogInResponse: ResolverTypeWrapper<LogInResponse>;
   Message: ResolverTypeWrapper<Message>;
   Mutation: ResolverTypeWrapper<{}>;
+  Order: Order;
   Post: ResolverTypeWrapper<Post>;
   PostLike: ResolverTypeWrapper<PostLike>;
   Query: ResolverTypeWrapper<{}>;
@@ -308,6 +336,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Token: ResolverTypeWrapper<Token>;
   User: ResolverTypeWrapper<User>;
+  allUser: AllUser;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -318,6 +347,7 @@ export type ResolversParentTypes = {
   Comment: Comment;
   CommentLikes: CommentLikes;
   CommentReply: CommentReply;
+  Friend: Friend;
   FriendRequests: FriendRequests;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
@@ -335,10 +365,11 @@ export type ResolversParentTypes = {
   String: Scalars['String']['output'];
   Token: Token;
   User: User;
+  allUser: AllUser;
 };
 
 export type AllUsersResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['AllUsersResponse'] = ResolversParentTypes['AllUsersResponse']> = {
-  data?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
+  data?: Resolver<Maybe<Array<ResolversTypes['Friend']>>, ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   totalUsers?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -377,6 +408,15 @@ export type CommentLikesResolvers<ContextType = DataSourceContext, ParentType ex
 export type CommentReplyResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['CommentReply'] = ResolversParentTypes['CommentReply']> = {
   reply?: Resolver<ResolversTypes['Comment'], ParentType, ContextType>;
   replyId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FriendResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Friend'] = ResolversParentTypes['Friend']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  fName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  lName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  profile?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -442,7 +482,7 @@ export type PostLikeResolvers<ContextType = DataSourceContext, ParentType extend
 };
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  allUsers?: Resolver<Maybe<ResolversTypes['AllUsersResponse']>, ParentType, ContextType>;
+  allUsers?: Resolver<Maybe<ResolversTypes['AllUsersResponse']>, ParentType, ContextType, Partial<QueryAllUsersArgs>>;
   loggedInUser?: Resolver<Maybe<ResolversTypes['LogInResponse']>, ParentType, ContextType>;
 };
 
@@ -500,6 +540,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   Comment?: CommentResolvers<ContextType>;
   CommentLikes?: CommentLikesResolvers<ContextType>;
   CommentReply?: CommentReplyResolvers<ContextType>;
+  Friend?: FriendResolvers<ContextType>;
   FriendRequests?: FriendRequestsResolvers<ContextType>;
   LogInResponse?: LogInResponseResolvers<ContextType>;
   Message?: MessageResolvers<ContextType>;

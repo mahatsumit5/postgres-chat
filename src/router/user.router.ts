@@ -11,8 +11,9 @@ import { loggedInUserAuth, upload } from "../middleware";
 import { sessions } from "..";
 const router = Router();
 
-router.get("/", loggedInUserAuth, async (req, res, next) => {
+router.get("/loggedin", async (req, res, next) => {
   try {
+    console.log(req);
     const user = req.userInfo;
     user?.id
       ? res.json({ status: true, message: "Sucessfull", data: user })
@@ -24,6 +25,7 @@ router.get("/", loggedInUserAuth, async (req, res, next) => {
 
 router.get("/all-users", async (req, res, next) => {
   try {
+    console.log(req.query);
     const user = req.userInfo;
     const order = req.query.order as "asc" | "desc";
     const page = Number(req.query.page);
@@ -37,7 +39,14 @@ router.get("/all-users", async (req, res, next) => {
       search ? search.toString().toLowerCase() : ""
     );
     users?.length
-      ? res.status(200).json({ status: true, data: users, totalUsers })
+      ? res
+          .status(200)
+          .json({
+            status: true,
+            data: users,
+            totalUsers,
+            message: "Hers is you",
+          })
       : res.status(400).json({ message: "No other user available" });
   } catch (error) {
     next(error);

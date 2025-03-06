@@ -1,5 +1,6 @@
-import { RESTDataSource } from "@apollo/datasource-rest";
+import { AugmentedRequest, RESTDataSource } from "@apollo/datasource-rest";
 import {
+  AllUser,
   AllUsersResponse,
   LogInResponse,
   Response,
@@ -7,9 +8,18 @@ import {
   SignInUser,
   SignUpUser,
 } from "../types/types";
-
+import type { KeyValueCache } from "@apollo/utils.keyvaluecache";
 export class UserAPI extends RESTDataSource {
   baseURL = "http://localhost:8080/api/v1/user/";
+  private token: string;
+  constructor(options: { token: string; cache: KeyValueCache }) {
+    super(options); // this sends our server's `cache` through
+    this.token = options.token;
+  }
+
+  override willSendRequest(_path: string, request: AugmentedRequest) {
+    request.headers["authorization"] = this.token;
+  }
 
   async signUp(input: SignUpUser): Promise<Response> {
     try {
@@ -39,13 +49,21 @@ export class UserAPI extends RESTDataSource {
     }
   }
 
-  async allUsers(token: string): Promise<AllUsersResponse> {
+  async allUsers({
+    order,
+    page,
+    take,
+    search,
+  }: AllUser): Promise<AllUsersResponse> {
     try {
-      return await this.get<AllUsersResponse>("all-users", {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
+      return await this.get<AllUsersResponse>(
+        `all-users?order=${order}&page=${page}&take=${take}&search=${search}`,
+        {
+          headers: {
+            authorization: `Bearer ${this.token}`,
+          },
+        }
+      );
     } catch (error: any) {
       return {
         status: false,
@@ -55,11 +73,11 @@ export class UserAPI extends RESTDataSource {
     }
   }
 
-  async loggedInUser(token: string): Promise<LogInResponse> {
+  async loggedInUser(): Promise<LogInResponse> {
     try {
-      return await this.get("", {
+      return await this.get("/loggedin", {
         headers: {
-          authorization: `Bearer ${token}`,
+          authorization: `Bearer ${this.token}`,
         },
       });
     } catch (error: any) {
@@ -81,14 +99,9 @@ export class UserAPI extends RESTDataSource {
       };
     }
   }
-  async newJwt(token: string): Promise<Response> {
+  async newJwt(): Promise<Response> {
     try {
-      return await this.patch("new-accessJWT", {
-        headers: {
-          authorization: `Bearer ${token}`,
-          refreshjwt: token,
-        },
-      });
+      return await this.patch("new-accessJWT", {});
     } catch (error: any) {
       return {
         status: false,

@@ -15,19 +15,18 @@ export const userResolvers: Resolvers = {
       return dataSources.userAPI.resetPassword(newPassword);
     },
     newJwt: (_, __, { dataSources }) => {
-      console.log(dataSources.token);
-      return dataSources.userAPI.newJwt(dataSources.token);
+      return dataSources.userAPI.newJwt();
     },
     updateUser: (_, __, { dataSources }) => {
       return dataSources.userAPI.updateUser();
     },
   },
   Query: {
-    allUsers: (__, args, { dataSources }) => {
-      return dataSources.userAPI.allUsers(dataSources.token);
+    allUsers: (__, { params }, { dataSources }) => {
+      return dataSources.userAPI.allUsers(params!);
     },
     loggedInUser: (__, args, { dataSources }) => {
-      return dataSources.userAPI.loggedInUser(dataSources.token);
+      return dataSources.userAPI.loggedInUser();
     },
   },
 };

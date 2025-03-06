@@ -18,6 +18,14 @@ type LogInResponse {
 type AllUsersResponse {
   status: Boolean!
   message: String!
-  data: [User!]
+  data: [Friend!]
   totalUsers: Int
+}
+
+type Friend {
+  id: ID!
+  fName: String!
+  lName: String!
+  email: String!
+  profile: String
 }

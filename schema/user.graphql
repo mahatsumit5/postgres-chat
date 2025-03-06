@@ -30,7 +30,7 @@ type Query {
   "a list of all the users"
   loggedInUser: LogInResponse
   "a list of all the users"
-  allUsers: AllUsersResponse
+  allUsers(params: allUser): AllUsersResponse
 }
 
 type Mutation {
@@ -54,4 +54,16 @@ input SignUpUser {
 input SignInUser {
   email: String!
   password: String!
+}
+
+input allUser {
+  order: Order!
+  take: Int!
+  page: Int!
+  search: String!
+}
+
+enum Order {
+  asc
+  desc
 }
