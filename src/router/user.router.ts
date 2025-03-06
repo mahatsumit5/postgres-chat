@@ -8,7 +8,7 @@ import {
 import { hashPass } from "../utils/bcrypt";
 import { createAccessJWT, verifyRefreshJWT } from "../utils/jwt";
 import { loggedInUserAuth, upload } from "../middleware";
-import { sessions } from "../..";
+import { sessions } from "..";
 const router = Router();
 
 router.get("/", loggedInUserAuth, async (req, res, next) => {

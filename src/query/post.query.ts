@@ -1,4 +1,4 @@
-import { executeQuery, prisma } from "../../script";
+import { executeQuery, prisma } from "../script";
 import { CreatePostParams, UpdataPostParams } from "../types";
 
 export const createPost = ({ id, ...rest }: CreatePostParams) => {

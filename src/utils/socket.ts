@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { server } from "../..";
+import { server } from "..";
 import { getChatRoomByEmail } from "../query/ChatRoom.query";
 import { getUserByEmail } from "../query/user.query";
 
