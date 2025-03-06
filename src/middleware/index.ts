@@ -16,9 +16,7 @@ export const loggedInUserAuth = async (
     // );
 
     // const email = Object.values(sessions)[loggedInUserIndex];
-    console.log(req.headers.authorization);
     const token = req.headers.authorization;
-    console.log(token);
     if (!token) {
       return res.status(500).json({
         message: "You are not loggssed in",

@@ -16,5 +16,8 @@ export const userResolvers: Resolvers = {
     allUsers: (__, args, { dataSources }) => {
       return dataSources.userAPI.allUsers();
     },
+    loggedInUser: (__, args, { dataSources }) => {
+      return dataSources.userAPI.loggedInUser();
+    },
   },
 };
