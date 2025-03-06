@@ -1,4 +1,21 @@
 # # FriendRequests model
+
+type Mutation {
+  "Send friend request to other user"
+  sendRequest(toID: String!): SentRequestResponse
+  "Delete Friend Request"
+  deleteFriendRequest(params: DeleteRequestParams): SentRequestResponse
+  "Accept incoming request"
+  acceptFriendRequest: Response
+}
+
+type Query {
+  "Get all incoming request"
+  getFriendRequest: FriendRequestResponse
+  "Get list of ALL SENT request"
+  getSentFriendRequest(queryParams: queryParamsSentReq): FriendRequestResponse
+}
+
 type FriendRequests {
   from: User!
   fromId: String!
@@ -6,8 +23,27 @@ type FriendRequests {
   toId: String!
   status: Status!
 }
+
+type FriendRequest {
+  from: Friend!
+  to: Friend!
+  status: Status!
+  toId: String!
+}
+
 enum Status {
   ACCEPTED
   PENDING
   REJECTED
+}
+
+input queryParamsSentReq {
+  page: Int!
+  take: Int!
+  search: String!
+}
+
+input DeleteRequestParams {
+  fromId: String!
+  toId: String!
 }

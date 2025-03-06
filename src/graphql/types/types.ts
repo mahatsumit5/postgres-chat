@@ -60,6 +60,11 @@ export type CommentReply = {
   replyId: Scalars['String']['output'];
 };
 
+export type DeleteRequestParams = {
+  fromId: Scalars['String']['input'];
+  toId: Scalars['String']['input'];
+};
+
 export type Friend = {
   __typename?: 'Friend';
   email: Scalars['String']['output'];
@@ -67,6 +72,22 @@ export type Friend = {
   id: Scalars['ID']['output'];
   lName: Scalars['String']['output'];
   profile?: Maybe<Scalars['String']['output']>;
+};
+
+export type FriendRequest = {
+  __typename?: 'FriendRequest';
+  from: Friend;
+  status: Status;
+  to: Friend;
+  toId: Scalars['String']['output'];
+};
+
+export type FriendRequestResponse = {
+  __typename?: 'FriendRequestResponse';
+  count?: Maybe<Scalars['Int']['output']>;
+  data: Array<FriendRequest>;
+  message: Scalars['String']['output'];
+  status: Scalars['Boolean']['output'];
 };
 
 export type FriendRequests = {
@@ -99,9 +120,15 @@ export type Message = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Accept incoming request */
+  acceptFriendRequest?: Maybe<Response>;
+  /** Delete Friend Request */
+  deleteFriendRequest?: Maybe<SentRequestResponse>;
   logout?: Maybe<Response>;
   newJwt?: Maybe<Response>;
   resetPassword?: Maybe<Response>;
+  /** Send friend request to other user */
+  sendRequest?: Maybe<SentRequestResponse>;
   /** login to your account */
   signIn?: Maybe<SignInResponse>;
   /** Create a new user */
@@ -111,8 +138,18 @@ export type Mutation = {
 };
 
 
+export type MutationDeleteFriendRequestArgs = {
+  params?: InputMaybe<DeleteRequestParams>;
+};
+
+
 export type MutationResetPasswordArgs = {
   newPassword: Scalars['String']['input'];
+};
+
+
+export type MutationSendRequestArgs = {
+  toID: Scalars['String']['input'];
 };
 
 
@@ -157,6 +194,10 @@ export type Query = {
   __typename?: 'Query';
   /** a list of all the users */
   allUsers?: Maybe<AllUsersResponse>;
+  /** Get all incoming request */
+  getFriendRequest?: Maybe<FriendRequestResponse>;
+  /** Get list of ALL SENT request */
+  getSentFriendRequest?: Maybe<FriendRequestResponse>;
   /** a list of all the users */
   loggedInUser?: Maybe<LogInResponse>;
 };
@@ -166,8 +207,20 @@ export type QueryAllUsersArgs = {
   params?: InputMaybe<AllUser>;
 };
 
+
+export type QueryGetSentFriendRequestArgs = {
+  queryParams?: InputMaybe<QueryParamsSentReq>;
+};
+
 export type Response = {
   __typename?: 'Response';
+  message: Scalars['String']['output'];
+  status: Scalars['Boolean']['output'];
+};
+
+export type SentRequestResponse = {
+  __typename?: 'SentRequestResponse';
+  data?: Maybe<FriendRequest>;
   message: Scalars['String']['output'];
   status: Scalars['Boolean']['output'];
 };
@@ -234,6 +287,12 @@ export type User = {
 
 export type AllUser = {
   order: Order;
+  page: Scalars['Int']['input'];
+  search: Scalars['String']['input'];
+  take: Scalars['Int']['input'];
+};
+
+export type QueryParamsSentReq = {
   page: Scalars['Int']['input'];
   search: Scalars['String']['input'];
   take: Scalars['Int']['input'];
@@ -316,7 +375,10 @@ export type ResolversTypes = {
   Comment: ResolverTypeWrapper<Comment>;
   CommentLikes: ResolverTypeWrapper<CommentLikes>;
   CommentReply: ResolverTypeWrapper<CommentReply>;
+  DeleteRequestParams: DeleteRequestParams;
   Friend: ResolverTypeWrapper<Friend>;
+  FriendRequest: ResolverTypeWrapper<FriendRequest>;
+  FriendRequestResponse: ResolverTypeWrapper<FriendRequestResponse>;
   FriendRequests: ResolverTypeWrapper<FriendRequests>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -328,6 +390,7 @@ export type ResolversTypes = {
   PostLike: ResolverTypeWrapper<PostLike>;
   Query: ResolverTypeWrapper<{}>;
   Response: ResolverTypeWrapper<Response>;
+  SentRequestResponse: ResolverTypeWrapper<SentRequestResponse>;
   Session: ResolverTypeWrapper<Session>;
   SignInResponse: ResolverTypeWrapper<SignInResponse>;
   SignInUser: SignInUser;
@@ -337,6 +400,7 @@ export type ResolversTypes = {
   Token: ResolverTypeWrapper<Token>;
   User: ResolverTypeWrapper<User>;
   allUser: AllUser;
+  queryParamsSentReq: QueryParamsSentReq;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -347,7 +411,10 @@ export type ResolversParentTypes = {
   Comment: Comment;
   CommentLikes: CommentLikes;
   CommentReply: CommentReply;
+  DeleteRequestParams: DeleteRequestParams;
   Friend: Friend;
+  FriendRequest: FriendRequest;
+  FriendRequestResponse: FriendRequestResponse;
   FriendRequests: FriendRequests;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
@@ -358,6 +425,7 @@ export type ResolversParentTypes = {
   PostLike: PostLike;
   Query: {};
   Response: Response;
+  SentRequestResponse: SentRequestResponse;
   Session: Session;
   SignInResponse: SignInResponse;
   SignInUser: SignInUser;
@@ -366,6 +434,7 @@ export type ResolversParentTypes = {
   Token: Token;
   User: User;
   allUser: AllUser;
+  queryParamsSentReq: QueryParamsSentReq;
 };
 
 export type AllUsersResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['AllUsersResponse'] = ResolversParentTypes['AllUsersResponse']> = {
@@ -420,6 +489,22 @@ export type FriendResolvers<ContextType = DataSourceContext, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type FriendRequestResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['FriendRequest'] = ResolversParentTypes['FriendRequest']> = {
+  from?: Resolver<ResolversTypes['Friend'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['Status'], ParentType, ContextType>;
+  to?: Resolver<ResolversTypes['Friend'], ParentType, ContextType>;
+  toId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FriendRequestResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['FriendRequestResponse'] = ResolversParentTypes['FriendRequestResponse']> = {
+  count?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  data?: Resolver<Array<ResolversTypes['FriendRequest']>, ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type FriendRequestsResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['FriendRequests'] = ResolversParentTypes['FriendRequests']> = {
   from?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   fromId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -449,9 +534,12 @@ export type MessageResolvers<ContextType = DataSourceContext, ParentType extends
 };
 
 export type MutationResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  acceptFriendRequest?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
+  deleteFriendRequest?: Resolver<Maybe<ResolversTypes['SentRequestResponse']>, ParentType, ContextType, Partial<MutationDeleteFriendRequestArgs>>;
   logout?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
   newJwt?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
   resetPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'newPassword'>>;
+  sendRequest?: Resolver<Maybe<ResolversTypes['SentRequestResponse']>, ParentType, ContextType, RequireFields<MutationSendRequestArgs, 'toID'>>;
   signIn?: Resolver<Maybe<ResolversTypes['SignInResponse']>, ParentType, ContextType, Partial<MutationSignInArgs>>;
   signUp?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationSignUpArgs>>;
   updateUser?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
@@ -483,10 +571,19 @@ export type PostLikeResolvers<ContextType = DataSourceContext, ParentType extend
 
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   allUsers?: Resolver<Maybe<ResolversTypes['AllUsersResponse']>, ParentType, ContextType, Partial<QueryAllUsersArgs>>;
+  getFriendRequest?: Resolver<Maybe<ResolversTypes['FriendRequestResponse']>, ParentType, ContextType>;
+  getSentFriendRequest?: Resolver<Maybe<ResolversTypes['FriendRequestResponse']>, ParentType, ContextType, Partial<QueryGetSentFriendRequestArgs>>;
   loggedInUser?: Resolver<Maybe<ResolversTypes['LogInResponse']>, ParentType, ContextType>;
 };
 
 export type ResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = {
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type SentRequestResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['SentRequestResponse'] = ResolversParentTypes['SentRequestResponse']> = {
+  data?: Resolver<Maybe<ResolversTypes['FriendRequest']>, ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -541,6 +638,8 @@ export type Resolvers<ContextType = DataSourceContext> = {
   CommentLikes?: CommentLikesResolvers<ContextType>;
   CommentReply?: CommentReplyResolvers<ContextType>;
   Friend?: FriendResolvers<ContextType>;
+  FriendRequest?: FriendRequestResolvers<ContextType>;
+  FriendRequestResponse?: FriendRequestResponseResolvers<ContextType>;
   FriendRequests?: FriendRequestsResolvers<ContextType>;
   LogInResponse?: LogInResponseResolvers<ContextType>;
   Message?: MessageResolvers<ContextType>;
@@ -549,6 +648,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   PostLike?: PostLikeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Response?: ResponseResolvers<ContextType>;
+  SentRequestResponse?: SentRequestResponseResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
   SignInResponse?: SignInResponseResolvers<ContextType>;
   Token?: TokenResolvers<ContextType>;

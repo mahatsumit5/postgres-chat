@@ -7,6 +7,7 @@ import {
   sendFriendRequest,
 } from "../query/friendRequest.query";
 import { createChatRoom } from "../query/ChatRoom.query";
+import { messageRouter } from ".";
 
 const router = Router();
 
@@ -18,7 +19,11 @@ router.post("/send-request", async (req, res, next) => {
     }
     const result = await sendFriendRequest(user.id, req.body.to);
     result
-      ? res.status(201).json({ status: true, data: result })
+      ? res.status(201).json({
+          status: true,
+          data: result,
+          message: "Request sent sucessfull",
+        })
       : next(new Error("Failed to create friend request"));
   } catch (error) {
     next(error);
@@ -33,8 +38,16 @@ router.get("/friend-request", async (req, res, next) => {
     }
     const result = await getFriendRequestByUser(user.id);
     const friendReqCount = await getNumberOfFriendReq(user.email);
+
     result?.length
-      ? res.status(201).json({ status: true, data: { result, friendReqCount } })
+      ? res
+          .status(201)
+          .json({
+            status: true,
+            data: result,
+            count: friendReqCount,
+            message: "",
+          })
       : res
           .status(201)
           .json({ status: true, data: { result, friendReqCount } });
@@ -62,7 +75,12 @@ router.get("/sent-request", async (req, res, next) => {
     );
     const sentReq = await result;
     sentReq?.length
-      ? res.status(201).json({ status: true, data: sentReq, count })
+      ? res.status(201).json({
+          status: true,
+          data: sentReq,
+          count,
+          message: "List of friend req",
+        })
       : res.status(200).json({
           status: true,
           data: [],

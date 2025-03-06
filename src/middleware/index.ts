@@ -22,7 +22,7 @@ export const loggedInUserAuth = async (
         message: "You are not loggssed in",
       });
     }
-    const user = await getSession(`Bearer ${token}`);
+    const user = await getSession(`${token}`);
     if (!user) {
       return res.status(401).json({ message: "You are not loaaaagged in" });
     }

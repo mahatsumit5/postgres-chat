@@ -29,3 +29,15 @@ type Friend {
   email: String!
   profile: String
 }
+
+type FriendRequestResponse {
+  status: Boolean!
+  message: String!
+  data: [FriendRequest!]!
+  count: Int
+}
+type SentRequestResponse {
+  status: Boolean!
+  message: String!
+  data: FriendRequest
+}

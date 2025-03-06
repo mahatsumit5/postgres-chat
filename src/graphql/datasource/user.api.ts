@@ -8,18 +8,9 @@ import {
   SignInUser,
   SignUpUser,
 } from "../types/types";
-import type { KeyValueCache } from "@apollo/utils.keyvaluecache";
-export class UserAPI extends RESTDataSource {
-  baseURL = "http://localhost:8080/api/v1/user/";
-  private token: string;
-  constructor(options: { token: string; cache: KeyValueCache }) {
-    super(options); // this sends our server's `cache` through
-    this.token = options.token;
-  }
-
-  override willSendRequest(_path: string, request: AugmentedRequest) {
-    request.headers["authorization"] = this.token;
-  }
+import { BaseAPI } from ".";
+export class UserAPI extends BaseAPI {
+  override baseURL = "http://localhost:8080/api/v1/user/";
 
   async signUp(input: SignUpUser): Promise<Response> {
     try {
@@ -57,12 +48,7 @@ export class UserAPI extends RESTDataSource {
   }: AllUser): Promise<AllUsersResponse> {
     try {
       return await this.get<AllUsersResponse>(
-        `all-users?order=${order}&page=${page}&take=${take}&search=${search}`,
-        {
-          headers: {
-            authorization: `Bearer ${this.token}`,
-          },
-        }
+        `all-users?order=${order}&page=${page}&take=${take}&search=${search}`
       );
     } catch (error: any) {
       return {
@@ -75,11 +61,7 @@ export class UserAPI extends RESTDataSource {
 
   async loggedInUser(): Promise<LogInResponse> {
     try {
-      return await this.get("/loggedin", {
-        headers: {
-          authorization: `Bearer ${this.token}`,
-        },
-      });
+      return await this.get("loggedin");
     } catch (error: any) {
       return {
         status: false,

@@ -20,6 +20,12 @@ export const userResolvers: Resolvers = {
     updateUser: (_, __, { dataSources }) => {
       return dataSources.userAPI.updateUser();
     },
+    uploadProfile: () => {
+      return {
+        status: true,
+        message: "Todo complete this functino",
+      };
+    },
   },
   Query: {
     allUsers: (__, { params }, { dataSources }) => {
