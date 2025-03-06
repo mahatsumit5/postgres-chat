@@ -58,7 +58,7 @@ app.use("/api/v1/user", publicRouter);
 
 // Auth0 protected route
 
-app.use("/api/v1/post", auth0Check, loggedInUserAuth, postRouter);
+app.use("/api/v1/post", loggedInUserAuth, postRouter);
 app.use("/api/v1/user", auth0Check, loggedInUserAuth, userRouter);
 app.use("/api/v1/friend", auth0Check, loggedInUserAuth, friendReqRouter);
 app.use("/api/v1/room", auth0Check, loggedInUserAuth, chatRoomRouter);

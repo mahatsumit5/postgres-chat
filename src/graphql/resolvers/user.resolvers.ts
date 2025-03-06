@@ -8,16 +8,26 @@ export const userResolvers: Resolvers = {
     signIn: (parent, { input }, { dataSources }) => {
       return dataSources.userAPI.signIn(input as SignInUser);
     },
+    logout: (_, __, { dataSources }) => {
+      return dataSources.userAPI.logout();
+    },
+    resetPassword: (_, { newPassword }, { dataSources }) => {
+      return dataSources.userAPI.resetPassword(newPassword);
+    },
+    newJwt: (_, __, { dataSources }) => {
+      console.log(dataSources.token);
+      return dataSources.userAPI.newJwt(dataSources.token);
+    },
+    updateUser: (_, __, { dataSources }) => {
+      return dataSources.userAPI.updateUser();
+    },
   },
   Query: {
-    users: (__, args, { dataSources }) => {
-      return [];
-    },
     allUsers: (__, args, { dataSources }) => {
-      return dataSources.userAPI.allUsers();
+      return dataSources.userAPI.allUsers(dataSources.token);
     },
     loggedInUser: (__, args, { dataSources }) => {
-      return dataSources.userAPI.loggedInUser();
+      return dataSources.userAPI.loggedInUser(dataSources.token);
     },
   },
 };

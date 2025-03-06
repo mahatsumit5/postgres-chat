@@ -1,4 +1,0 @@
-type Query {
-  "a list of all the users"
-  users: [User]
-}

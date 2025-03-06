@@ -7,6 +7,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -97,6 +98,12 @@ export type Mutation = {
   /** Create a new user */
   signUp?: Maybe<Response>;
   updateUser?: Maybe<Response>;
+  uploadProfile?: Maybe<Response>;
+};
+
+
+export type MutationResetPasswordArgs = {
+  newPassword: Scalars['String']['input'];
 };
 
 
@@ -138,8 +145,6 @@ export type Query = {
   allUsers?: Maybe<AllUsersResponse>;
   /** a list of all the users */
   loggedInUser?: Maybe<LogInResponse>;
-  /** a list of all the users */
-  users?: Maybe<Array<Maybe<User>>>;
 };
 
 export type Response = {
@@ -406,10 +411,11 @@ export type MessageResolvers<ContextType = DataSourceContext, ParentType extends
 export type MutationResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   logout?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
   newJwt?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
-  resetPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
+  resetPassword?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'newPassword'>>;
   signIn?: Resolver<Maybe<ResolversTypes['SignInResponse']>, ParentType, ContextType, Partial<MutationSignInArgs>>;
   signUp?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationSignUpArgs>>;
   updateUser?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
+  uploadProfile?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
 };
 
 export type PostResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
@@ -438,7 +444,6 @@ export type PostLikeResolvers<ContextType = DataSourceContext, ParentType extend
 export type QueryResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   allUsers?: Resolver<Maybe<ResolversTypes['AllUsersResponse']>, ParentType, ContextType>;
   loggedInUser?: Resolver<Maybe<ResolversTypes['LogInResponse']>, ParentType, ContextType>;
-  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
 };
 
 export type ResponseResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = {

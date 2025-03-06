@@ -39,9 +39,13 @@ export class UserAPI extends RESTDataSource {
     }
   }
 
-  async allUsers(): Promise<AllUsersResponse> {
+  async allUsers(token: string): Promise<AllUsersResponse> {
     try {
-      return await this.get<AllUsersResponse>("all-users", {});
+      return await this.get<AllUsersResponse>("all-users", {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
     } catch (error: any) {
       return {
         status: false,
@@ -51,9 +55,64 @@ export class UserAPI extends RESTDataSource {
     }
   }
 
-  async loggedInUser(): Promise<LogInResponse> {
+  async loggedInUser(token: string): Promise<LogInResponse> {
     try {
-      return await this.get("");
+      return await this.get("", {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (error: any) {
+      return {
+        status: false,
+        message:
+          error.extensions.response.body.message || "unexpected error occured",
+      };
+    }
+  }
+  async logout(): Promise<Response> {
+    try {
+      return await this.post("logout");
+    } catch (error: any) {
+      return {
+        status: false,
+        message:
+          error.extensions.response.body.message || "unexpected error occured",
+      };
+    }
+  }
+  async newJwt(token: string): Promise<Response> {
+    try {
+      return await this.patch("new-accessJWT", {
+        headers: {
+          authorization: `Bearer ${token}`,
+          refreshjwt: token,
+        },
+      });
+    } catch (error: any) {
+      return {
+        status: false,
+        message:
+          error.extensions.response.body.message || "unexpected error occured",
+      };
+    }
+  }
+  async resetPassword(password: string): Promise<Response> {
+    try {
+      return await this.put("reset-password", {
+        body: { password },
+      });
+    } catch (error: any) {
+      return {
+        status: false,
+        message:
+          error.extensions.response.body.message || "unexpected error occured",
+      };
+    }
+  }
+  async updateUser(): Promise<Response> {
+    try {
+      return await this.post("logout");
     } catch (error: any) {
       return {
         status: false,
