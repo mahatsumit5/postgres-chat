@@ -1,10 +1,14 @@
 import { Resolvers } from "../types/types";
 
 export const friendRequestResolvers: Resolvers = {
-  //   Query: {
-  //     getFriendRequest() {},
-  //     getSentFriendRequest() {},
-  //   },
+  Query: {
+    getFriendRequest(_, args, { dataSources }) {
+      return dataSources.friendReqAPI.getFriendRequest();
+    },
+    getSentFriendRequest(_, { queryParams }, { dataSources }) {
+      return dataSources.friendReqAPI.getSentFriendRequest(queryParams!);
+    },
+  },
   Mutation: {
     sendRequest(_, { toID }, { dataSources }) {
       return dataSources.friendReqAPI.sendRequest(toID);

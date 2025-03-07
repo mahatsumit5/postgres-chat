@@ -2,6 +2,8 @@ import { RESTDataSource } from "@apollo/datasource-rest";
 import { BaseAPI } from ".";
 import {
   DeleteRequestParams,
+  FriendRequestResponse,
+  QueryParamsSentReq,
   Response,
   SentRequestResponse,
 } from "../types/types";
@@ -37,5 +39,12 @@ export class FriendRequestAPI extends BaseAPI {
     } catch (error) {
       return this.handleError(error);
     }
+  }
+
+  async getFriendRequest(): Promise<FriendRequestResponse> {
+    return this.get("/friend-request");
+  }
+  async getSentFriendRequest({ page, search, take }: QueryParamsSentReq) {
+    return this.get(`sent-request?page=${page}&search=${search}&take=${take}`);
   }
 }
