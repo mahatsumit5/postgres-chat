@@ -5,6 +5,7 @@ import { UserAPI } from "./datasource/user.api";
 import { typeDefs } from "./typedefs/index";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { DataSourceContext } from "./types/context";
+import { FriendRequestAPI } from "./datasource/friendRequest.api";
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -14,12 +15,13 @@ export async function startApolloServer() {
   const server = new ApolloServer<DataSourceContext>({ schema });
 
   const { url } = await startStandaloneServer(server, {
-    context: async ({ req, res }) => {
+    context: async ({ req, res }): Promise<DataSourceContext> => {
       const token = req.headers.authorization as string;
       const { cache } = server;
       return {
         dataSources: {
           userAPI: new UserAPI({ cache }, token),
+          friendReqAPI: new FriendRequestAPI({ cache }, token),
         },
       };
     },
