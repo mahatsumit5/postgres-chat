@@ -9,8 +9,12 @@ export const friendRequestResolvers: Resolvers = {
     sendRequest(_, { toID }, { dataSources }) {
       return dataSources.friendReqAPI.sendRequest(toID);
     },
-    // deleteFriendRequest() {},
+    deleteFriendRequest(_, { params }, { dataSources }) {
+      return dataSources.friendReqAPI.deleteFriendRequest(params!);
+    },
 
-    // acceptFriendRequest() {},
+    acceptFriendRequest(_, { body }, { dataSources }) {
+      return dataSources.friendReqAPI.acceptFriendRequest(body!);
+    },
   },
 };

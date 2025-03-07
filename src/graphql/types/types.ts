@@ -138,6 +138,11 @@ export type Mutation = {
 };
 
 
+export type MutationAcceptFriendRequestArgs = {
+  body?: InputMaybe<DeleteRequestParams>;
+};
+
+
 export type MutationDeleteFriendRequestArgs = {
   params?: InputMaybe<DeleteRequestParams>;
 };
@@ -534,7 +539,7 @@ export type MessageResolvers<ContextType = DataSourceContext, ParentType extends
 };
 
 export type MutationResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  acceptFriendRequest?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
+  acceptFriendRequest?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, Partial<MutationAcceptFriendRequestArgs>>;
   deleteFriendRequest?: Resolver<Maybe<ResolversTypes['SentRequestResponse']>, ParentType, ContextType, Partial<MutationDeleteFriendRequestArgs>>;
   logout?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;
   newJwt?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType>;

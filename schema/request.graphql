@@ -6,7 +6,7 @@ type Mutation {
   "Delete Friend Request"
   deleteFriendRequest(params: DeleteRequestParams): SentRequestResponse
   "Accept incoming request"
-  acceptFriendRequest: Response
+  acceptFriendRequest(body: DeleteRequestParams): Response
 }
 
 type Query {
