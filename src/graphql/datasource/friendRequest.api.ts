@@ -1,4 +1,3 @@
-import { RESTDataSource } from "@apollo/datasource-rest";
 import { BaseAPI } from ".";
 import {
   DeleteRequestParams,
