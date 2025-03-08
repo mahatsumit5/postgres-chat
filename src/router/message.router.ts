@@ -18,6 +18,7 @@ router.post("/", upload.single("content"), async (req, res, next) => {
     result?.id
       ? res.json({
           status: true,
+          message: "Message sent successfull",
           result,
         })
       : new Error("Unable to send message");
@@ -38,6 +39,7 @@ router.get("/", async (req, res, next) => {
     !messages
       ? next(new Error("Unable to get messages"))
       : res.json({
+          message: "Message sent successfull",
           status: true,
           result: messages,
         });

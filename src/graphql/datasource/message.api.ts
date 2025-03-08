@@ -1,21 +1,37 @@
 import { BaseAPI } from ".";
+import {
+  GetMessageByUser,
+  GetMessageByUserResponse,
+  SendMessageParams,
+  SendMessageResponse,
+} from "../types/types";
 
 export class MessageApi extends BaseAPI {
+  override baseURL = "http://localhost:8080/api/v1/message/";
+
   /**
    * Sends a message
    * @param {string} message - The message to be sent
    * @returns {Promise<void>}
    */
-  async sendMessage(message: string): Promise<void> {
+  async sendMessage(body: SendMessageParams): Promise<SendMessageResponse> {
     // todo implement send message logic
+    return this.post("/", {
+      body,
+    });
   }
 
   /**
    * Retrieves messages
    * @returns {Promise<string[]>}
    */
-  async getMessages() {
+  async getMessages({
+    roomId,
+    skip,
+    take,
+  }: GetMessageByUser): Promise<GetMessageByUserResponse> {
     // todo implement get messages logic
+    return this.get(`/?id=${roomId}&take=${take}&skip=${skip}`);
   }
 
   /**
