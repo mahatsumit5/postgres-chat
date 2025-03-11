@@ -10,7 +10,7 @@ import {
 } from "../types/types";
 import { BaseAPI } from ".";
 export class UserAPI extends BaseAPI {
-  override baseURL = "http://localhost:8080/api/v1/user/";
+  override baseURL = `${process.env.BASE_URL}/user/`;
 
   async signUp(input: SignUpUser): Promise<Response> {
     try {

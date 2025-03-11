@@ -8,6 +8,8 @@ import {
 } from "../types/types";
 
 export class FriendRequestAPI extends BaseAPI {
+  override baseURL = `${process.env.BASE_URL}/friend/`;
+
   async sendRequest(to: string): Promise<SentRequestResponse> {
     try {
       return this.post<SentRequestResponse>("send-request", {

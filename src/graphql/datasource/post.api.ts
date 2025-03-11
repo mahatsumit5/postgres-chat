@@ -2,7 +2,7 @@ import { BaseAPI } from ".";
 import { GetAllPostsResponse } from "../types/types";
 
 export class PostAPI extends BaseAPI {
-  override baseURL = "http://localhost:8080/api/v1/post/";
+  override baseURL = `${process.env.BASE_URL}/post/`;
 
   /**
    * Creates a new post.

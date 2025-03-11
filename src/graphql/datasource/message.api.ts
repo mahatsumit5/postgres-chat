@@ -7,7 +7,7 @@ import {
 } from "../types/types";
 
 export class MessageApi extends BaseAPI {
-  override baseURL = "http://localhost:8080/api/v1/message/";
+  override baseURL = `${process.env.BASE_URL}/message/`;
 
   /**
    * Sends a message
