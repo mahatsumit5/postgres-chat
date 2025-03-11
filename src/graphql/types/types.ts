@@ -317,6 +317,11 @@ export enum Status {
   Rejected = 'REJECTED'
 }
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  postCreated?: Maybe<Post>;
+};
+
 export type Token = {
   __typename?: 'Token';
   accessJWT: Scalars['String']['output'];
@@ -461,6 +466,7 @@ export type ResolversTypes = {
   SignUpUser: SignUpUser;
   Status: Status;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Subscription: ResolverTypeWrapper<{}>;
   Token: ResolverTypeWrapper<Token>;
   User: ResolverTypeWrapper<User>;
   allUser: AllUser;
@@ -500,6 +506,7 @@ export type ResolversParentTypes = {
   SignInUser: SignInUser;
   SignUpUser: SignUpUser;
   String: Scalars['String']['output'];
+  Subscription: {};
   Token: Token;
   User: User;
   allUser: AllUser;
@@ -700,6 +707,10 @@ export type SignInResponseResolvers<ContextType = DataSourceContext, ParentType 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SubscriptionResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
+  postCreated?: SubscriptionResolver<Maybe<ResolversTypes['Post']>, "postCreated", ParentType, ContextType>;
+};
+
 export type TokenResolvers<ContextType = DataSourceContext, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
   accessJWT?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -750,6 +761,7 @@ export type Resolvers<ContextType = DataSourceContext> = {
   SentRequestResponse?: SentRequestResponseResolvers<ContextType>;
   Session?: SessionResolvers<ContextType>;
   SignInResponse?: SignInResponseResolvers<ContextType>;
+  Subscription?: SubscriptionResolvers<ContextType>;
   Token?: TokenResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };

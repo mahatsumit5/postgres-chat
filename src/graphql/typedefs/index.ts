@@ -33,6 +33,10 @@ const userSchema = fs.readFileSync(
   path.join(__dirname, "..", "..", "..", "./schema/user.graphql"),
   { encoding: "utf-8" }
 );
+const subscriptionSchema = fs.readFileSync(
+  path.join(__dirname, "..", "..", "..", "./schema/subscription.graphql"),
+  { encoding: "utf-8" }
+);
 
 // Merge schemas
 export const typeDefs = mergeTypeDefs([
@@ -43,4 +47,5 @@ export const typeDefs = mergeTypeDefs([
   messageSchema,
   chatRoomSchema,
   requestSchema,
+  subscriptionSchema,
 ]);

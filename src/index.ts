@@ -25,8 +25,9 @@ import {
   publicRouter,
   userRouter,
 } from "./router/index";
+
 import { startApolloServer } from "./graphql";
-startApolloServer();
+
 export const auth0Check = auth({
   audience: process.env.audience,
   issuerBaseURL: process.env.issuerBaseURL,
@@ -34,7 +35,8 @@ export const auth0Check = auth({
 export const sessions: Record<string, string> = {};
 
 const port = Number(process.env.PORT) || 8080;
-const app = express();
+export const app = express();
+export const httpServer = http.createServer(app);
 app.use(
   cors({
     origin: [
@@ -49,7 +51,6 @@ app.use(
 );
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-export const server = http.createServer(app);
 
 app.use(express.json());
 
@@ -76,14 +77,14 @@ app.get("/", (req, res) => {
     message: "Server is Healthy",
   });
 });
-
-process.env.ENVIRONMENT === "Development"
-  ? server.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
-    })
-  : server.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
-    });
+startApolloServer();
+// process.env.ENVIRONMENT === "Development"
+//   ? httpServer.listen(port, () => {
+//       console.log(`Server is running on http://localhost:${port}`);
+//     })
+//   : httpServer.listen(port, () => {
+//       console.log(`Server is running on http://localhost:${port}`);
+//     });
 
 export interface CustomError extends Error {
   statusCode: number;

@@ -1,7 +1,6 @@
 import { object } from "joi";
 import { dirname } from "path";
 import swaggerJSDoc from "swagger-jsdoc";
-console.log(__dirname);
 
 const swaggerOptions = {
   swaggerDefinition: {

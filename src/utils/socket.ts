@@ -1,10 +1,10 @@
 import { Server } from "socket.io";
-import { server } from "..";
+import { httpServer } from "..";
 import { getChatRoomByEmail } from "../query/ChatRoom.query";
 import { getUserByEmail } from "../query/user.query";
 
 export async function connectSocket() {
-  const io = new Server(server, {
+  const io = new Server(httpServer, {
     cors: {
       origin: [
         process.env.WEB_DOMAIN as string,
