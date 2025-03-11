@@ -20,3 +20,10 @@ type PostLike {
   post: Post!
   user: User!
 }
+type Mutation {
+  uploadPost: Response!
+}
+
+type Query {
+  getPosts: GetAllPostsResponse
+}

@@ -6,6 +6,7 @@ import { typeDefs } from "./typedefs/index";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { DataSourceContext } from "./types/context";
 import { FriendRequestAPI } from "./datasource/friendRequest.api";
+import { PostAPI } from "./datasource/post.api";
 
 const schema = makeExecutableSchema({
   typeDefs,
@@ -22,6 +23,7 @@ export async function startApolloServer() {
         dataSources: {
           userAPI: new UserAPI({ cache }, token),
           friendReqAPI: new FriendRequestAPI({ cache }, token),
+          postAPI: new PostAPI({ cache }, token),
         },
       };
     },

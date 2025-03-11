@@ -1,6 +1,9 @@
 import { BaseAPI } from ".";
+import { GetAllPostsResponse } from "../types/types";
 
 export class PostAPI extends BaseAPI {
+  override baseURL = "http://localhost:8080/api/v1/post/";
+
   /**
    * Creates a new post.
    * @async
@@ -15,8 +18,15 @@ export class PostAPI extends BaseAPI {
    * @async
    * @returns {Promise<any>}
    */
-  async getAllPost() {
+  async getAllPost(): Promise<GetAllPostsResponse> {
     // TO DO: implement logic to fetch all posts
+
+    try {
+      const response = await this.get<GetAllPostsResponse>("");
+      return response;
+    } catch (error) {
+      return this.handleError(error);
+    }
   }
 
   /**

@@ -33,8 +33,8 @@ router.post("/", upload.array("images"), async (req, res, next) => {
 router.get("/", async (req, res, next) => {
   try {
     const { page, take } = req.query;
-    const { count, data } = getAllPost(Number(page), Number(take));
-    console.log(req.query);
+    const { count, data } = getAllPost(Number(1), Number(10));
+
     const [posts, totalNumberOfPosts] = await Promise.all([data, count]);
     console.log(totalNumberOfPosts);
     posts?.length

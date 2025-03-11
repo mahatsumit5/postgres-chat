@@ -52,3 +52,10 @@ type GetMessageByUserResponse {
   message: String!
   result: [Message!]!
 }
+
+type GetAllPostsResponse {
+  status: Boolean!
+  message: String!
+  posts: [Post!]
+  totalNumberOfPosts: Int
+}
