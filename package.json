@@ -43,6 +43,7 @@
     "express": "^4.19.2",
     "express-oauth2-jwt-bearer": "^1.6.0",
     "graphql": "^16.10.0",
+    "graphql-subscriptions": "^3.0.0",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^6.0.4",
     "joi": "^17.13.3",

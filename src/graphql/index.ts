@@ -14,35 +14,50 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import express from "express";
 import { expressMiddleware } from "@apollo/server/express4";
 import cors from "cors";
+import { GraphQLError } from "graphql";
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
 export async function startApolloServer() {
-  // Creating the WebSocket server
   const wsServer = new WebSocketServer({
-    // This is the `httpServer` we created in a previous step.
     server: httpServer,
-    // Pass a different path here if app.use
-    // serves expressMiddleware at a different path
-    path: "/subscriptions",
+    path: "/graphql",
   });
-  wsServer.on("listening", () => {});
-  // Hand in the schema we just created and have the
-  // WebSocketServer start listening.
-  const serverCleanup = useServer({ schema }, wsServer);
 
+  const wsServerCleanup = useServer(
+    {
+      schema,
+      context: async (ctx, msg, args) => {
+        console.log(ctx.connectionParams, "ctx.connectionParams");
+        // if (!ctx.connectionParams?.authorization) {
+        //   throw new GraphQLError("Authorization header is required", {
+        //     extensions: {
+        //       code: "UNAUTHENTICATED",
+        //     },
+        //   });
+        // }
+        return {
+          dataSources: {
+            userAPI: new UserAPI({ cache: server.cache }, ""),
+            friendReqAPI: new FriendRequestAPI({ cache: server.cache }, ""),
+            postAPI: new PostAPI({ cache: server.cache }, ""),
+          },
+        };
+      },
+    },
+    wsServer
+  );
   const server = new ApolloServer({
     schema,
+
     plugins: [
-      // Proper shutdown for the HTTP server.
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {
-        // Proper shutdown for the WebSocket server.
         async serverWillStart() {
           return {
             async drainServer() {
-              await serverCleanup.dispose();
+              await wsServerCleanup.dispose();
             },
           };
         },
@@ -53,26 +68,33 @@ export async function startApolloServer() {
 
   app.use(
     "/graphql",
-    cors<cors.CorsRequest>(),
+    cors<cors.CorsRequest>({
+      origin: [
+        process.env.WEB_DOMAIN as string,
+        "http://192.168.20.8:5173",
+        "http://localhost:5173",
+      ],
+      methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+      allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
+      credentials: true,
+    }),
     express.json(),
-    expressMiddleware(server)
+    expressMiddleware(server, {
+      context: async ({ req, res }): Promise<DataSourceContext> => {
+        const token = req.headers.authorization as string;
+        const { cache } = server;
+        return {
+          dataSources: {
+            userAPI: new UserAPI({ cache }, token),
+            friendReqAPI: new FriendRequestAPI({ cache }, token),
+            postAPI: new PostAPI({ cache }, token),
+          },
+        };
+      },
+    })
   );
-  // const { url } = await startStandaloneServer(server, {
-  //   context: async ({ req, res }): Promise<DataSourceContext> => {
-  //     const token = req.headers.authorization as string;
-  //     const { cache } = server;
-  //     return {
-  //       dataSources: {
-  //         userAPI: new UserAPI({ cache }, token),
-  //         friendReqAPI: new FriendRequestAPI({ cache }, token),
-  //         postAPI: new PostAPI({ cache }, token),
-  //       },
-  //     };
-  //   },
-  // });
-  // console.log(` 🚀  Server is running! 📭  Query at ${url} `);
-  const PORT = 4000;
-  // Now that our HTTP server is fully set up, we can listen to it.
+
+  const PORT = 8080;
   httpServer.listen(PORT, () => {
     console.log(`Server is now running on http://localhost:${PORT}/graphql`);
   });

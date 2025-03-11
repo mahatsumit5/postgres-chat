@@ -71,12 +71,6 @@ app.get("/socket.io", () => {
   connectSocket();
 });
 
-app.get("/", (req, res) => {
-  res.json({
-    status: true,
-    message: "Server is Healthy",
-  });
-});
 startApolloServer();
 // process.env.ENVIRONMENT === "Development"
 //   ? httpServer.listen(port, () => {

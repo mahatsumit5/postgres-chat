@@ -24,11 +24,12 @@ export class UserAPI extends BaseAPI {
   }
   async signIn(input: SignInUser): Promise<SignInResponse> {
     try {
+      console.log(input, "input");
       return await this.post<SignInResponse>("sign-in", {
         body: input,
       });
     } catch (error) {
-      this.didEncounterError(error as Error);
+      // return this.didEncounterError(error as Error);
       return this.handleError(error);
     }
   }
