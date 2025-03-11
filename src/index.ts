@@ -6,14 +6,14 @@ import cors from "cors";
 
 import { auth } from "express-oauth2-jwt-bearer";
 // middleware
-import { loggedInUserAuth } from "./src/middleware";
+import { loggedInUserAuth } from "./middleware";
 
 // swwagger
 import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "./swagger";
 
 // utils
-import { ErrorHandler, connectSocket } from "./src/utils/index";
+import { ErrorHandler, connectSocket } from "./utils/index";
 
 // Router
 import {
@@ -24,9 +24,9 @@ import {
   postRouter,
   publicRouter,
   userRouter,
-} from "./src/router/index";
-import { getAllUsers } from "./src/query/user.query";
-
+} from "./router/index";
+import { startApolloServer } from "./graphql";
+startApolloServer();
 export const auth0Check = auth({
   audience: process.env.audience,
   issuerBaseURL: process.env.issuerBaseURL,

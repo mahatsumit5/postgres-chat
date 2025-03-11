@@ -8,14 +8,15 @@ import {
 import { hashPass } from "../utils/bcrypt";
 import { createAccessJWT, verifyRefreshJWT } from "../utils/jwt";
 import { loggedInUserAuth, upload } from "../middleware";
-import { sessions } from "../..";
+import { sessions } from "..";
 const router = Router();
 
-router.get("/", loggedInUserAuth, async (req, res, next) => {
+router.get("/loggedin", async (req, res, next) => {
   try {
+    console.log(req.headers);
     const user = req.userInfo;
     user?.id
-      ? res.json({ status: true, data: user })
+      ? res.json({ status: true, message: "Sucessfull", data: user })
       : res.status(401).json({ message: "No user found.", status: false });
   } catch (error) {
     next(error);
@@ -39,7 +40,12 @@ router.get("/all-users", async (req, res, next) => {
     );
 
     users?.length
-      ? res.status(200).json({ status: true, data: users, totalUsers })
+      ? res.status(200).json({
+          status: true,
+          data: users,
+          totalUsers,
+          message: "Hers is you",
+        })
       : res.status(400).json({ message: "No other user available" });
   } catch (error) {
     next(error);
@@ -51,7 +57,7 @@ router.post("/logout", async (req, res, next) => {
     const token = req.headers.authorization;
     const user = req.userInfo;
     delete sessions[token as string];
-    res.json({ status: true });
+    res.json({ status: true, message: "You have been logged out" });
   } catch (error) {
     next(error);
   }

@@ -1,0 +1,29 @@
+# # Post model
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  author: User!
+  authorId: String!
+  comments: [Comment!]!
+  createdAt: String!
+  updatedAt: String!
+  likes: [PostLike!]!
+  images: [String!]!
+}
+
+# PostLike model
+type PostLike {
+  id: ID!
+  postId: String!
+  userId: String!
+  post: Post!
+  user: User!
+}
+type Mutation {
+  uploadPost: Response!
+}
+
+type Query {
+  getPosts: GetAllPostsResponse
+}

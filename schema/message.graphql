@@ -1,0 +1,31 @@
+# # Message model
+type Message {
+  id: ID!
+  content: String!
+  createdAt: String!
+  isSeen: Boolean!
+  chat: ChatRoom!
+  chatRoomId: String!
+  creatorId: User!
+  author: String!
+}
+
+type Mutation {
+  sendMessage(input: SendMessageParams): SendMessageResponse
+  deleteMessage(messageId: String!): Response
+}
+
+type Query {
+  getMessagesByUsers(input: GetMessageByUser): GetMessageByUserResponse
+}
+
+input SendMessageParams {
+  content: String!
+  author: String!
+  roomId: String!
+}
+input GetMessageByUser {
+  roomId: String!
+  take: Int!
+  skip: Int!
+}

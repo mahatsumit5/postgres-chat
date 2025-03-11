@@ -2,6 +2,7 @@ import { Response, Router } from "express";
 import { createUser, getUserByEmail } from "../query/user.query";
 import { comparePassword, hashPass } from "../utils/bcrypt";
 import { createAuth0Token } from "../utils/auth0";
+import { sessions } from "..";
 import {
   validateUserLogin,
   validateUserSignUp,
@@ -32,7 +33,7 @@ router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
   try {
     const user = await getUserByEmail(req.body.email);
     if (!user) {
-      next(new Error("User not found"));
+      return next(new Error("User not found"));
     }
     const isPasswordCorrect = comparePassword(req.body.password, user.password);
     if (!isPasswordCorrect) {

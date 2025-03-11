@@ -19,12 +19,12 @@ export const loggedInUserAuth = async (
     const token = req.headers.authorization;
     if (!token) {
       return res.status(500).json({
-        message: "You are not logged in",
+        message: "You are not loggssed in",
       });
     }
-    const user = await getSession(req.headers.authorization!);
+    const user = await getSession(`${token}`);
     if (!user) {
-      return res.status(401).json({ message: "You are not logged in" });
+      return res.status(401).json({ message: "You are not loaaaagged in" });
     }
     user.associate.password = undefined;
     user.associate.refreshJWT = undefined;
@@ -52,14 +52,10 @@ export const upload = multer({
     s3,
 
     bucket: process.env.AWS_BUCKET_NAME as string,
-    metadata: function (
-      req: Request,
-      file: Express.MulterS3.File,
-      cb: Function
-    ) {
+    metadata: (req: Request, file: Express.MulterS3.File, cb: Function) => {
       cb(null, { fieldName: file.filename });
     },
-    key: function (req: Request, file: Express.MulterS3.File, cb: Function) {
+    key: (req: Request, file: Express.MulterS3.File, cb: Function) => {
       cb(null, Date.now().toString() + "-" + file.originalname);
     },
   }),

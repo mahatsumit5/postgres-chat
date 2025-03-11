@@ -1,0 +1,6 @@
+# # ChatRoom model
+type ChatRoom {
+  id: ID!
+  messages: [Message!]!
+  user: [User!]!
+}

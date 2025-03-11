@@ -1,4 +1,4 @@
-import { executeQuery, prisma } from "../../script";
+import { executeQuery, prisma } from "../script";
 import { CreateCommentParams, UpdateCommentParams } from "../types";
 
 export function postComment({ content, postId, userId }: CreateCommentParams) {

@@ -1,0 +1,69 @@
+type User {
+  id: ID!
+  email: String!
+  fName: String!
+  lName: String!
+  isActive: Boolean!
+  password: String!
+  profile: String
+  bio: String
+  coverPicture: String
+  chatRoom: [ChatRoom!]!
+  session: [Session!]!
+  friendRequests: [FriendRequests!]!
+  sentRequests: [FriendRequests!]!
+  messages: [Message!]!
+  post: [Post!]!
+  likedPosts: [PostLike!]!
+  likedComments: [CommentLikes!]!
+  comment: [Comment!]!
+}
+# Session model
+type Session {
+  associate: User!
+  userEmail: String!
+  timeStamps: String!
+  token: String!
+}
+
+type Query {
+  "a list of all the users"
+  loggedInUser: LogInResponse
+  "a list of all the users"
+  allUsers(params: allUser): AllUsersResponse
+}
+
+type Mutation {
+  "Create a new user"
+  signUp(input: SignUpUser): Response
+  "login to your account"
+  signIn(input: SignInUser): SignInResponse
+  logout: Response
+  resetPassword(newPassword: String!): Response
+  newJwt: Response
+  updateUser: Response
+  uploadProfile: Response
+}
+
+input SignUpUser {
+  fName: String!
+  lName: String!
+  email: String!
+  password: String!
+}
+input SignInUser {
+  email: String!
+  password: String!
+}
+
+input allUser {
+  order: Order!
+  take: Int!
+  page: Int!
+  search: String!
+}
+
+enum Order {
+  asc
+  desc
+}
