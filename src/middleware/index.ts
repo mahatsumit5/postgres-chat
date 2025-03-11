@@ -52,14 +52,10 @@ export const upload = multer({
     s3,
 
     bucket: process.env.AWS_BUCKET_NAME as string,
-    metadata: function (
-      req: Request,
-      file: Express.MulterS3.File,
-      cb: Function
-    ) {
+    metadata: (req: Request, file: Express.MulterS3.File, cb: Function) => {
       cb(null, { fieldName: file.filename });
     },
-    key: function (req: Request, file: Express.MulterS3.File, cb: Function) {
+    key: (req: Request, file: Express.MulterS3.File, cb: Function) => {
       cb(null, Date.now().toString() + "-" + file.originalname);
     },
   }),
