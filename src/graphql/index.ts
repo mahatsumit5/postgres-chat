@@ -12,13 +12,25 @@ import { app, httpServer } from "..";
 import { useServer } from "graphql-ws/dist/use/ws";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import express from "express";
-import { expressMiddleware } from "@apollo/server/express4";
+import {
+  ExpressContextFunctionArgument,
+  expressMiddleware,
+} from "@apollo/server/express4";
 import cors from "cors";
-import { GraphQLError } from "graphql";
 const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 });
+const options = {
+  origin: [
+    process.env.WEB_DOMAIN as string,
+    "http://192.168.20.8:5173",
+    "http://localhost:5173",
+  ],
+  methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+  allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
+  credentials: true,
+};
 export async function startApolloServer() {
   const wsServer = new WebSocketServer({
     server: httpServer,
@@ -28,22 +40,12 @@ export async function startApolloServer() {
   const wsServerCleanup = useServer(
     {
       schema,
-      context: async (ctx, msg, args) => {
-        console.log(ctx.connectionParams, "ctx.connectionParams");
-        // if (!ctx.connectionParams?.authorization) {
-        //   throw new GraphQLError("Authorization header is required", {
-        //     extensions: {
-        //       code: "UNAUTHENTICATED",
-        //     },
-        //   });
-        // }
-        return {
-          dataSources: {
-            userAPI: new UserAPI({ cache: server.cache }, ""),
-            friendReqAPI: new FriendRequestAPI({ cache: server.cache }, ""),
-            postAPI: new PostAPI({ cache: server.cache }, ""),
-          },
-        };
+      onConnect: async (ctx) => {
+        // Check authentication every time a client connects.
+        if (!ctx.connectionParams) {
+          // You can return false to close the connection  or throw an explicit error
+          throw new Error("Auth token missing!");
+        }
       },
     },
     wsServer
@@ -66,32 +68,24 @@ export async function startApolloServer() {
   });
   await server.start();
 
+  const context: (
+    args: ExpressContextFunctionArgument
+  ) => Promise<DataSourceContext> = async ({ req, res }) => {
+    const token = req.headers.authorization as string;
+    const { cache } = server;
+    return {
+      dataSources: {
+        userAPI: new UserAPI({ cache }, token),
+        friendReqAPI: new FriendRequestAPI({ cache }, token),
+        postAPI: new PostAPI({ cache }, token),
+      },
+    };
+  };
   app.use(
     "/graphql",
-    cors<cors.CorsRequest>({
-      origin: [
-        process.env.WEB_DOMAIN as string,
-        "http://192.168.20.8:5173",
-        "http://localhost:5173",
-      ],
-      methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
-      allowedHeaders: ["Authorization", "refreshjwt", "Content-Type"],
-      credentials: true,
-    }),
+    cors<cors.CorsRequest>(options),
     express.json(),
-    expressMiddleware(server, {
-      context: async ({ req, res }): Promise<DataSourceContext> => {
-        const token = req.headers.authorization as string;
-        const { cache } = server;
-        return {
-          dataSources: {
-            userAPI: new UserAPI({ cache }, token),
-            friendReqAPI: new FriendRequestAPI({ cache }, token),
-            postAPI: new PostAPI({ cache }, token),
-          },
-        };
-      },
-    })
+    expressMiddleware(server, { context })
   );
 
   const PORT = 8080;
