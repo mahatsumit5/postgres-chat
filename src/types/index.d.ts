@@ -10,9 +10,12 @@ interface Issue {
 
 export interface CustomError extends Error {
   statusCode: number;
-  issues: Issue[];
+  issues?: Issue[];
 }
-
+export interface CustomErrorConstructor {
+  new (message: string, statusCode: number): CustomError;
+}
+declare var CustomError: CustomErrorConstructor;
 interface IUser {
   id: string;
   email: string;

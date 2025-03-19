@@ -17,11 +17,12 @@ router.post("/", upload.array("images"), async (req, res, next) => {
     // if (file.length) {
     //   req.body.images = file.map((item) => item.location);
     // }
-    console.log("this is req.body", req.body);
+    console.log(req.body);
     const result = await createPost(req.body);
     result?.id
       ? res.status(200).json({
           status: true,
+          message: "Post created successfully",
           result,
         })
       : new Error("Unable to create a new post");
@@ -32,11 +33,19 @@ router.post("/", upload.array("images"), async (req, res, next) => {
 
 router.get("/", async (req, res, next) => {
   try {
+    const userID = req.userInfo?.id;
+    if (!userID) throw new Error("User id is required");
     const { page, take } = req.query;
-    const { count, data } = getAllPost(Number(1), Number(10));
+    const { postsWithHasLiked, count } = await getAllPost(
+      Number(1),
+      Number(10),
+      userID
+    );
 
-    const [posts, totalNumberOfPosts] = await Promise.all([data, count]);
-    console.log(totalNumberOfPosts);
+    const [posts, totalNumberOfPosts] = await Promise.all([
+      postsWithHasLiked,
+      count,
+    ]);
     posts?.length
       ? res.status(200).json({
           status: true,
@@ -59,7 +68,7 @@ router.get("/user/:userId", async (req, res, next) => {
           posts,
           message: "Avialbe posts",
         })
-      : res.status(400).json({ message: "No posts available." });
+      : res.status(400).json({ status: false, message: "No posts available." });
   } catch (error) {
     next(error);
   }
@@ -115,7 +124,7 @@ router.put("/like", async (req, res, next) => {
 });
 router.put("/remove-like", async (req, res, next) => {
   try {
-    const deletedLike = await removeLike(req.body);
+    const deletedLike = await removeLike(req.body.postId, req.userInfo?.id!);
     deletedLike?.id
       ? res.json({
           status: true,

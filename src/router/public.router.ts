@@ -8,6 +8,7 @@ import {
   validateUserSignUp,
 } from "../utils/data.validation";
 import { createSession } from "../query/session.query";
+import { CustomError } from "../types";
 
 const router = Router();
 
@@ -33,7 +34,7 @@ router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
   try {
     const user = await getUserByEmail(req.body.email);
     if (!user) {
-      return next(new Error("User not found"));
+      throw new Error("User not found");
     }
     const isPasswordCorrect = comparePassword(req.body.password, user.password);
     if (!isPasswordCorrect) {
@@ -41,6 +42,7 @@ router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
       return;
     }
     const token = await createAuth0Token(res);
+    if (!token?.access_token) throw new Error("Unable to create token");
     await createSession({
       email: user.email,
       token: `Bearer ${token.access_token}`,
@@ -52,7 +54,8 @@ router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
         accessJWT: token.access_token,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
+    error.statusCode = 400;
     next(error);
   }
 });

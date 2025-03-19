@@ -20,11 +20,10 @@ export class BaseAPI extends RESTDataSource {
   }
 
   protected didEncounterError(_error: Error): void {
-    console.error("base api", _error);
+    console.error("base api Entounter error:", _error);
   }
   // Catching errors globally for all the requests and responses
   protected handleError(error: any) {
-    console.log("error", error);
     // You can log the error or send it to a monitoring service like Sentry, etc.
     // console.error("Error occurred:", error);
 
@@ -32,7 +31,8 @@ export class BaseAPI extends RESTDataSource {
     //   throw new Error(error.message || "An unexpected error occurred.");
     return {
       status: false,
-      message: error.extensions.response.body || "unexpected error occured",
+      message:
+        error.extensions.response.body?.message || "unexpected error occured",
     };
   }
 }

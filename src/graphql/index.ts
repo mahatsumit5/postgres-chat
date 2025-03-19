@@ -52,7 +52,7 @@ export async function startApolloServer() {
   );
   const server = new ApolloServer({
     schema,
-
+    status400ForVariableCoercionErrors: true,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       {
@@ -84,11 +84,10 @@ export async function startApolloServer() {
   app.use(
     "/graphql",
     cors<cors.CorsRequest>(options),
-    express.json(),
     expressMiddleware(server, { context })
   );
 
-  const PORT = 8080;
+  const PORT = Number(process.env.PORT) || 8080;
   httpServer.listen(PORT, () => {
     console.log(`Server is now running on http://localhost:${PORT}/graphql`);
   });
