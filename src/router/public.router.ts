@@ -32,6 +32,7 @@ router.post("/sign-up", validateUserSignUp, async (req, res, next) => {
 });
 router.post("/sign-in", validateUserLogin, async (req, res: Response, next) => {
   try {
+    console.log(req.body);
     const user = await getUserByEmail(req.body.email);
     if (!user) {
       throw new Error("User not found");

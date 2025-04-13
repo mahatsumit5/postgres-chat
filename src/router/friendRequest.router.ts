@@ -14,10 +14,8 @@ const router = Router();
 router.post("/send-request", async (req, res, next) => {
   try {
     const user = req.userInfo;
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    const result = await sendFriendRequest(user.id, req.body.to);
+
+    const result = await sendFriendRequest(user?.id!, req.body.to);
     result
       ? res.status(201).json({
           status: true,
@@ -40,14 +38,12 @@ router.get("/friend-request", async (req, res, next) => {
     const friendReqCount = await getNumberOfFriendReq(user.email);
 
     result?.length
-      ? res
-          .status(201)
-          .json({
-            status: true,
-            data: result,
-            count: friendReqCount,
-            message: "",
-          })
+      ? res.status(201).json({
+          status: true,
+          data: result,
+          count: friendReqCount,
+          message: "",
+        })
       : res
           .status(201)
           .json({ status: true, data: { result, friendReqCount } });
